@@ -110,6 +110,44 @@ a:hover{text-decoration:underline}
   </div>
 </div>
 
+<div style="background:#fff;border-bottom:1px solid #e2e8f0;padding:8px 32px">
+  <h3 class="collapsible" onclick="toggleCollapse(this)" style="font-size:13px;color:#1e293b;cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px;margin:0">
+    Metric Definitions &amp; Glossary
+  </h3>
+  <div class="collapse-content" style="padding:12px 0 4px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;font-size:12px;line-height:1.7;color:#334155">
+      <div>
+        <p style="font-weight:700;color:#1e293b;margin-bottom:6px;font-size:13px;border-bottom:1px solid #e2e8f0;padding-bottom:4px">Funnel Stages</p>
+        <p><strong>Contingent Approved</strong> <span class="badge badge-be" style="font-size:9px">BE</span> &mdash; User passed credit + fraud auto-approval OR has a bank-verify task created. Entry point of the funnel.</p>
+        <p><strong>Options Screen</strong> <span class="badge badge-cs" style="font-size:9px">CS</span> &mdash; User viewed the FNPL offer options screen (clickstream event <code>fnpl_options_screen</code>).</p>
+        <p><strong>Term Click</strong> <span class="badge badge-cs" style="font-size:9px">CS</span> &mdash; User clicked on a loan term option (3, 6, or 9 months).</p>
+        <p><strong>Add Bank</strong> <span class="badge badge-cs" style="font-size:9px">CS</span> &mdash; User initiated bank account linking (<code>add_bank_account</code> event).</p>
+        <p><strong>Bank Completed</strong> <span class="badge badge-be" style="font-size:9px">BE</span> &mdash; Bank verification task marked COMPLETED, <em>or</em> user reached Final Approved/Funded (implicit pass-through due to data retention policy).</p>
+        <p><strong>Final Approved</strong> <span class="badge badge-be" style="font-size:9px">BE</span> &mdash; DLA status = FINAL_APPROVED or loan application status is FUNDED/COMPLETED.</p>
+        <p><strong>Offer Selected</strong> <span class="badge badge-be" style="font-size:9px">BE</span> &mdash; User selected a specific loan offer (match record with <code>selected=true</code>).</p>
+        <p><strong>Payment Schedule</strong> <span class="badge badge-cs" style="font-size:9px">CS</span> &mdash; User viewed the payment schedule screen before final acceptance.</p>
+        <p><strong>Loan Accept</strong> <span class="badge badge-cs" style="font-size:9px">CS</span> &mdash; User clicked accept on the loan agreement.</p>
+        <p><strong>Accept + Efile</strong> <span class="badge badge-cs" style="font-size:9px">CS</span> &mdash; User accepted and initiated e-file submission.</p>
+        <p><strong>Funded</strong> <span class="badge badge-be" style="font-size:9px">BE</span> &mdash; Loan has a non-null <code>fundeddate</code>. Terminal success event.</p>
+      </div>
+      <div>
+        <p style="font-weight:700;color:#1e293b;margin-bottom:6px;font-size:13px;border-bottom:1px solid #e2e8f0;padding-bottom:4px">Calculated Metrics</p>
+        <p><strong>Funded Rate (Cumulative Conversion)</strong> &mdash; <code>Funded Users / Contingent Approved Users &times; 100</code>. End-to-end conversion for a segment.</p>
+        <p><strong>Step Conversion Rate</strong> &mdash; <code>Stage N Users / Stage N-1 Users &times; 100</code>. Measures drop-off between two consecutive funnel stages.</p>
+        <p><strong>Cumulative Conversion</strong> &mdash; <code>Stage N Users / Contingent Approved &times; 100</code>. How many users survive from the top to a given stage.</p>
+        <p><strong>Lift (Treatment vs Control)</strong> &mdash; <code>Treatment B Funded Rate / Control Funded Rate</code>. A lift of 3.1x means Treatment B converts 3.1 times as many users as Control.</p>
+        <p><strong>Incremental Loans</strong> &mdash; <code>(Treatment B Funded Rate &minus; Control Funded Rate) &times; Treatment B Volume</code>. Estimated extra funded loans attributable to the 0% APR treatment.</p>
+        <p style="font-weight:700;color:#1e293b;margin:12px 0 6px;font-size:13px;border-bottom:1px solid #e2e8f0;padding-bottom:4px">Segments &amp; Groups</p>
+        <p><strong>Risk Bin (1&ndash;6)</strong> &mdash; Credit risk segment from the risk model (<code>rsk_bin_segment</code>). Bin 1 = broadest / highest-volume segment; Bin 6 = smallest / most credit-worthy segment.</p>
+        <p><strong>Treatment B</strong> &mdash; Experiment arm receiving the <strong>0% APR</strong> promotional offer (experiment 318992).</p>
+        <p><strong>Control</strong> &mdash; Experiment arm receiving the <strong>standard (non-promotional)</strong> offer.</p>
+        <p><strong>Null (experiment)</strong> &mdash; Users not assigned to any experiment arm (outside the experiment window or excluded from targeting).</p>
+        <p><strong>Efile Attempted / Accepted / Rejected</strong> &mdash; Sub-stages between Offer Selected and Funded, tracking e-filing progression from the <code>fnpl_ga1_base</code> table.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="tabs">
   <div class="tab active" onclick="switchTab(0)">Overall Funnel</div>
   <div class="tab" onclick="switchTab(1)">By Risk Segment</div>
