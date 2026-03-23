@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNPL Product Funnel Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#1a1a2e}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;padding:24px 32px}
+.header h1{font-size:24px;font-weight:600}
+.header p{font-size:13px;color:#94a3b8;margin-top:4px}
+.legend-bar{background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 32px;display:flex;gap:24px;flex-wrap:wrap;align-items:center;font-size:12px}
+.legend-item{display:flex;align-items:center;gap:6px}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:600;font-size:11px;letter-spacing:.5px}
+.badge-be{background:#dbeafe;color:#1e40af}
+.badge-cs{background:#fef3c7;color:#92400e}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #e2e8f0;padding:0 32px;gap:0;overflow-x:auto}
+.tab{padding:12px 24px;cursor:pointer;font-size:14px;font-weight:500;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap}
+.tab:hover{color:#1e40af}
+.tab.active{color:#1e40af;border-bottom-color:#1e40af}
+.content{padding:24px 32px;max-width:1400px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:24px;margin-bottom:20px}
+.card h3{font-size:16px;margin-bottom:16px;color:#1e293b}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8fafc;text-align:left;padding:10px 12px;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+tr:hover td{background:#f8fafc}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.pct{color:#64748b;font-size:12px}
+.drop{color:#dc2626;font-weight:600}
+.good{color:#16a34a}
+.chart-container{position:relative;height:400px;margin-bottom:16px}
+.funnel-row{display:flex;align-items:center;margin-bottom:6px}
+.funnel-bar{height:36px;border-radius:4px;min-width:2px;position:relative}
+.funnel-label{width:180px;flex-shrink:0;text-align:right;padding-right:12px;font-size:12px;font-weight:500;color:#334155;white-space:nowrap}
+.funnel-value{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.funnel-value-outside{margin-left:8px;font-size:12px;font-weight:600;color:#475569}
+.funnel-pct{margin-left:8px;font-size:11px;color:#94a3b8;flex-shrink:0}
+.funnel-container{padding:8px 0}
+.funnel-bar-be{background:linear-gradient(90deg,#3b82f6,#2563eb)}
+.funnel-bar-cs{background:linear-gradient(90deg,#f59e0b,#d97706)}
+.collapsible{cursor:pointer;user-select:none;display:flex;align-items:center;gap:8px}
+.collapsible::before{content:'▸';font-size:12px;transition:transform .2s}
+.collapsible.open::before{transform:rotate(90deg)}
+.collapse-content{display:none;margin-top:12px}
+.collapse-content.open{display:block}
+pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:12px;line-height:1.6}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.08);text-align:center}
+.kpi .value{font-size:24px;font-weight:700;color:#1e40af}
+.kpi .label{font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+a{color:#2563eb;text-decoration:none}
+a:hover{text-decoration:underline}
+.source-section{font-size:12px;line-height:1.8;color:#475569}
+.source-section code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:11px}
+.insight-box{border-left:4px solid #3b82f6;background:#eff6ff;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:16px;font-size:13px;line-height:1.7;color:#1e40af}
+.insight-box.amber{border-left-color:#f59e0b;background:#fffbeb;color:#92400e}
+.insight-box.red{border-left-color:#ef4444;background:#fef2f2;color:#991b1b}
+.insight-box.green{border-left-color:#10b981;background:#ecfdf5;color:#065f46}
+.insight-box strong{font-weight:700}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:800px){.insight-grid{grid-template-columns:1fr}}
+.reco-headline{font-size:20px;font-weight:700;color:#065f46;margin-bottom:8px}
+.reco-body{font-size:14px;line-height:1.8;color:#334155}
+.reco-stat{display:inline-block;background:#10b981;color:#fff;padding:2px 10px;border-radius:6px;font-weight:700;font-size:13px}
+.matrix-row{display:grid;grid-template-columns:90px 80px 1fr 120px;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid #f1f5f9;font-size:13px}
+.matrix-row:last-child{border-bottom:none}
+.matrix-header{font-weight:700;color:#475569;font-size:12px;text-transform:uppercase;letter-spacing:.5px;background:#f8fafc;border-radius:8px 8px 0 0}
+.verdict{display:inline-block;padding:4px 12px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:.3px;text-align:center;min-width:70px}
+.verdict-go{background:#dcfce7;color:#166534}
+.verdict-watch{background:#fef9c3;color:#854d0e}
+.verdict-hold{background:#fee2e2;color:#991b1b}
+.matrix-bar{height:8px;border-radius:4px;position:relative}
+.matrix-reason{font-size:12px;color:#64748b;line-height:1.5}
+.next-step{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #eff6ff;font-size:13px;line-height:1.6;color:#1e3a5f}
+.next-step:last-child{border-bottom:none}
+.step-num{background:#3b82f6;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.heatmap{width:100%;border-collapse:separate;border-spacing:3px}
+.heatmap th{background:transparent;border:none;font-size:11px;font-weight:600;color:#475569;padding:6px 8px;text-align:center}
+.heatmap td{border-radius:6px;text-align:center;padding:10px 6px;font-size:12px;font-weight:600;border:none;min-width:70px;position:relative}
+.heatmap .bin-label{text-align:left;font-weight:700;background:transparent;color:#334155;font-size:13px}
+.heatmap .arm-label{text-align:left;font-weight:500;background:transparent;color:#64748b;font-size:12px;padding-left:16px}
+.action-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+.action-table th{text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;border-bottom:2px solid #e2e8f0;background:transparent}
+.action-table td{padding:8px 10px;border-bottom:1px solid #f1f5f9}
+.action-table tr:last-child td{border-bottom:none;font-weight:700;background:#f8fafc}
+@media(max-width:900px){.tab-panel [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>FNPL Product Funnel Dashboard</h1>
+  <p>Data from 2025-09-18 onwards &middot; Grain: unique users (authId) &middot; Lending backend + Clickstream &middot; Generated 2026-03-23</p>
+</div>
+
+<div class="legend-bar">
+  <span style="font-weight:600;color:#1e293b">Data Sources:</span>
+  <div class="legend-item"><span class="badge badge-be">BE</span> Backend (lending tables)</div>
+  <div class="legend-item"><span class="badge badge-cs">CS</span> Clickstream (fnpl_funnel_first_touch_fact)</div>
+  <div class="legend-item" style="margin-left:auto">
+    <span class="badge badge-be">BE</span> = contingent approval, bank completed, offer selected, final approved, funded
+  </div>
+  <div class="legend-item">
+    <span class="badge badge-cs">CS</span> = options screen, term click, add bank, payment schedule, loan accept, efile
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)">Overall Funnel</div>
+  <div class="tab" onclick="switchTab(1)">By Risk Segment</div>
+  <div class="tab" onclick="switchTab(2)">By Experiment</div>
+  <div class="tab" onclick="switchTab(3)">Risk &times; Experiment</div>
+  <div class="tab" onclick="switchTab(4)">Data Sources &amp; Queries</div>
+</div>
+
+<div class="content">
+
+<!-- TAB 0: OVERALL -->
+<div class="tab-panel active" id="panel-0">
+  <div class="kpi-row">
+    <div class="kpi"><div class="value">97,090</div><div class="label">Unique Users Contingent</div></div>
+    <div class="kpi"><div class="value">30,158</div><div class="label">Final Approved</div></div>
+    <div class="kpi"><div class="value">29,938</div><div class="label">Offer Selected</div></div>
+    <div class="kpi"><div class="value">22,219</div><div class="label">Funded</div></div>
+    <div class="kpi"><div class="value">22.9%</div><div class="label">Overall Conv Rate</div></div>
+  </div>
+  <p style="font-size:12px;color:#64748b;margin-bottom:16px">All counts are <strong>unique users (authId level)</strong>. Users with multiple loan applications are counted once, taking MAX of all backend flags.</p>
+  <p style="font-size:12px;color:#64748b;margin-bottom:16px;padding:8px 12px;background:#eff6ff;border-radius:6px;border-left:3px solid #3b82f6"><strong>Bank Completed note:</strong> The <code>applicantactionrequired</code> table has a retention policy -- records for funded users before ~Feb 23, 2026 are purged. To avoid undercounting, Bank Completed is defined as: <code>VERIFY+BANK status=COMPLETED</code> <strong>OR</strong> user reached Final Approved / Funded (implying bank was verified through an instant path or records were cleaned up).</p>
+
+  <div class="insight-grid">
+    <div class="insight-box red"><strong>Biggest drop:</strong> Options Screen &rarr; Term Click loses <strong>57.3%</strong> of users (90.1K &rarr; 38.4K). Most contingent-approved users see options but never click a term.</div>
+    <div class="insight-box amber"><strong>Bank verification:</strong> <strong>82.5%</strong> who click Add Bank complete bank verification (38.8K &rarr; 32.0K). Bank Completed includes implicit pass-through for Final Approved/Funded users.</div>
+    <div class="insight-box green"><strong>Strong close rate:</strong> Once users reach Payment Schedule, <strong>76.7%</strong> end up funded (29.0K &rarr; 22.2K). Post-approval funnel is healthy.</div>
+    <div class="insight-box"><strong>67.2K "None" users:</strong> 69% of contingent-approved users never select an offer &mdash; they drop before bank + final approval + offer selection.</div>
+  </div>
+
+  <div class="card">
+    <h3>Funnel: Contingent Approved &rarr; Funded</h3>
+    <div id="overallFunnel" class="funnel-container"></div>
+  </div>
+  <div class="card">
+    <h3>Funnel Detail</h3>
+    <table id="overallTable"></table>
+  </div>
+</div>
+
+<!-- TAB 1: BY RISK -->
+<div class="tab-panel" id="panel-1">
+  <div id="riskInsights" class="insight-grid"></div>
+  <div class="card">
+    <h3>Conversion Rate Comparison by Risk Bin (% of Contingent Approved)</h3>
+    <div class="chart-container"><canvas id="riskConvLine"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Step-by-Step Conversion Comparison</h3>
+    <div class="chart-container"><canvas id="riskStepBar"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Counts by Risk Bin</h3>
+    <table id="riskTable"></table>
+  </div>
+  <div class="card">
+    <h3>Step Conversion Rates</h3>
+    <table id="riskConvTable"></table>
+  </div>
+</div>
+
+<!-- TAB 2: BY EXPERIMENT -->
+<div class="tab-panel" id="panel-2">
+  <div id="expInsights" class="insight-grid"></div>
+  <p style="font-size:12px;color:#64748b;margin-bottom:16px">Experiment 318992 &middot; Applications from 2026-03-17 17:34:00 onwards</p>
+  <div class="card">
+    <h3>Conversion Rate Comparison by Experiment Group (% of Contingent Approved)</h3>
+    <div class="chart-container"><canvas id="expConvLine"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Step-by-Step Conversion Comparison</h3>
+    <div class="chart-container"><canvas id="expStepBar"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Counts by Experiment Group</h3>
+    <table id="expTable"></table>
+  </div>
+  <div class="card">
+    <h3>Step Conversion Rates</h3>
+    <table id="expConvTable"></table>
+  </div>
+</div>
+
+<!-- TAB 3: RISK x EXPERIMENT -->
+<div class="tab-panel" id="panel-3">
+
+  <!-- ===== ACTIONABLE INSIGHTS (compact) ===== -->
+  <div id="rxeActions" class="card" style="border-left:5px solid #10b981;background:linear-gradient(135deg,#ecfdf5 0%,#fff 100%)"></div>
+
+  <!-- ===== PERFORMANCE VISUALS ===== -->
+  <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;font-weight:700;margin:24px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px">Performance Deep-Dive &middot; Experiment 318992 &middot; Mar 17-23 &middot; Backend stages</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="margin-bottom:0">
+      <h3>Funded Rate by Risk Bin</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeFundedBar"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <h3>Incremental Funded Loans / Week</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeImpactBar"></canvas></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="margin-bottom:0">
+      <h3>Offer Selected Rate by Risk Bin</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeOfferBar"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <h3>Bank Done Rate by Risk Bin</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeBankBar"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Full Backend Funnel: Treatment B vs Control (all bins)</h3>
+    <div class="chart-container" style="height:320px"><canvas id="rxeFullFunnel"></canvas></div>
+  </div>
+
+  <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;font-weight:700;margin:24px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px">Offer Selected &rarr; Funded Deep-Dive</p>
+
+  <div id="rxeSubInsight"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="margin-bottom:0">
+      <h3>Sub-Funnel: Offer &rarr; Funded (aggregate)</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeSubFunnel"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <h3>Where Are Offer-Selected Users Stuck?</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeStuckBar"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Offer &rarr; Funded Step Rates by Risk Bin</h3>
+    <div id="rxeSubTable"></div>
+  </div>
+
+  <div class="card">
+    <h3>Performance Heatmap</h3>
+    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Cells show rate (% of contingent). Color intensity = conversion rate.</p>
+    <div id="rxeHeatmap"></div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">Raw Data</h3>
+    <div class="collapse-content">
+      <table id="rxeTable"></table>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: DATA SOURCES & QUERIES -->
+<div class="tab-panel" id="panel-4">
+  <div class="card">
+    <h3>Data Source Details</h3>
+    <div class="source-section">
+      <h4 style="margin:12px 0 8px;color:#1e293b">Backend (BE) Tables</h4>
+      <table>
+        <tr><th>Table</th><th>Purpose</th><th>Key Fields Used</th></tr>
+        <tr><td><code>ued_qbf_dwh.loanapplication</code></td><td>Base application data</td><td>id, status, uuid, CREATEDDATE, EXPERIENCE_ID</td></tr>
+        <tr><td><code>ued_qbf_dwh.directlendingloanapplication</code></td><td>DLA status for final approval</td><td>status (FINAL_APPROVED), LOANAPPLICATION_ID</td></tr>
+        <tr><td><code>ued_qbf_dwh.ruleevaluationsummary</code></td><td>Credit/fraud decisions for contingent approval</td><td>latestfraudandcompliancedecision, latestcreditdecision</td></tr>
+        <tr><td><code>ued_qbf_dwh.applicantactionrequired</code></td><td>Bank verification task status</td><td>action=VERIFY, subaction=BANK, status (COMPLETED/CREATED)</td></tr>
+        <tr><td><code>ued_qbf_dwh.match</code></td><td>Offer selection &amp; available terms</td><td>selected=true, term (3/6/9)</td></tr>
+        <tr><td><code>ued_qbf_dwh.loan</code></td><td>Funded date</td><td>fundeddate, loanapplication_id</td></tr>
+        <tr><td><code>ued_qbf_dwh.loanapplicationuser</code> + <code>ued_qbf_dwh.user</code></td><td>Map la_id to authId for clickstream join</td><td>authId, user_id, loanApplication_id</td></tr>
+      </table>
+      <h4 style="margin:16px 0 8px;color:#1e293b">Clickstream (CS) Table</h4>
+      <table>
+        <tr><th>Table</th><th>Purpose</th><th>Key Fields Used</th></tr>
+        <tr><td><code>cgan_ustax_published.fnpl_funnel_first_touch_fact</code></td><td>UI event tracking (first touch per user per day)</td><td>fnpl_options_screen, loan_option_selected_*_months, add_bank_account, fnpl_payment_schedule, loan_accept, efile_attempt</td></tr>
+      </table>
+      <p style="margin-top:4px">Aggregated to user level via <code>MAX()</code> grouped by <code>auth_id</code></p>
+      <h4 style="margin:16px 0 8px;color:#1e293b">Other Joins</h4>
+      <table>
+        <tr><th>Table</th><th>Purpose</th><th>Used In</th></tr>
+        <tr><td><code>sandbox_risk_7216.fnpl_base_alpha_ga1</code></td><td>Risk segment (rsk_bin_segment 1-6), data through Mar 12</td><td>Risk Segment tab</td></tr>
+        <tr><td><code>sandbox_risk_7216.fnpl_ga1_base</code></td><td>Risk segment (rsk_bin_segment 1-6), data through Mar 23</td><td>Risk &times; Experiment tab</td></tr>
+        <tr><td><code>ixp_dwh.ixp_first_assignment</code></td><td>Experiment assignment (experiment_id=318992)</td><td>Experiment tab, Risk &times; Experiment tab</td></tr>
+      </table>
+      <h4 style="margin:16px 0 8px;color:#1e293b">GitHub Source Code</h4>
+      <ul style="list-style:disc;padding-left:20px">
+        <li><a href="https://github.intuit.com/CG-Analytics/ttla-product-analytics/blob/master/Esther/fnpl_funnel_first_touch_fact.sql" target="_blank">fnpl_funnel_first_touch_fact.sql</a> &mdash; Clickstream fact table logic</li>
+        <li><a href="https://github.intuit.com/CG-Analytics/ttla-product-analytics/blob/master/Esther/fnpl_first_touch_dashboard_agg.sql" target="_blank">fnpl_first_touch_dashboard_agg.sql</a> &mdash; Aggregation table logic</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">Base Funnel Query (Overall)</h3>
+    <div class="collapse-content">
+      <pre><code>-- authId-level: collapse multiple loan applications per user via MAX()
+WITH selected_offers AS (
+  SELECT loanapplication_id, term AS selected_term
+  FROM ued_qbf_dwh.match WHERE selected = true
+),
+bank_status AS (
+  SELECT loanapplication_id,
+    MAX(CASE WHEN status='COMPLETED' THEN 1 ELSE 0 END) as bank_completed
+  FROM ued_qbf_dwh.applicantactionrequired
+  WHERE action='VERIFY' AND subaction='BANK'
+  GROUP BY loanapplication_id
+),
+BASE_LA AS (
+  SELECT la.id AS la_id, u.authId,
+    CASE WHEN (res.latestfraudandcompliancedecision='PRIMARY_AUTO_APPROVED'
+               AND res.latestcreditdecision='PRIMARY_AUTO_APPROVED')
+            OR aar_v.loanapplication_id IS NOT NULL
+         THEN 1 ELSE 0 END AS is_contingent_approved,
+    CASE WHEN dla.status='FINAL_APPROVED' OR la.status IN ('FUNDED','COMPLETED')
+         THEN 1 ELSE 0 END AS is_final_approved,
+    -- Implicit bank done: COMPLETED OR final/funded (retention policy fix)
+    CASE WHEN bs.bank_completed=1 THEN 1
+         WHEN dla.status='FINAL_APPROVED' OR la.status IN ('FUNDED','COMPLETED') THEN 1
+         ELSE 0 END AS bank_done,
+    so.selected_term,
+    CASE WHEN l.fundeddate IS NOT NULL THEN 1 ELSE 0 END AS is_funded
+  FROM ued_qbf_dwh.loanapplication la
+  JOIN ued_qbf_dwh.directlendingloanapplication dla ON la.id=dla.LOANAPPLICATION_ID
+  LEFT JOIN ued_qbf_dwh.loanapplicationuser lau ON la.id=lau.loanApplication_id
+  LEFT JOIN ued_qbf_dwh.user u ON lau.user_id=u.id
+  LEFT JOIN (SELECT * FROM (SELECT *, ROW_NUMBER() OVER (
+    PARTITION BY directlendingloanapplication_id ORDER BY id DESC) AS rn
+    FROM ued_qbf_dwh.ruleevaluationsummary) WHERE rn=1
+  ) res ON dla.id=res.directlendingloanapplication_id
+  LEFT JOIN ued_qbf_dwh.applicantactionrequired aar_v
+    ON la.id=aar_v.loanapplication_id AND aar_v.action='VERIFY' AND aar_v.subaction='BANK'
+  LEFT JOIN ued_qbf_dwh.loan l ON la.id=l.loanapplication_id
+  LEFT JOIN selected_offers so ON la.id=so.loanapplication_id
+  LEFT JOIN bank_status bs ON la.id=bs.loanapplication_id
+  WHERE EXPERIENCE_ID=40 AND la.CREATEDDATE>='2025-09-18'
+),
+-- Collapse to one row per user
+BASE AS (
+  SELECT authId,
+    MAX(is_contingent_approved) as is_contingent,
+    MAX(is_final_approved)      as is_final,
+    MAX(bank_done)              as bank_done,
+    MAX(CASE WHEN selected_term IS NOT NULL THEN 1 ELSE 0 END) as has_offer,
+    MAX(is_funded)              as is_funded,
+    MIN(selected_term)          as selected_term
+  FROM BASE_LA WHERE is_contingent_approved=1
+  GROUP BY authId
+),
+uf AS (
+  SELECT auth_id,
+    MAX(fnpl_options_screen) os,
+    MAX(CASE WHEN loan_option_selected_3_months=1 OR loan_option_selected_6_months=1
+              OR loan_option_selected_9_months=1 THEN 1 ELSE 0 END) tc,
+    MAX(add_bank_account) ab, MAX(fnpl_payment_schedule) ps,
+    MAX(loan_accept) la, MAX(efile_attempt) ef
+  FROM cgan_ustax_published.fnpl_funnel_first_touch_fact GROUP BY auth_id
+)
+SELECT COALESCE(CAST(b.selected_term AS STRING),'none') as term,
+  COUNT(*)                                    as s1_contingent_BE,
+  SUM(CASE WHEN f.os=1 THEN 1 ELSE 0 END)    as s2_options_CS,
+  SUM(CASE WHEN f.tc=1 THEN 1 ELSE 0 END)    as s3_term_click_CS,
+  SUM(CASE WHEN f.ab=1 THEN 1 ELSE 0 END)    as s4_add_bank_CS,
+  SUM(b.bank_done)                            as s5_bank_done_BE,
+  SUM(b.has_offer)                            as s6_offer_sel_BE,
+  SUM(b.is_final)                             as s7_final_appr_BE,
+  SUM(CASE WHEN f.ps=1 THEN 1 ELSE 0 END)    as s8_pmt_sched_CS,
+  SUM(CASE WHEN f.la=1 THEN 1 ELSE 0 END)    as s9_loan_accept_CS,
+  SUM(CASE WHEN f.la=1 AND f.ef=1 THEN 1 ELSE 0 END) as s10_accept_efile_CS,
+  SUM(b.is_funded)                            as s11_funded_BE
+FROM BASE b
+LEFT JOIN uf f ON CAST(b.authId AS STRING)=f.auth_id
+GROUP BY 1 ORDER BY 1</code></pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">Risk Segment Query (joins fnpl_base_alpha_ga1)</h3>
+    <div class="collapse-content">
+      <pre><code>-- Same base CTEs as above, plus rsk_bin_segment joined in BASE_LA:
+--   LEFT JOIN sandbox_risk_7216.fnpl_base_alpha_ga1 ba ON la.id=ba.la_id
+-- Then in BASE (authId collapse): MIN(rsk_bin_segment) as rsk_bin
+-- Final query groups by b.rsk_bin WHERE b.rsk_bin IS NOT NULL</code></pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">Experiment Query (IXP 318992)</h3>
+    <div class="collapse-content">
+      <pre><code>-- Same authId-level CTEs, but BASE_LA filtered to:
+--   la.CREATEDDATE >= '2026-03-17 17:34:00'
+-- Plus IXP join on authId (not la_id):
+ixp AS (
+  SELECT CAST(id AS STRING) AS auth_id, treatment_name
+  FROM ixp_dwh.ixp_first_assignment
+  WHERE experiment_id=318992 AND partitiondate>='2026-03-17'
+)
+-- LEFT JOIN ixp ON CAST(b.authId AS STRING)=ixp.auth_id
+-- GROUP BY COALESCE(ixp.treatment_name,'null')</code></pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">Risk &times; Experiment Query</h3>
+    <div class="collapse-content">
+      <pre><code>-- Uses sandbox_risk_7216.fnpl_ga1_base (covers through Mar 23)
+-- instead of fnpl_base_alpha_ga1 (ends Mar 12)
+-- Filtered to app_date >= '2026-03-17' AND is_contingent_approved=1
+-- Joined with IXP 318992, grouped by rsk_bin_segment x treatment_name
+-- Only Treatment B and Control included (null experiment excluded)</code></pre>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const STAGES = [
+  {key:'s1', label:'Contingent Approved', src:'BE', short:'Contingent'},
+  {key:'s2', label:'Options Screen', src:'CS', short:'Options'},
+  {key:'s3', label:'Term Click', src:'CS', short:'Term Click'},
+  {key:'s4', label:'Add Bank', src:'CS', short:'Add Bank'},
+  {key:'s5', label:'Bank Completed', src:'BE', short:'Bank Done'},
+  {key:'s6', label:'Final Approved', src:'BE', short:'Final Appr'},
+  {key:'s7', label:'Offer Selected', src:'BE', short:'Offer Sel'},
+  {key:'s8', label:'Payment Schedule', src:'CS', short:'Pmt Sched'},
+  {key:'s9', label:'Loan Accept', src:'CS', short:'Loan Accept'},
+  {key:'s10', label:'Accept + Efile', src:'CS', short:'Efile'},
+  {key:'s11', label:'Funded', src:'BE', short:'Funded'}
+];
+
+const OVERALL = {overall:[97090,90084,38434,38750,31978,30158,29938,28983,26334,24509,22219]};
+const BY_RISK = {
+  'Bin 1':[32505,28190,11341,11617,11123,10542,11154,9266,8111,7647,8936],
+  'Bin 2':[9383,8985,4624,4636,3647,3250,3290,3467,3189,3012,2819],
+  'Bin 3':[5711,5490,3483,3490,2831,2497,2603,2693,2530,2345,2136],
+  'Bin 4':[3251,3159,2161,2163,1720,1501,1567,1637,1534,1418,1259],
+  'Bin 5':[1775,1724,1238,1239,981,851,903,931,888,813,723],
+  'Bin 6':[846,830,601,602,458,390,415,444,412,379,317]
+};
+const BY_EXP = {
+  'Treatment B':[4066,3881,2357,2357,1953,1946,1812,1855,1750,1641,685],
+  'Control':[3847,3685,1383,1385,1066,1061,962,1015,941,860,360],
+  'Null':[11451,10948,3631,3636,2659,2636,2360,2502,2292,2037,822]
+};
+const RXE_BINS = ['Bin 1','Bin 2','Bin 3','Bin 4','Bin 5','Bin 6'];
+const RXE_B = {
+  'Bin 1':[2398,3,3,3,945,944,863,3,3,1,318],
+  'Bin 2':[830,3,3,4,477,474,444,2,2,0,167],
+  'Bin 3':[464,6,5,5,281,279,265,2,2,2,102],
+  'Bin 4':[236,2,1,1,144,143,136,1,1,0,58],
+  'Bin 5':[126,3,2,4,87,87,85,2,1,1,30],
+  'Bin 6':[56,1,1,1,34,34,32,0,0,0,14]
+};
+const RXE_C = {
+  'Bin 1':[2243,4,2,2,340,339,289,1,1,0,96],
+  'Bin 2':[811,4,4,4,296,296,267,2,2,0,99],
+  'Bin 3':[466,4,3,5,217,215,205,3,3,0,80],
+  'Bin 4':[213,1,1,1,124,124,117,1,1,1,45],
+  'Bin 5':[113,0,0,1,73,71,64,0,0,0,31],
+  'Bin 6':[46,1,1,1,30,30,29,1,1,1,12]
+};
+
+// Offer→Funded sub-funnel by bin [offer_selected, efile_attempted, efile_accepted, funded]
+const SUB_B = {
+  'Bin 1':[863,814,792,318], 'Bin 2':[444,419,406,167], 'Bin 3':[265,251,245,102],
+  'Bin 4':[136,123,114,58], 'Bin 5':[85,76,73,30], 'Bin 6':[32,30,27,14]
+};
+const SUB_C = {
+  'Bin 1':[289,264,251,96], 'Bin 2':[267,245,234,99], 'Bin 3':[205,186,177,80],
+  'Bin 4':[117,103,95,45], 'Bin 5':[64,57,52,31], 'Bin 6':[29,29,27,12]
+};
+const SUB_STAGES = ['Offer Selected','Efile Attempted','Efile Accepted','Funded'];
+
+function fmt(n){return n.toLocaleString()}
+function pct(a,b){return b?((a/b)*100).toFixed(1)+'%':'--'}
+function pctNum(a,b){return b?(a/b*100):0}
+function cumPct(arr,i){return pct(arr[i],arr[0])}
+
+function switchTab(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+}
+function toggleCollapse(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ── Overall HTML funnel ──
+function buildFunnel(containerId, data){
+  const el = document.getElementById(containerId);
+  const maxVal = Math.max(...data);
+  let html = '';
+  data.forEach((v,i)=>{
+    const s = STAGES[i];
+    const widthPct = (v/maxVal)*100;
+    const barCls = s.src==='BE'?'funnel-bar-be':'funnel-bar-cs';
+    const convStr = i===0?'100%':pct(v,data[0]);
+    const stepStr = i===0?'':' ('+pct(v,data[i-1])+' step)';
+    const showInside = widthPct > 25;
+    html += `<div class="funnel-row">
+      <div class="funnel-label">${s.label} <span class="badge badge-${s.src.toLowerCase()}" style="font-size:9px;padding:1px 5px">${s.src}</span></div>
+      <div style="flex:1;display:flex;align-items:center">
+        <div class="funnel-bar ${barCls}" style="width:${widthPct}%">
+          ${showInside?`<span class="funnel-value">${fmt(v)}</span>`:''}
+        </div>
+        ${!showInside?`<span class="funnel-value-outside">${fmt(v)}</span>`:''}
+        <span class="funnel-pct">${convStr}${stepStr}</span>
+      </div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ── Line chart: cumulative conversion % at each stage ──
+const PALETTE = ['#3b82f6','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899'];
+function buildConvLine(canvasId, dataObj, skipNone){
+  const entries = Object.entries(dataObj).filter(([k])=> !skipNone || k!=='None');
+  const labels = STAGES.map(s=>s.short);
+  const datasets = entries.map(([name,vals],ci)=>({
+    label:name,
+    data:vals.map((v,i)=>+(v/vals[0]*100).toFixed(1)),
+    borderColor:PALETTE[ci%PALETTE.length],
+    backgroundColor:PALETTE[ci%PALETTE.length]+'22',
+    borderWidth:2.5, pointRadius:4, pointHoverRadius:6, tension:0.3, fill:false
+  }));
+  new Chart(document.getElementById(canvasId),{
+    type:'line',
+    data:{labels,datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+'%'}},
+        legend:{position:'top',labels:{font:{size:12},usePointStyle:true,pointStyle:'circle'}}
+      },
+      scales:{
+        y:{title:{display:true,text:'% of Contingent Approved',font:{size:12}},min:0,max:105,
+           ticks:{callback:v=>v+'%'}},
+        x:{ticks:{font:{size:11}},grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ── Horizontal bar chart: step conversion rates side by side ──
+function buildStepBar(canvasId, dataObj, skipNone){
+  const entries = Object.entries(dataObj).filter(([k])=> !skipNone || k!=='None');
+  const transitions = [];
+  for(let i=1;i<STAGES.length;i++) transitions.push({from:i-1,to:i,label:STAGES[i-1].short+' → '+STAGES[i].short});
+  const datasets = entries.map(([name,vals],ci)=>({
+    label:name,
+    data:transitions.map(t=> vals[t.from]>0 ? +(vals[t.to]/vals[t.from]*100).toFixed(1) : 0),
+    backgroundColor:PALETTE[ci%PALETTE.length]+'bb', borderRadius:3
+  }));
+  new Chart(document.getElementById(canvasId),{
+    type:'bar',
+    data:{labels:transitions.map(t=>t.label),datasets},
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+'%'}},
+        legend:{position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rect'}}
+      },
+      scales:{
+        x:{title:{display:true,text:'Step Conversion %',font:{size:12}},min:0,max:105,ticks:{callback:v=>v+'%'}},
+        y:{ticks:{font:{size:10}}}
+      }
+    }
+  });
+}
+
+// ── Tables ──
+function buildTable(tableId, dataObj, showConv){
+  const t = document.getElementById(tableId);
+  const groups = Object.keys(dataObj);
+  let html = '<tr><th>Stage</th><th>Source</th>';
+  groups.forEach(g=>{html+=`<th class="num">${g}</th>`;if(showConv)html+=`<th class="num">Conv%</th>`;});
+  html+='</tr>';
+  STAGES.forEach((s,i)=>{
+    html+=`<tr><td>${s.label}</td><td><span class="badge badge-${s.src.toLowerCase()}">${s.src}</span></td>`;
+    groups.forEach(g=>{
+      const v=dataObj[g][i];
+      html+=`<td class="num">${fmt(v)}</td>`;
+      if(showConv){
+        const c=cumPct(dataObj[g],i);
+        const isLow=dataObj[g][i]/dataObj[g][0]<0.5;
+        html+=`<td class="num pct ${isLow?'drop':''}">${c}</td>`;
+      }
+    });
+    html+='</tr>';
+  });
+  t.innerHTML=html;
+}
+function buildConvTable(tableId, dataObj){
+  const t = document.getElementById(tableId);
+  const groups = Object.keys(dataObj);
+  let html = '<tr><th>Step Transition</th>';
+  groups.forEach(g=>html+=`<th class="num">${g}</th>`);
+  html+='</tr>';
+  for(let i=1;i<STAGES.length;i++){
+    html+=`<tr><td>${STAGES[i-1].label} &rarr; ${STAGES[i].label}</td>`;
+    groups.forEach(g=>{
+      const rate = dataObj[g][i-1]>0?(dataObj[g][i]/dataObj[g][i-1]*100):0;
+      const cls = rate<70?'drop':rate>=95?'good':'';
+      html+=`<td class="num ${cls}">${rate.toFixed(1)}%</td>`;
+    });
+    html+='</tr>';
+  }
+  t.innerHTML=html;
+}
+
+// ── Insight generators ──
+function genRiskInsights(){
+  const el = document.getElementById('riskInsights');
+  const bins = Object.keys(BY_RISK);
+  const fundedRates = bins.map(b=>({b, rate:pctNum(BY_RISK[b][10],BY_RISK[b][0])}));
+  const best = fundedRates.reduce((a,b)=>a.rate>b.rate?a:b);
+  const worst = fundedRates.reduce((a,b)=>a.rate<b.rate?a:b);
+
+  const termClickRates = bins.map(b=>({b, rate:pctNum(BY_RISK[b][2],BY_RISK[b][0])}));
+  const bestTC = termClickRates.reduce((a,b)=>a.rate>b.rate?a:b);
+  const worstTC = termClickRates.reduce((a,b)=>a.rate<b.rate?a:b);
+
+  el.innerHTML = `
+    <div class="insight-box green"><strong>Higher-risk bins convert better:</strong> ${best.b} (highest risk) funds at <strong>${best.rate.toFixed(1)}%</strong> vs ${worst.b} at ${worst.rate.toFixed(1)}%. Lower risk = larger pool but more casual browsers.</div>
+    <div class="insight-box red"><strong>Term click is the key differentiator:</strong> ${worstTC.b} has only <strong>${worstTC.rate.toFixed(1)}%</strong> term click rate while ${bestTC.b} reaches ${bestTC.rate.toFixed(1)}%. The intent gap forms at the very first interaction.</div>
+    <div class="insight-box amber"><strong>Volume concentration:</strong> ${bins[0]} alone accounts for <strong>${fmt(BY_RISK[bins[0]][0])}</strong> of ${fmt(bins.reduce((s,b)=>s+BY_RISK[b][0],0))} total contingent users (${(BY_RISK[bins[0]][0]/bins.reduce((s,b)=>s+BY_RISK[b][0],0)*100).toFixed(0)}%), dominating the funnel top.</div>
+    <div class="insight-box"><strong>Post-offer convergence:</strong> Once users reach Offer Selected, conversion to Funded is similar across all bins (~75-82%), indicating risk segment mainly affects early engagement, not late-stage completion.</div>
+  `;
+}
+
+function genExpInsights(){
+  const el = document.getElementById('expInsights');
+  const bRate = pctNum(BY_EXP['Treatment B'][10], BY_EXP['Treatment B'][0]);
+  const cRate = pctNum(BY_EXP['Control'][10], BY_EXP['Control'][0]);
+  const lift = ((bRate - cRate)/cRate*100).toFixed(0);
+
+  const bTerm = pctNum(BY_EXP['Treatment B'][2], BY_EXP['Treatment B'][0]);
+  const cTerm = pctNum(BY_EXP['Control'][2], BY_EXP['Control'][0]);
+
+  const bOffer = pctNum(BY_EXP['Treatment B'][5], BY_EXP['Treatment B'][0]);
+  const cOffer = pctNum(BY_EXP['Control'][5], BY_EXP['Control'][0]);
+
+  el.innerHTML = `
+    <div class="insight-box green"><strong>Treatment B wins on funding:</strong> <strong>${bRate.toFixed(1)}%</strong> funded rate vs Control at <strong>${cRate.toFixed(1)}%</strong> &mdash; a <strong>+${lift}% relative lift</strong>.</div>
+    <div class="insight-box"><strong>Term click divergence:</strong> Treatment B drives <strong>${bTerm.toFixed(1)}%</strong> term click vs Control <strong>${cTerm.toFixed(1)}%</strong> &mdash; the 0% APR offer on 3m significantly boosts initial engagement.</div>
+    <div class="insight-box amber"><strong>Offer selection gap:</strong> B reaches <strong>${bOffer.toFixed(1)}%</strong> offer selection vs Control ${cOffer.toFixed(1)}%. The lift compounds through the funnel after the initial term click difference.</div>
+    <div class="insight-box red"><strong>Null group is large:</strong> <strong>${fmt(BY_EXP['Null'][0])}</strong> users (${(BY_EXP['Null'][0]/(BY_EXP['Null'][0]+BY_EXP['Treatment B'][0]+BY_EXP['Control'][0])*100).toFixed(0)}% of this window) are not in the experiment &mdash; they were contingent-approved before IXP assignment or missed bucketing.</div>
+  `;
+}
+
+function buildRxeTab(){
+  const segs = RXE_BINS.map(b=>{
+    const bRate = RXE_B[b][10]/RXE_B[b][0]*100;
+    const cRate = RXE_C[b][10]/RXE_C[b][0]*100;
+    const lift = cRate>0?((bRate-cRate)/cRate*100):0;
+    const bN = RXE_B[b][0], cN = RXE_C[b][0];
+    const incremental = Math.round((bRate - cRate)/100 * bN);
+    let verdict, vCls;
+    if(lift > 30 && bN >= 200){ verdict='ROLL OUT'; vCls='verdict-go'; }
+    else if(lift > 10 && bN >= 100){ verdict='LEAN GO'; vCls='verdict-go'; }
+    else if(lift < -5){ verdict='HOLD'; vCls='verdict-hold'; }
+    else { verdict='MONITOR'; vCls='verdict-watch'; }
+    return {b, bRate, cRate, lift, bN, cN, incremental, verdict, vCls};
+  });
+  const totalIncr = segs.reduce((s,r)=>s+r.incremental,0);
+  const totalBn = segs.reduce((s,r)=>s+r.bN,0);
+  const totalCn = segs.reduce((s,r)=>s+r.cN,0);
+  const totalBf = segs.reduce((s,r)=>s+RXE_B[r.b][10],0);
+  const totalCf = segs.reduce((s,r)=>s+RXE_C[r.b][10],0);
+  const netLift = (((totalBf/totalBn)-(totalCf/totalCn))/(totalCf/totalCn)*100);
+
+  // ── Compact actions card ──
+  let trows = segs.map(r=>{
+    const incrStr = r.incremental>=0?`<span style="color:#166534">+${r.incremental}</span>`:`<span style="color:#991b1b">${r.incremental}</span>`;
+    return `<tr><td style="font-weight:600">${r.b}</td><td><span class="verdict ${r.vCls}">${r.verdict}</span></td><td class="num">${r.bRate.toFixed(1)}%</td><td class="num">${r.cRate.toFixed(1)}%</td><td class="num">${r.lift>0?'+':''}${r.lift.toFixed(0)}%</td><td class="num">${incrStr}</td><td class="num" style="color:#64748b">${r.bN}+${r.cN}</td></tr>`;
+  }).join('');
+  trows += `<tr><td style="font-weight:700">Total</td><td></td><td class="num">${(totalBf/totalBn*100).toFixed(1)}%</td><td class="num">${(totalCf/totalCn*100).toFixed(1)}%</td><td class="num" style="font-weight:700">+${netLift.toFixed(0)}%</td><td class="num" style="font-weight:700;color:#166534">+${totalIncr}</td><td class="num" style="color:#64748b">${fmt(totalBn)}+${fmt(totalCn)}</td></tr>`;
+
+  document.getElementById('rxeActions').innerHTML = `
+    <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="reco-headline" style="margin:0">Roll out B for Bins 1-4, hold Bins 5-6</span>
+      <span class="reco-stat" style="font-size:12px">+${totalIncr} funded loans / wk</span>
+      <span class="reco-stat" style="font-size:12px;background:#3b82f6">+${netLift.toFixed(0)}% overall lift</span>
+    </div>
+    <table class="action-table">
+      <tr><th>Bin</th><th>Action</th><th>B Rate</th><th>Ctrl Rate</th><th>Lift</th><th>+Loans/wk</th><th>Sample (B+C)</th></tr>
+      ${trows}
+    </table>
+    <div style="margin-top:14px;font-size:12px;color:#475569;line-height:1.7">
+      <strong>Next steps:</strong>
+      Ship B for Bins 1-3 immediately (strong lift, 200+ per arm).
+      Extend Bin 4 test 2 more weeks (positive signal, small n).
+      Keep Bins 5-6 on Control.
+      Quantify revenue trade-off: incremental volume vs 0% APR margin loss.
+    </div>
+  `;
+
+  // ── Performance charts ──
+  function rxeBar(id, stageIdx, title){
+    const bD = RXE_BINS.map(b=>+(RXE_B[b][stageIdx]/RXE_B[b][0]*100).toFixed(1));
+    const cD = RXE_BINS.map(b=>+(RXE_C[b][stageIdx]/RXE_C[b][0]*100).toFixed(1));
+    new Chart(document.getElementById(id),{
+      type:'bar',
+      data:{labels:RXE_BINS, datasets:[
+        {label:'Treatment B',data:bD,backgroundColor:'#3b82f6',borderRadius:4},
+        {label:'Control',data:cD,backgroundColor:'#94a3b8',borderRadius:4}
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw+'%'}},
+                 legend:{position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rect'}}},
+        scales:{y:{min:0,ticks:{callback:v=>v+'%'},title:{display:true,text:title,font:{size:11}}},x:{grid:{display:false}}}
+      }
+    });
+  }
+  rxeBar('rxeFundedBar', 10, 'Funded Rate %');
+  rxeBar('rxeOfferBar', 6, 'Offer Selected Rate %');
+  rxeBar('rxeBankBar', 4, 'Bank Done Rate %');
+
+  // Incremental impact
+  const incrData = segs.map(r=>r.incremental);
+  new Chart(document.getElementById('rxeImpactBar'),{
+    type:'bar',
+    data:{labels:RXE_BINS, datasets:[{
+      label:'Extra Funded Loans',data:incrData,
+      backgroundColor:incrData.map(v=>v>=0?'#10b981':'#ef4444'),borderRadius:4,borderSkipped:false
+    }]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>(ctx.raw>=0?'+':'')+ctx.raw+' loans/wk'}},legend:{display:false}},
+      scales:{y:{grid:{color:ctx=>ctx.tick.value===0?'#94a3b8':'#f1f5f9'},title:{display:true,text:'B - Control (loans/wk)',font:{size:11}}},x:{grid:{display:false}}}
+    }
+  });
+
+  // Full funnel: aggregate B vs C across all bins
+  const BE_STAGES = [{l:'Contingent',i:0},{l:'Bank Done',i:4},{l:'Final Appr',i:5},{l:'Offer Sel',i:6},{l:'Funded',i:10}];
+  const aggB = BE_STAGES.map(s=>RXE_BINS.reduce((sum,b)=>sum+RXE_B[b][s.i],0));
+  const aggC = BE_STAGES.map(s=>RXE_BINS.reduce((sum,b)=>sum+RXE_C[b][s.i],0));
+  const aggBpct = aggB.map(v=>+(v/aggB[0]*100).toFixed(1));
+  const aggCpct = aggC.map(v=>+(v/aggC[0]*100).toFixed(1));
+  new Chart(document.getElementById('rxeFullFunnel'),{
+    type:'line',
+    data:{labels:BE_STAGES.map(s=>s.l), datasets:[
+      {label:'Treatment B',data:aggBpct,borderColor:'#3b82f6',backgroundColor:'#3b82f622',borderWidth:3,pointRadius:5,tension:0.3,fill:true},
+      {label:'Control',data:aggCpct,borderColor:'#94a3b8',backgroundColor:'#94a3b822',borderWidth:3,pointRadius:5,tension:0.3,fill:true}
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{tooltip:{callbacks:{label:ctx=>{
+        const idx=ctx.dataIndex; const abs=ctx.datasetIndex===0?aggB[idx]:aggC[idx];
+        return ctx.dataset.label+': '+ctx.raw+'% ('+fmt(abs)+')';
+      }}},legend:{position:'top',labels:{font:{size:12},usePointStyle:true,pointStyle:'circle'}}},
+      scales:{y:{min:0,max:105,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Contingent',font:{size:11}}},x:{grid:{display:false}}}
+    }
+  });
+
+  // Heatmap
+  const hmStages = [{l:'Bank Done',i:4},{l:'Final Appr',i:5},{l:'Offer Sel',i:6},{l:'Funded',i:10}];
+  let hhtml = '<table class="heatmap"><tr><th></th><th></th>';
+  hmStages.forEach(s=>hhtml+=`<th>${s.l}</th>`);
+  hhtml += '<th>N</th></tr>';
+  RXE_BINS.forEach(b=>{
+    [{arm:'B',d:RXE_B,c:'#3b82f6'},{arm:'Ctrl',d:RXE_C,c:'#64748b'}].forEach((a,ai)=>{
+      hhtml += `<tr>${ai===0?`<td class="bin-label" rowspan="2">${b}</td>`:''}`;
+      hhtml += `<td class="arm-label" style="color:${a.c};font-weight:600">${a.arm}</td>`;
+      hmStages.forEach(s=>{
+        const rate = a.d[b][s.i]/a.d[b][0]*100;
+        const intensity = Math.min(rate/40, 1);
+        const bg = a.arm==='B'
+          ? `rgba(59,130,246,${0.08+intensity*0.35})`
+          : `rgba(100,116,139,${0.08+intensity*0.30})`;
+        hhtml += `<td style="background:${bg};color:${intensity>0.5?'#1e293b':'#475569'}">${rate.toFixed(1)}%</td>`;
+      });
+      hhtml += `<td style="background:transparent;color:#94a3b8;font-size:11px;text-align:center">${fmt(a.d[b][0])}</td></tr>`;
+    });
+  });
+  hhtml += '</table>';
+  document.getElementById('rxeHeatmap').innerHTML = hhtml;
+
+  // ── Offer→Funded sub-funnel ──
+  const aggSubB = SUB_STAGES.map((_,i)=>RXE_BINS.reduce((s,b)=>s+SUB_B[b][i],0));
+  const aggSubC = SUB_STAGES.map((_,i)=>RXE_BINS.reduce((s,b)=>s+SUB_C[b][i],0));
+  const aggSubBpct = aggSubB.map(v=>+(v/aggSubB[0]*100).toFixed(1));
+  const aggSubCpct = aggSubC.map(v=>+(v/aggSubC[0]*100).toFixed(1));
+
+  // Insight
+  const bOfferToFund = aggSubB[3]/aggSubB[0]*100;
+  const cOfferToFund = aggSubC[3]/aggSubC[0]*100;
+  const bAcceptNotFund = aggSubB[2] - aggSubB[3];
+  const cAcceptNotFund = aggSubC[2] - aggSubC[3];
+  const bAcceptStuckPct = (bAcceptNotFund/aggSubB[2]*100).toFixed(1);
+  const cAcceptStuckPct = (cAcceptNotFund/aggSubC[2]*100).toFixed(1);
+
+  document.getElementById('rxeSubInsight').innerHTML = `<div class="insight-grid" style="margin-bottom:20px">
+    <div class="insight-box"><strong>Offer &rarr; Funded rates are nearly identical:</strong> B converts at <strong>${bOfferToFund.toFixed(1)}%</strong> vs Control at <strong>${cOfferToFund.toFixed(1)}%</strong>. Treatment B is not worse at closing&mdash;it simply brings more users into the funnel.</div>
+    <div class="insight-box amber"><strong>~60% of efile-accepted users haven't funded yet.</strong> B: ${fmt(bAcceptNotFund)} of ${fmt(aggSubB[2])} (${bAcceptStuckPct}%), C: ${fmt(cAcceptNotFund)} of ${fmt(aggSubC[2])} (${cAcceptStuckPct}%). This experiment is 1 week old&mdash;funding lag after efile acceptance is expected. Re-check in 1-2 weeks.</div>
+    <div class="insight-box green"><strong>B drives higher efile rates:</strong> ${aggSubBpct[1]}% of B offer-selected users attempt efile vs ${aggSubCpct[1]}% Control. B also has higher acceptance: ${aggSubBpct[2]}% vs ${aggSubCpct[2]}%. The 0% APR offer motivates users through the full flow.</div>
+    <div class="insight-box red"><strong>Pre-efile drop:</strong> ~${(100-aggSubBpct[1]).toFixed(0)}% of offer-selected users in B and ~${(100-aggSubCpct[1]).toFixed(0)}% in Control never attempt efile. These users selected an offer but stalled before filing&mdash;potential target for nudge campaigns.</div>
+  </div>`;
+
+  // Sub-funnel line chart
+  new Chart(document.getElementById('rxeSubFunnel'),{
+    type:'line',
+    data:{labels:SUB_STAGES, datasets:[
+      {label:'Treatment B (n='+fmt(aggSubB[0])+')',data:aggSubBpct,borderColor:'#3b82f6',backgroundColor:'#3b82f622',borderWidth:3,pointRadius:6,tension:0.3,fill:true},
+      {label:'Control (n='+fmt(aggSubC[0])+')',data:aggSubCpct,borderColor:'#94a3b8',backgroundColor:'#94a3b822',borderWidth:3,pointRadius:6,tension:0.3,fill:true}
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{tooltip:{callbacks:{label:ctx=>{
+        const idx=ctx.dataIndex; const abs=ctx.datasetIndex===0?aggSubB[idx]:aggSubC[idx];
+        return ctx.dataset.label.split('(')[0]+': '+ctx.raw+'% ('+fmt(abs)+')';
+      }}},legend:{position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'circle'}}},
+      scales:{y:{min:0,max:105,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Offer Selected',font:{size:11}}},x:{grid:{display:false}}}
+    }
+  });
+
+  // "Where stuck" stacked bar
+  const stuckB = [aggSubB[0]-aggSubB[1], aggSubB[1]-aggSubB[2], aggSubB[2]-aggSubB[3], aggSubB[3]];
+  const stuckC = [aggSubC[0]-aggSubC[1], aggSubC[1]-aggSubC[2], aggSubC[2]-aggSubC[3], aggSubC[3]];
+  const stuckLabels = ['Pre-Efile Drop','Efile Rejected/Pending','Accepted, Awaiting Fund','Funded'];
+  const stuckColors = ['#ef4444','#f59e0b','#94a3b8','#10b981'];
+  const stuckBpct = stuckB.map(v=>+(v/aggSubB[0]*100).toFixed(1));
+  const stuckCpct = stuckC.map(v=>+(v/aggSubC[0]*100).toFixed(1));
+  new Chart(document.getElementById('rxeStuckBar'),{
+    type:'bar',
+    data:{labels:['Treatment B (n='+fmt(aggSubB[0])+')','Control (n='+fmt(aggSubC[0])+')'], datasets:stuckLabels.map((l,i)=>({
+      label:l,data:[stuckBpct[i],stuckCpct[i]],backgroundColor:stuckColors[i],borderRadius:0
+    }))},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>{
+        const abs = ctx.dataIndex===0?stuckB[ctx.datasetIndex]:stuckC[ctx.datasetIndex];
+        return ctx.dataset.label+': '+ctx.raw+'% ('+fmt(abs)+')';
+      }}},legend:{position:'top',labels:{font:{size:10},usePointStyle:true,pointStyle:'rect'}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,max:100,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Offer-Selected Users',font:{size:11}}}}
+    }
+  });
+
+  // Sub-funnel table by risk bin
+  let shtml = '<table style="width:100%;border-collapse:collapse;font-size:12px"><tr><th>Bin</th><th>Arm</th>';
+  SUB_STAGES.forEach(s=>shtml+=`<th class="num">${s}</th>`);
+  shtml += '<th class="num">Offer&rarr;Fund</th><th class="num">Accept&rarr;Fund</th></tr>';
+  RXE_BINS.forEach(b=>{
+    [{name:'B',d:SUB_B,c:'#3b82f6'},{name:'Ctrl',d:SUB_C,c:'#64748b'}].forEach((arm,ai)=>{
+      const v = arm.d[b];
+      const ofr = v[3]/v[0]*100;
+      const afr = v[2]>0?v[3]/v[2]*100:0;
+      shtml += `<tr${ai===0?' style="border-top:2px solid #e2e8f0"':''}><td style="font-weight:${ai===0?700:400}">${ai===0?b:''}</td><td style="color:${arm.c};font-weight:600">${arm.name}</td>`;
+      v.forEach((val,vi)=>{
+        const rate = vi===0?'':' <span class="pct">('+pct(val,v[0])+')</span>';
+        shtml += `<td class="num">${fmt(val)}${rate}</td>`;
+      });
+      const ofrCls = ofr<35?'drop':'';
+      const afrCls = afr<40?'drop':'';
+      shtml += `<td class="num ${ofrCls}">${ofr.toFixed(1)}%</td><td class="num ${afrCls}">${afr.toFixed(1)}%</td></tr>`;
+    });
+  });
+  shtml += '</table>';
+  document.getElementById('rxeSubTable').innerHTML = shtml;
+}
+
+function buildRxeTable(){
+  const t = document.getElementById('rxeTable');
+  const stages = [
+    {label:'Contingent Approved',i:0},
+    {label:'Bank Done',i:4},
+    {label:'Final Approved',i:5},
+    {label:'Offer Selected',i:6},
+    {label:'Funded',i:10}
+  ];
+  let html = '<tr><th>Risk Bin</th><th>Arm</th><th>N</th>';
+  stages.forEach(s=>html+=`<th class="num">${s.label}</th><th class="num">Rate</th>`);
+  html += '</tr>';
+  RXE_BINS.forEach(b=>{
+    [{name:'Treatment B',d:RXE_B},{name:'Control',d:RXE_C}].forEach((arm,ai)=>{
+      const v = arm.d[b];
+      html += `<tr${ai===0?' style="border-top:2px solid #e2e8f0"':''}><td>${ai===0?b:''}</td><td>${arm.name}</td><td class="num">${fmt(v[0])}</td>`;
+      stages.forEach(s=>{
+        html += `<td class="num">${fmt(v[s.i])}</td><td class="num pct">${pct(v[s.i],v[0])}</td>`;
+      });
+      html += '</tr>';
+    });
+  });
+  t.innerHTML = html;
+}
+
+// ── Render everything ──
+
+// Overall
+buildFunnel('overallFunnel', OVERALL.overall);
+buildTable('overallTable', {Overall:OVERALL.overall}, true);
+
+// By Risk
+genRiskInsights();
+buildConvLine('riskConvLine', BY_RISK, false);
+buildStepBar('riskStepBar', BY_RISK, false);
+buildTable('riskTable', BY_RISK, true);
+buildConvTable('riskConvTable', BY_RISK);
+
+// By Experiment
+genExpInsights();
+buildConvLine('expConvLine', BY_EXP, false);
+buildStepBar('expStepBar', BY_EXP, false);
+buildTable('expTable', BY_EXP, true);
+buildConvTable('expConvTable', BY_EXP);
+
+// Risk x Experiment
+buildRxeTab();
+buildRxeTable();
+</script>
+</body>
+</html>
