@@ -157,10 +157,6 @@ a:hover{text-decoration:underline}
     <div class="chart-container"><canvas id="riskConvLine"></canvas></div>
   </div>
   <div class="card">
-    <h3>Step-by-Step Conversion Comparison</h3>
-    <div class="chart-container"><canvas id="riskStepBar"></canvas></div>
-  </div>
-  <div class="card">
     <h3>Counts by Risk Bin</h3>
     <table id="riskTable"></table>
   </div>
@@ -902,7 +898,7 @@ buildTable('overallTable', {Overall:OVERALL.overall}, true);
 // By Risk
 genRiskInsights();
 buildConvLine('riskConvLine', BY_RISK, false);
-buildStepBar('riskStepBar', BY_RISK, false);
+
 buildTable('riskTable', BY_RISK, true);
 buildConvTable('riskConvTable', BY_RISK);
 
