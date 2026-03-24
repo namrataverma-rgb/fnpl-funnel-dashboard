@@ -248,8 +248,8 @@ a:hover{text-decoration:underline}
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
     <div class="card" style="margin-bottom:0">
-      <h3>Offer Selected Rate by Risk Bin</h3>
-      <div class="chart-container" style="height:280px"><canvas id="rxeOfferBar"></canvas></div>
+      <h3>Term Click Rate by Risk Bin</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeTermBar"></canvas></div>
     </div>
     <div class="card" style="margin-bottom:0">
       <h3>Bank Done Rate by Risk Bin</h3>
@@ -257,8 +257,19 @@ a:hover{text-decoration:underline}
     </div>
   </div>
 
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="card" style="margin-bottom:0">
+      <h3>Offer Selected Rate by Risk Bin</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeOfferBar"></canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <h3>Loan Accept Rate by Risk Bin</h3>
+      <div class="chart-container" style="height:280px"><canvas id="rxeLoanAccBar"></canvas></div>
+    </div>
+  </div>
+
   <div class="card">
-    <h3>Full Backend Funnel: Treatment B vs Control (all bins)</h3>
+    <h3>Full Funnel: Treatment B vs Control &mdash; All Stages (aggregated across bins)</h3>
     <div class="chart-container" style="height:320px"><canvas id="rxeFullFunnel"></canvas></div>
   </div>
 
@@ -483,20 +494,20 @@ const BY_EXP = {
 };
 const RXE_BINS = ['Bin 1','Bin 2','Bin 3','Bin 4','Bin 5','Bin 6'];
 const RXE_B = {
-  'Bin 1':[2398,3,3,3,945,944,863,3,3,1,318],
-  'Bin 2':[830,3,3,4,477,474,444,2,2,0,167],
-  'Bin 3':[464,6,5,5,281,279,265,2,2,2,102],
-  'Bin 4':[236,2,1,1,144,143,136,1,1,0,58],
-  'Bin 5':[126,3,2,4,87,87,85,2,1,1,30],
-  'Bin 6':[56,1,1,1,34,34,32,0,0,0,14]
+  'Bin 1':[2398,2267,1174,1158,945,944,863,890,825,679,318],
+  'Bin 2':[830,779,545,536,477,474,444,442,422,351,167],
+  'Bin 3':[464,432,338,327,281,279,265,260,249,206,102],
+  'Bin 4':[236,219,173,167,144,143,136,131,125,103,58],
+  'Bin 5':[126,114,100,93,87,87,85,79,79,53,30],
+  'Bin 6':[56,54,43,41,34,34,32,34,32,26,14]
 };
 const RXE_C = {
-  'Bin 1':[2243,4,2,2,340,339,289,1,1,0,96],
-  'Bin 2':[811,4,4,4,296,296,267,2,2,0,99],
-  'Bin 3':[466,4,3,5,217,215,205,3,3,0,80],
-  'Bin 4':[213,1,1,1,124,124,117,1,1,1,45],
-  'Bin 5':[113,0,0,1,73,71,64,0,0,0,31],
-  'Bin 6':[46,1,1,1,30,30,29,1,1,1,12]
+  'Bin 1':[2243,2124,498,495,340,339,289,311,275,217,96],
+  'Bin 2':[811,764,367,352,296,296,267,269,249,199,99],
+  'Bin 3':[466,433,269,256,217,215,205,199,192,142,80],
+  'Bin 4':[213,200,143,138,124,124,117,115,110,81,45],
+  'Bin 5':[114,105,85,81,74,72,65,69,64,44,31],
+  'Bin 6':[46,43,35,34,30,30,29,29,28,20,12]
 };
 
 // Offer→Funded sub-funnel by bin [offer_selected, efile_attempted, efile_accepted, funded]
@@ -754,8 +765,10 @@ function buildRxeTab(){
     });
   }
   rxeBar('rxeFundedBar', 10, 'Funded Rate %');
-  rxeBar('rxeOfferBar', 6, 'Offer Selected Rate %');
+  rxeBar('rxeTermBar', 2, 'Term Click Rate %');
   rxeBar('rxeBankBar', 4, 'Bank Done Rate %');
+  rxeBar('rxeOfferBar', 6, 'Offer Selected Rate %');
+  rxeBar('rxeLoanAccBar', 8, 'Loan Accept Rate %');
 
   // Incremental impact
   const incrData = segs.map(r=>r.incremental);
@@ -772,15 +785,19 @@ function buildRxeTab(){
     }
   });
 
-  // Full funnel: aggregate B vs C across all bins
-  const BE_STAGES = [{l:'Contingent',i:0},{l:'Bank Done',i:4},{l:'Final Appr',i:5},{l:'Offer Sel',i:6},{l:'Funded',i:10}];
-  const aggB = BE_STAGES.map(s=>RXE_BINS.reduce((sum,b)=>sum+RXE_B[b][s.i],0));
-  const aggC = BE_STAGES.map(s=>RXE_BINS.reduce((sum,b)=>sum+RXE_C[b][s.i],0));
+  // Full funnel: aggregate B vs C across all bins — ALL 11 stages
+  const ALL_STAGES = [
+    {l:'Contingent',i:0},{l:'Options',i:1},{l:'Term Click',i:2},{l:'Add Bank',i:3},
+    {l:'Bank Done',i:4},{l:'Final Appr',i:5},{l:'Offer Sel',i:6},
+    {l:'Pmt Sched',i:7},{l:'Loan Accept',i:8},{l:'Accept+Efile',i:9},{l:'Funded',i:10}
+  ];
+  const aggB = ALL_STAGES.map(s=>RXE_BINS.reduce((sum,b)=>sum+RXE_B[b][s.i],0));
+  const aggC = ALL_STAGES.map(s=>RXE_BINS.reduce((sum,b)=>sum+RXE_C[b][s.i],0));
   const aggBpct = aggB.map(v=>+(v/aggB[0]*100).toFixed(1));
   const aggCpct = aggC.map(v=>+(v/aggC[0]*100).toFixed(1));
   new Chart(document.getElementById('rxeFullFunnel'),{
     type:'line',
-    data:{labels:BE_STAGES.map(s=>s.l), datasets:[
+    data:{labels:ALL_STAGES.map(s=>s.l), datasets:[
       {label:'Treatment B',data:aggBpct,borderColor:'#3b82f6',backgroundColor:'#3b82f622',borderWidth:3,pointRadius:5,tension:0.3,fill:true},
       {label:'Control',data:aggCpct,borderColor:'#94a3b8',backgroundColor:'#94a3b822',borderWidth:3,pointRadius:5,tension:0.3,fill:true}
     ]},
@@ -791,12 +808,16 @@ function buildRxeTab(){
         const idx=ctx.dataIndex; const abs=ctx.datasetIndex===0?aggB[idx]:aggC[idx];
         return ctx.dataset.label+': '+ctx.raw+'% ('+fmt(abs)+')';
       }}},legend:{position:'top',labels:{font:{size:12},usePointStyle:true,pointStyle:'circle'}}},
-      scales:{y:{min:0,max:105,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Contingent',font:{size:11}}},x:{grid:{display:false}}}
+      scales:{y:{min:0,max:105,ticks:{callback:v=>v+'%'},title:{display:true,text:'% of Contingent',font:{size:11}}},x:{grid:{display:false},ticks:{maxRotation:45,minRotation:30,font:{size:10}}}}
     }
   });
 
-  // Heatmap
-  const hmStages = [{l:'Bank Done',i:4},{l:'Final Appr',i:5},{l:'Offer Sel',i:6},{l:'Funded',i:10}];
+  // Heatmap — all stages
+  const hmStages = [
+    {l:'Options',i:1},{l:'Term Click',i:2},{l:'Add Bank',i:3},{l:'Bank Done',i:4},
+    {l:'Final Appr',i:5},{l:'Offer Sel',i:6},{l:'Pmt Sched',i:7},
+    {l:'Loan Acc',i:8},{l:'Acc+Efile',i:9},{l:'Funded',i:10}
+  ];
   let hhtml = '<table class="heatmap"><tr><th></th><th></th>';
   hmStages.forEach(s=>hhtml+=`<th>${s.l}</th>`);
   hhtml += '<th>N</th></tr>';
@@ -806,7 +827,7 @@ function buildRxeTab(){
       hhtml += `<td class="arm-label" style="color:${a.c};font-weight:600">${a.arm}</td>`;
       hmStages.forEach(s=>{
         const rate = a.d[b][s.i]/a.d[b][0]*100;
-        const intensity = Math.min(rate/40, 1);
+        const intensity = Math.min(rate/100, 1);
         const bg = a.arm==='B'
           ? `rgba(59,130,246,${0.08+intensity*0.35})`
           : `rgba(100,116,139,${0.08+intensity*0.30})`;
@@ -905,10 +926,16 @@ function buildRxeTab(){
 function buildRxeTable(){
   const t = document.getElementById('rxeTable');
   const stages = [
-    {label:'Contingent Approved',i:0},
+    {label:'Contingent',i:0},
+    {label:'Options',i:1},
+    {label:'Term Click',i:2},
+    {label:'Add Bank',i:3},
     {label:'Bank Done',i:4},
-    {label:'Final Approved',i:5},
-    {label:'Offer Selected',i:6},
+    {label:'Final Appr',i:5},
+    {label:'Offer Sel',i:6},
+    {label:'Pmt Sched',i:7},
+    {label:'Loan Acc',i:8},
+    {label:'Acc+Efile',i:9},
     {label:'Funded',i:10}
   ];
   let html = '<tr><th>Risk Bin</th><th>Arm</th><th>N</th>';
