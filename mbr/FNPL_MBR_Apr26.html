@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNPL MBR — Apr 2026</title>
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
+html,body{margin:0;padding:0;background:#CBD5E1;}
+body{display:block!important;min-height:auto!important;}
+.slide-fixed{width:1280px;height:720px;margin:0 auto 32px;box-shadow:0 4px 24px rgba(15,23,42,.12);}
+.slide{width:1280px;height:720px;margin:0 auto 32px;box-shadow:0 4px 24px rgba(15,23,42,.12);}
+#slide9 #chart9{width:100%;height:100%;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #94A3B8;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === ALL CSS SCOPED UNDER #slide9 — DO NOT REMOVE ID PREFIX === */
+  #slide9 {
+    width: 1280px; height: 720px;
+    background: #FFFFFF;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 0 40px;
+  }
+
+  #slide9 .accent { height: 4px; margin: 0 -40px; background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929, #E07B39, #C44536); flex-shrink: 0; }
+
+  #slide9 .hdr-section {
+    background: #F8FAFC; margin: 0 -40px; padding: 16px 40px 12px;
+    flex-shrink: 0; border-bottom: 1px solid #EEF0F4;
+  }
+  #slide9 .hdr {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0;
+  }
+  #slide9 .hdr-left { display: flex; align-items: center; gap: 14px; }
+  #slide9 .hdr-bar { width: 5px; height: 42px; border-radius: 2px; background: #1D4E89; flex-shrink: 0; }
+  #slide9 .hdr-left h1 { font-size: 24px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; }
+  #slide9 .hdr-left .sub { font-size: 11.5px; color: #94A3B8; margin-top: 2px; }
+  #slide9 .badge { border: 1.5px solid #E2E8F0; border-radius: 7px; padding: 5px 16px; text-align: center; }
+  #slide9 .badge .bl { font-size: 8px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  #slide9 .badge .bv { font-size: 16px; font-weight: 700; color: #0F172A; }
+
+  #slide9 .kpis { display: flex; gap: 9px; padding: 10px 0 0; flex-shrink: 0; }
+  #slide9 .kp {
+    flex: 1; border: 1px solid #EEF0F4; border-radius: 9px;
+    padding: 8px 9px; text-align: center; background: #FAFBFC;
+  }
+  #slide9 .kp .kl { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.7px; color: #64748B; font-weight: 700; }
+  #slide9 .kp .kv { font-size: 21px; font-weight: 700; color: #0F172A; margin-top: 2px; line-height: 1; }
+  #slide9 .kp .kv .u { font-size: 13px; color: #94A3B8; font-weight: 500; }
+  #slide9 .kp .kd { font-size: 8.5px; font-weight: 700; color: #059669; margin-top: 3px; }
+  #slide9 .kp .kn { font-size: 8.5px; color: #94A3B8; margin-top: 3px; }
+
+  #slide9 .ct {
+    font-size: 13px; font-weight: 700; color: #0F172A;
+    text-align: center; letter-spacing: 1.2px; text-transform: uppercase;
+    flex-shrink: 0; padding-bottom: 2px;
+  }
+
+  #slide9 .viz-wrap {
+    flex: 1; display: flex; flex-direction: column; min-height: 0;
+    margin: 0 40px;
+  }
+
+  #slide9 .chart-area { flex: 1; min-height: 0; margin-bottom: 10px; }
+  #slide9 #chart { width: 100%; height: 100%; }
+
+  #slide9 .tbl-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #E2E8F0;
+    flex-shrink: 0;
+  }
+
+  #slide9 .tbl {
+    width: 100%; border-collapse: collapse;
+    font-size: 10px; table-layout: fixed;
+  }
+  #slide9 .tbl col.lc { width: 82px; }
+  #slide9 .tbl col.rc { width: 50px; }
+
+  #slide9 .tbl thead th {
+    background: #0F172A; color: #F1F5F9; font-weight: 600;
+    padding: 6px 6px; text-align: center; font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+  #slide9 .tbl thead th:first-child { text-align: left; padding-left: 12px; }
+
+  #slide9 .tbl tbody td {
+    padding: 5px 6px; text-align: center; color: #334155;
+    font-weight: 500; font-variant-numeric: tabular-nums; font-size: 10px;
+    border-bottom: 1px solid #F1F5F9; background: #fff;
+  }
+  #slide9 .tbl tbody td:first-child {
+    text-align: left; padding-left: 12px;
+    font-weight: 700; color: #1E293B; font-size: 9px;
+  }
+  #slide9 .tbl tbody td.d { color: #CBD5E1; }
+  #slide9 .tbl tbody td.hi {
+    font-weight: 800; color: #0F172A;
+    background: #EFF6FF;
+  }
+  #slide9 .tbl tbody tr:nth-child(even) td { background: #FAFBFC; }
+  #slide9 .tbl tbody tr:nth-child(even) td.hi { background: #E8F1FD; }
+  #slide9 .tbl tbody tr:last-child td { border-bottom: none; }
+
+  #slide9 .foot {
+    padding: 8px 0 10px; display: flex;
+    justify-content: space-between; align-items: center; flex-shrink: 0;
+  }
+  #slide9 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
+  #slide9 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #94A3B8;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === ALL CSS SCOPED UNDER #slide10 — DO NOT REMOVE ID PREFIX === */
+  #slide10 {
+    width: 1280px; height: 720px;
+    background: #FFFFFF;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 0 40px;
+  }
+
+  #slide10 .accent { height: 4px; margin: 0 -40px; background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929, #E07B39, #C44536); flex-shrink: 0; }
+
+  #slide10 .hdr-section {
+    background: #F8FAFC; margin: 0 -40px; padding: 16px 40px 12px;
+    flex-shrink: 0; border-bottom: 1px solid #EEF0F4;
+  }
+  #slide10 .hdr { display: flex; justify-content: space-between; align-items: center; }
+  #slide10 .hdr-left { display: flex; align-items: center; gap: 14px; }
+  #slide10 .hdr-bar { width: 5px; height: 42px; border-radius: 2px; background: #1D4E89; flex-shrink: 0; }
+  #slide10 .hdr-left h1 { font-size: 24px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; }
+  #slide10 .hdr-left .sub { font-size: 11.5px; color: #94A3B8; margin-top: 2px; }
+  #slide10 .badge { border: 1.5px solid #E2E8F0; border-radius: 7px; padding: 5px 16px; text-align: center; }
+  #slide10 .badge .bl { font-size: 8px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  #slide10 .badge .bv { font-size: 16px; font-weight: 700; color: #0F172A; }
+
+  #slide10 .viz-wrap {
+    flex: 1; display: flex; flex-direction: column; min-height: 0;
+    margin: 0 40px;
+    padding-top: 14px;
+  }
+
+  #slide10 .tbl-wrap {
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid #E2E8F0; flex-shrink: 0;
+  }
+
+  #slide10 .tbl {
+    width: 100%; border-collapse: collapse;
+    font-size: 10px; table-layout: fixed;
+  }
+  #slide10 .tbl col.lc { width: 82px; }
+  #slide10 .tbl col.tc { width: 50px; }
+
+  #slide10 .tbl thead th {
+    background: #0F172A; color: #F1F5F9; font-weight: 600;
+    padding: 6px 6px; text-align: center; font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+  #slide10 .tbl thead th:first-child { text-align: left; padding-left: 12px; }
+  #slide10 .tbl thead th.total { background: #1E293B; font-weight: 700; font-size: 8px; }
+
+  #slide10 .tbl tbody td {
+    padding: 5px 6px; text-align: center; color: #334155;
+    font-weight: 500; font-variant-numeric: tabular-nums; font-size: 10px;
+    border-bottom: 1px solid #F1F5F9; background: #fff;
+  }
+  #slide10 .tbl tbody td:first-child {
+    text-align: left; padding-left: 12px;
+    font-weight: 700; color: #1E293B; font-size: 8.5px;
+  }
+  #slide10 .tbl tbody td.d { color: #CBD5E1; }
+  #slide10 .tbl tbody td.hi {
+    font-weight: 800; color: #0F172A;
+    background: #EFF6FF;
+  }
+  #slide10 .tbl tbody td.total-col {
+    font-weight: 700; color: #0F172A; font-size: 9px;
+    background: #F8FAFC; border-left: 2px solid #E2E8F0;
+  }
+  #slide10 .tbl tbody tr:nth-child(even) td { background: #FAFBFC; }
+  #slide10 .tbl tbody tr:nth-child(even) td.hi { background: #E8F1FD; }
+  #slide10 .tbl tbody tr:nth-child(even) td.total-col { background: #F1F5F9; }
+  #slide10 .tbl tbody tr:last-child td { border-bottom: none; }
+
+  #slide10 .commentary {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    padding: 10px 0 0; min-height: 0;
+  }
+  #slide10 .commentary .callout {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 6px;
+  }
+  #slide10 .commentary .num {
+    flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+    background: #1D4E89; color: #fff; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #slide10 .commentary .txt {
+    font-size: 11px; color: #334155; line-height: 1.5;
+  }
+  #slide10 .commentary .txt strong { color: #0F172A; }
+
+  #slide10 .foot {
+    padding: 8px 0 10px; display: flex;
+    justify-content: space-between; align-items: center; flex-shrink: 0;
+  }
+  #slide10 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
+  #slide10 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #94A3B8;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === ALL CSS SCOPED UNDER #slide11 — DO NOT REMOVE ID PREFIX === */
+  #slide11 {
+    width: 1280px; height: 720px;
+    background: #FFFFFF;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 0 40px;
+  }
+
+  #slide11 .accent { height: 4px; margin: 0 -40px; background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929, #E07B39, #C44536); flex-shrink: 0; }
+
+  #slide11 .hdr-section {
+    background: #F8FAFC; margin: 0 -40px; padding: 16px 40px 12px;
+    flex-shrink: 0; border-bottom: 1px solid #EEF0F4;
+  }
+  #slide11 .hdr { display: flex; justify-content: space-between; align-items: center; }
+  #slide11 .hdr-left { display: flex; align-items: center; gap: 14px; }
+  #slide11 .hdr-bar { width: 5px; height: 42px; border-radius: 2px; background: #1D4E89; flex-shrink: 0; }
+  #slide11 .hdr-left h1 { font-size: 24px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; }
+  #slide11 .hdr-left .sub { font-size: 11.5px; color: #94A3B8; margin-top: 2px; }
+  #slide11 .badge { border: 1.5px solid #E2E8F0; border-radius: 7px; padding: 5px 16px; text-align: center; }
+  #slide11 .badge .bl { font-size: 8px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  #slide11 .badge .bv { font-size: 16px; font-weight: 700; color: #0F172A; }
+
+  #slide11 .viz-wrap {
+    flex: 1; display: flex; flex-direction: column; min-height: 0;
+    margin: 0 40px;
+    padding-top: 14px;
+  }
+
+  /* Match slide 10 table typography, row height, and column widths */
+  #slide11 .table-subtitle {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: #64748B;
+    line-height: 1.5;
+    padding: 0 2px 8px 2px;
+    flex-shrink: 0;
+    max-width: 100%;
+  }
+
+  #slide11 .tbl-wrap {
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid #E2E8F0; flex-shrink: 0;
+  }
+
+  #slide11 .tbl {
+    width: 100%; border-collapse: collapse;
+    font-size: 10px; table-layout: fixed;
+  }
+  #slide11 .tbl col.lc { width: 82px; }
+  #slide11 .tbl col.tc { width: 50px; }
+
+  #slide11 .tbl thead th {
+    background: #0F172A; color: #F1F5F9; font-weight: 600;
+    padding: 6px 6px; text-align: center; font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+  #slide11 .tbl thead th:first-child { text-align: left; padding-left: 12px; }
+  #slide11 .tbl thead th.total { background: #1E293B; font-weight: 700; font-size: 8px; }
+
+  #slide11 .tbl tbody td {
+    padding: 5px 6px; text-align: center; color: #334155;
+    font-weight: 500; font-variant-numeric: tabular-nums; font-size: 10px;
+    border-bottom: 1px solid #F1F5F9; background: #fff;
+  }
+  #slide11 .tbl tbody td:first-child {
+    text-align: left; padding-left: 12px;
+    font-weight: 700; color: #1E293B; font-size: 8.5px;
+  }
+  #slide11 .tbl tbody td.d { color: #CBD5E1; }
+  #slide11 .tbl tbody td.hi {
+    font-weight: 800; color: #0F172A;
+    background: #EFF6FF;
+  }
+  #slide11 .tbl tbody td.total-col {
+    font-weight: 700; color: #0F172A; font-size: 9px;
+    background: #F8FAFC; border-left: 2px solid #E2E8F0;
+  }
+  #slide11 .tbl tbody tr:nth-child(even) td { background: #FAFBFC; }
+  #slide11 .tbl tbody tr:nth-child(even) td.hi { background: #E8F1FD; }
+  #slide11 .tbl tbody tr:nth-child(even) td.total-col { background: #F1F5F9; }
+  #slide11 .tbl tbody tr:last-child td { border-bottom: none; }
+
+  #slide11 .section-row td {
+    background: #F0F4F8 !important; font-weight: 800 !important;
+    color: #1D4E89 !important; font-size: 7.5px !important;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 5px 5px 4px !important; border-bottom: 2px solid #E2E8F0 !important;
+  }
+
+  #slide11 .commentary {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    padding: 10px 0 0; min-height: 0;
+  }
+  #slide11 .commentary .callout {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 6px;
+  }
+  #slide11 .commentary .num {
+    flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+    background: #1D4E89; color: #fff; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #slide11 .commentary .txt {
+    font-size: 11px; color: #334155; line-height: 1.5;
+  }
+  #slide11 .commentary .txt strong { color: #0F172A; }
+
+  #slide11 .foot {
+    padding: 8px 0 10px; display: flex;
+    justify-content: space-between; align-items: center; flex-shrink: 0;
+  }
+  #slide11 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
+  #slide11 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #94A3B8;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === ALL CSS SCOPED UNDER #slide12 — DO NOT REMOVE ID PREFIX === */
+  #slide12 {
+    width: 1280px; height: 720px;
+    background: #FFFFFF;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 0 40px;
+  }
+
+  #slide12 .accent { height: 4px; margin: 0 -40px; background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929, #E07B39, #C44536); flex-shrink: 0; }
+
+  #slide12 .hdr-section {
+    background: #F8FAFC; margin: 0 -40px; padding: 14px 40px 10px;
+    flex-shrink: 0; border-bottom: 1px solid #EEF0F4;
+  }
+  #slide12 .hdr { display: flex; justify-content: space-between; align-items: center; }
+  #slide12 .hdr-left { display: flex; align-items: center; gap: 14px; }
+  #slide12 .hdr-bar { width: 5px; height: 38px; border-radius: 2px; background: #1D4E89; flex-shrink: 0; }
+  #slide12 .hdr-left h1 { font-size: 22px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; }
+  #slide12 .hdr-left .sub { font-size: 11px; color: #94A3B8; margin-top: 1px; }
+  #slide12 .badge { border: 1.5px solid #E2E8F0; border-radius: 7px; padding: 4px 14px; text-align: center; }
+  #slide12 .badge .bl { font-size: 8px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  #slide12 .badge .bv { font-size: 15px; font-weight: 700; color: #0F172A; }
+
+  #slide12 .vintage-body {
+    flex: 1; display: flex; flex-direction: column;
+    min-height: 0; padding: 8px 0 0;
+  }
+
+  #slide12 .shared-legend {
+    display: flex; justify-content: center; gap: 16px;
+    flex-wrap: wrap; padding: 2px 0 6px; flex-shrink: 0;
+  }
+  #slide12 .leg-item { display: inline-flex; align-items: center; font-size: 10.5px; color: #334155; font-weight: 500; }
+  #slide12 .leg-dot { width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; flex-shrink: 0; }
+
+  #slide12 .chart-grid {
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px 16px; min-height: 0;
+  }
+  #slide12 .chart-box {
+    border: 1px solid #E8ECF0; border-radius: 8px; padding: 6px 8px 4px;
+    background: #FAFBFC; display: flex; flex-direction: column; min-height: 0;
+  }
+  #slide12 .chart-title {
+    font-size: 11px; font-weight: 700; color: #0F172A;
+    text-transform: uppercase; text-align: center; letter-spacing: 0.3px;
+    flex-shrink: 0; margin-bottom: 2px;
+  }
+  #slide12 .chart-div { flex: 1; min-height: 0; }
+
+  #slide12 .foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0 8px; flex-shrink: 0;
+    font-size: 9px; color: #94A3B8;
+  }
+  #slide12 .foot-tag {
+    border: 1px solid #E2E8F0; border-radius: 4px;
+    padding: 2px 8px; font-weight: 600; color: #64748B;
+  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #94A3B8;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === ALL CSS SCOPED UNDER #slide13 — DO NOT REMOVE ID PREFIX === */
+  #slide13 {
+    width: 1280px; height: 720px;
+    background: #FFFFFF;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 0 40px;
+  }
+
+  #slide13 .accent { height: 4px; margin: 0 -40px; background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929, #E07B39, #C44536); flex-shrink: 0; }
+
+  #slide13 .hdr-section {
+    background: #F8FAFC; margin: 0 -40px; padding: 14px 40px 10px;
+    flex-shrink: 0; border-bottom: 1px solid #EEF0F4;
+  }
+  #slide13 .hdr { display: flex; justify-content: space-between; align-items: center; }
+  #slide13 .hdr-left { display: flex; align-items: center; gap: 14px; }
+  #slide13 .hdr-bar { width: 5px; height: 38px; border-radius: 2px; background: #1D4E89; flex-shrink: 0; }
+  #slide13 .hdr-left h1 { font-size: 22px; font-weight: 800; color: #0F172A; letter-spacing: -0.3px; }
+  #slide13 .hdr-left .sub { font-size: 11px; color: #94A3B8; margin-top: 1px; }
+  #slide13 .badge { border: 1.5px solid #E2E8F0; border-radius: 7px; padding: 4px 14px; text-align: center; }
+  #slide13 .badge .bl { font-size: 8px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  #slide13 .badge .bv { font-size: 15px; font-weight: 700; color: #0F172A; }
+
+  #slide13 .vintage-body {
+    flex: 1; display: flex; flex-direction: column;
+    min-height: 0; padding: 6px 0 0;
+  }
+
+  #slide13 .shared-legend {
+    display: flex; justify-content: center; gap: 14px;
+    flex-wrap: wrap; padding: 2px 0 4px; flex-shrink: 0;
+  }
+  #slide13 .leg-item { display: inline-flex; align-items: center; font-size: 10px; color: #334155; font-weight: 500; }
+  #slide13 .leg-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; flex-shrink: 0; }
+
+  #slide13 .chart-row {
+    flex: 1; display: flex; gap: 14px;
+    align-items: stretch; min-height: 0;
+  }
+  #slide13 .chart-box {
+    flex: 1 1 0; min-width: 0; overflow: hidden;
+    border: 1px solid #E8ECF0; border-radius: 8px;
+    padding: 6px 8px 4px; background: #FAFBFC;
+    display: flex; flex-direction: column;
+  }
+  #slide13 .chart-title {
+    font-size: 11px; font-weight: 700; color: #0F172A;
+    text-transform: uppercase; text-align: center; letter-spacing: 0.3px;
+    flex-shrink: 0; margin-bottom: 1px;
+  }
+  #slide13 .chart-div { height: 340px; flex-shrink: 0; }
+
+  #slide13 .vtbl {
+    width: 100%; border-collapse: collapse; margin-top: 4px;
+    font-size: 9.5px; flex-shrink: 0;
+  }
+  #slide13 .vtbl th {
+    background: #0F172A; color: #F1F5F9;
+    padding: 3px 6px; text-align: center; font-weight: 600;
+    white-space: nowrap;
+  }
+  #slide13 .vtbl td {
+    padding: 2.5px 5px; text-align: center;
+    border-bottom: 1px solid #E8ECF0;
+  }
+  #slide13 .vtbl td:first-child {
+    text-align: left; font-weight: 600; color: #334155;
+    background: #F1F5F9; white-space: nowrap;
+  }
+  #slide13 .vtbl tr:nth-child(even) td { background: #F8FAFC; }
+  #slide13 .vtbl tr:nth-child(even) td:first-child { background: #EDF0F4; }
+
+  #slide13 .foot {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 0 8px; flex-shrink: 0;
+    font-size: 9px; color: #94A3B8;
+  }
+  #slide13 .foot-tag {
+    border: 1px solid #E2E8F0; border-radius: 4px;
+    padding: 2px 8px; font-weight: 600; color: #64748B;
+  }
+</style>
+</head>
+<body style="padding:32px 0 64px;">
+<!-- Cover -->
+<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Cover</div>
+<div class="slide slide-fixed" id="slide1" style="background:#0F172A;display:flex;flex-direction:column;justify-content:flex-start;padding:0;">
+  <div style="padding:28px 48px 0;">
+    <img src="intuit-ecosystem-white.svg" alt="Intuit ecosystem" style="height:34px;">
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 48px;">
+    <h1 style="font-family:'Poppins',sans-serif;font-size:52px;font-weight:700;color:#fff;line-height:1.15;margin:0 0 24px;">Monthly Risk Performance<br>Overview</h1>
+    <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#cbd5e1;margin:0;">Consumer Risk Team</p>
+  </div>
+</div>
+<!-- Agenda -->
+<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Agenda</div>
+<div class="slide slide-fixed" id="slide2" style="background:#FFFFFF;display:flex;flex-direction:column;padding:48px 56px 32px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0 0 32px;">Agenda</h1>
+  <div style="display:flex;flex:1;align-items:flex-start;">
+    <div style="width:4px;background:#0F172A;border-radius:2px;align-self:stretch;margin-right:0;"></div>
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px 40px;flex:1;">
+      <div style="margin-bottom:24px;">
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:4px;">Executive Summary & Follow ups</div>
+        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;">10 mins</div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:8px;">Credit Portfolio review by Product</div>
+        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;margin-bottom:8px;">35 mins</div>
+        <div style="padding-left:24px;display:flex;flex-direction:column;gap:4px;">
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— FNPL</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— PCA</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— RAD</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— TTFA</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:4px;">Fraud Update</div>
+        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;">10 mins</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;margin-top:16px;">Consumer Risk Team | Apr 2026</div>
+</div>
+<!-- Executive Summary -->
+<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Executive Summary</div>
+<div class="slide slide-fixed" id="slide3" style="background:#FFFFFF;display:flex;flex-direction:column;padding:0;">
+  <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:28px 48px 20px;">
+    <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:16px;"></div>
+    <h1 style="font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;color:#0F172A;margin:0;">Executive Summary & Follow ups</h1>
+  </div>
+  <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 48px 12px;">
+    <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">FNPL</div>
+      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
+    </div>
+    <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">PCA</div>
+      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Gurmeet Arora</div>
+    </div>
+    <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">RAD</div>
+      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Shan Cong</div>
+    </div>
+    <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">TTFA</div>
+      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
+    </div>
+  </div>
+  <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;padding:0 48px 16px;">Consumer Risk Team | Apr 2026</div>
+</div>
+<!-- Agenda — FNPL -->
+<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Agenda — FNPL</div>
+<div class="slide slide-fixed" id="slide4" style="background:#FFFFFF;display:flex;flex-direction:column;padding:48px 56px 32px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0 0 32px;">Agenda</h1>
+  <div style="display:flex;flex:1;align-items:flex-start;">
+    <div style="width:4px;background:#0F172A;border-radius:2px;align-self:stretch;margin-right:0;"></div>
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px 40px;flex:1;">
+      <div style="margin-bottom:24px;">
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#CBD5E1;margin-bottom:4px;">Executive Summary & Follow ups</div>
+        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#CBD5E1;">10 mins</div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:8px;">Credit Portfolio review by Product</div>
+        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;margin-bottom:8px;">35 mins</div>
+        <div style="padding-left:24px;display:flex;flex-direction:column;gap:4px;">
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#0F172A;font-weight:700;display:flex;align-items:center;gap:8px;"><span style="color:#236CFF;">&#9654;</span> FNPL</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#CBD5E1;">— PCA</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#CBD5E1;">— RAD</div>
+          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#CBD5E1;">— TTFA</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#CBD5E1;margin-bottom:4px;">Fraud Update</div>
+        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#CBD5E1;">10 mins</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;margin-top:16px;">Consumer Risk Team | Apr 2026</div>
+</div>
+<!-- GA 2.0 Summary -->
+<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">GA 2.0 Summary</div>
+<div class="slide slide-fixed" id="slide5" style="background:#FFFFFF;display:flex;flex-direction:column;padding:0;overflow:hidden;">
+  <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:28px 48px 18px;">
+    <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:16px;"></div>
+    <h1 style="font-family:'Poppins',sans-serif;font-size:26px;font-weight:700;color:#0F172A;margin:0 0 12px;">Executive Summary of GA 2.0</h1>
+    <p style="font-family:'Inter',sans-serif;font-size:12.5px;color:#475569;line-height:1.6;margin:0;">
+      Observed strong applicant quality from GA, however there is opportunity to gather more insights to optimize policy going into FY'27.
+      Through Pricing test we are offering as low as 10% for lowest risk segment (500bps lower) and 300 bps across all other risk segments to evaluate price sensitivity.
+      Decline swap-in test is another opportunity for us to test credit expansion opportunities, and assess riskier segments where alternate data will help.
+    </p>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;padding:18px 48px 8px;">
+    <table style="width:100%;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:12px;flex:1;">
+      <thead>
+        <tr>
+          <th style="background:#0F172A;color:#F1F5F9;padding:14px 16px;text-align:left;font-weight:700;font-size:13px;width:12%;border-radius:6px 0 0 0;"></th>
+          <th style="background:#0F172A;color:#F1F5F9;padding:14px 16px;text-align:left;font-weight:600;font-size:13px;width:30%;">Learnings so far</th>
+          <th style="background:#0F172A;color:#F1F5F9;padding:14px 16px;text-align:left;font-weight:600;font-size:13px;width:30%;">Proposed Strategy & Rationale</th>
+          <th style="background:#0F172A;color:#F1F5F9;padding:14px 16px;text-align:left;font-weight:600;font-size:13px;width:28%;border-radius:0 6px 0 0;">Impact Expected in April</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="vertical-align:top;height:50%;">
+          <td style="background:#F1F5F9;padding:18px 16px;font-weight:700;color:#0F172A;font-size:13px;border-bottom:1px solid #E2E8F0;">Pricing<br>Test</td>
+          <td style="padding:18px 16px;color:#334155;line-height:1.7;border-bottom:1px solid #E2E8F0;">
+            <div style="margin-bottom:10px;">&#8226; <strong style="color:#DC2626;">70%</strong> of credit-approved customers drop off; RS 1 is worst at <strong style="color:#DC2626;">89%</strong></div>
+            <div>&#8226; FNPL adoption is only <strong style="color:#DC2626;">9%</strong> for our lowest-risk customers (780+ Vantage), suggesting price is a barrier</div>
+          </td>
+          <td style="padding:18px 16px;color:#334155;line-height:1.7;border-bottom:1px solid #E2E8F0;">
+            <div style="margin-bottom:10px;">&#8226; Test setup — Randomized 80/20 split</div>
+            <div style="margin-bottom:10px;">&#8226; <strong style="color:#236CFF;">500 bps</strong> reduction for RS 1 and <strong style="color:#236CFF;">300 bps</strong> across RS 2–6</div>
+            <div>&#8226; Tests whether drop-off is driven by need vs. offer value</div>
+          </td>
+          <td style="padding:18px 16px;color:#334155;line-height:1.7;border-bottom:1px solid #E2E8F0;">
+            <div style="margin-bottom:10px;">&#8226; Avg. APR may drop from <strong>20.3%</strong> to <strong style="color:#236CFF;">19.7%</strong></div>
+            <div style="margin-bottom:10px;">&#8226; Incremental <strong style="color:#16A34A;">$1.9MM – $3.9MM</strong> in funded loans</div>
+            <div>&#8226; Overall loss rate to remain at <strong style="color:#16A34A;">5.3%</strong>, as we expect more low risk customers to take loan with this test</div>
+          </td>
+        </tr>
+        <tr style="vertical-align:top;height:50%;">
+          <td style="background:#F1F5F9;padding:18px 16px;font-weight:700;color:#0F172A;font-size:13px;">Decline<br>Swap-in<br>Test</td>
+          <td style="padding:18px 16px;color:#334155;line-height:1.7;">
+            <div style="margin-bottom:10px;">&#8226; <strong style="color:#DC2626;">35%</strong> of customers are declined — we don't have cashflow or other alternative data to test</div>
+            <div>&#8226; For FY'27, learnings from declined segment will help with policy optimization and UW model</div>
+          </td>
+          <td style="padding:18px 16px;color:#334155;line-height:1.7;">
+            <div style="margin-bottom:10px;">&#8226; Model PD up to <strong style="color:#236CFF;">0.35</strong> with good risk and income profile</div>
+            <div>&#8226; Small $ DQs in last 6 months and customer is in good standing currently</div>
+          </td>
+          <td style="padding:18px 16px;color:#334155;line-height:1.7;">
+            <div style="margin-bottom:10px;">&#8226; Incremental <strong style="color:#16A34A;">+4%</strong> (56% → 58%) approval rate</div>
+            <div style="margin-bottom:10px;">&#8226; Incremental <strong style="color:#16A34A;">$2MM</strong> funded</div>
+            <div>&#8226; This segment estimated loss rate is at <strong style="color:#EA580C;">27%</strong>, losses may increase by <strong style="color:#EA580C;">30 bps</strong></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;padding:0 48px 14px;">Consumer Risk Team | Apr 2026</div>
+</div>
+<div class="slide" id="slide9">
+  <div class="accent"></div>
+
+  <div class="hdr-section">
+    <div class="hdr">
+      <div class="hdr-left">
+        <div class="hdr-bar"></div>
+        <div>
+          <h1>FNPL Application Profile</h1>
+          <div class="sub">Monthly volume &middot; Vantage distribution &middot; Contingent approval rate</div>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="bl">MBR Report</div>
+        <div class="bv">April 2026</div>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kp"><div class="kl">Total Apps (Apr)</div><div class="kv">68,314</div><div class="kd"><div class="kn">↓ vs Mar</div></div></div>
+      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">71.8<span class="u">%</span></div><div class="kn"><div class="kd">↑ 4.6 pp vs Mar</div></div></div>
+      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">701</div><div class="kd"><div class="kd">↑ vs Mar</div></div></div>
+      <div class="kp"><div class="kl">Median Income</div><div class="kv">$82<span class="u">K</span></div><div class="kd"><div class="kd">↑ vs Mar</div></div></div>
+      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">24.8<span class="u">%</span></div><div class="kn"><div class="kn">↓ vs Mar</div></div></div>
+    </div>
+  </div>
+  <div class="ct">Vantage Score Distribution &amp; Contingent Approval Rate</div>
+
+  <div class="viz-wrap">
+    <div class="chart-area">
+      <div id="chart9"></div>
+    </div>
+
+    <div class="tbl-wrap">
+    <table class="tbl">
+      <colgroup><col class="lc"><col><col><col><col><col><col><col><col><col class="rc"></colgroup>
+      <thead><tr>
+        <th>Metrics</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th><th>Apr-26</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>Num of Apps</td><td>633</td><td>7,539</td><td>17</td><td class="d">—</td><td>3,800</td><td>26,897</td><td>182,766</td><td class="hi">68,314</td></tr>
+<tr><td>Avg Vantage</td><td>617</td><td>620</td><td>664</td><td class="d">—</td><td>609</td><td>631</td><td>700</td><td class="hi">701</td></tr>
+<tr><td>Median Income</td><td>$69K</td><td>$70K</td><td>$97K</td><td class="d">—</td><td>$55K</td><td>$58K</td><td>$81K</td><td class="hi">$82K</td></tr>
+<tr><td>Approval Rate</td><td>19.43%</td><td>31.16%</td><td>47.06%</td><td class="d">—</td><td>30.18%</td><td>42.44%</td><td>67.23%</td><td class="hi">71.83%</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="foot-l">
+      Data as of 2026-04-07 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (app_number2=1, offer_pending filtered)<br>
+      Bands: Super Prime &ge;780 &middot; Prime 660&ndash;779 &middot; Near Prime 600&ndash;659 &middot; Subprime &lt;600
+    </div>
+    <div class="foot-r">9</div>
+  </div>
+</div>
+<div class="slide" id="slide10">
+  <div class="accent"></div>
+
+  <div class="hdr-section">
+    <div class="hdr">
+      <div class="hdr-left">
+        <div class="hdr-bar"></div>
+        <div>
+          <h1>FNPL Funded Loans Profile</h1>
+          <div class="sub">View as of funded month &middot; Weighted averages by loan amount</div>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="bl">MBR Report</div>
+        <div class="bv">April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-wrap">
+    <div class="tbl-wrap">
+    <table class="tbl">
+      <colgroup>
+        <col class="lc">
+        <col><col><col><col><col><col><col><col>
+        <col class="tc">
+      </colgroup>
+      <thead><tr>
+        <th>Metrics</th>
+        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th><th>Apr-26</th>
+        <th class="total">Total</th>
+      </tr></thead>
+      <tbody>
+        <tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td>25,084</td><td class="hi">8,194</td><td class="total-col">40,965</td></tr>
+<tr><td>$ Loans</td><td>0.1M</td><td>3.3M</td><td>0.5M</td><td class="d">—</td><td>0.0M</td><td>9.0M</td><td>41.1M</td><td class="hi">14.1M</td><td class="total-col">68.0M</td></tr>
+<tr><td>Avg. Loan Size</td><td>$1,746</td><td>$2,045</td><td>$1,818</td><td class="d">—</td><td>$934</td><td>$1,563</td><td>$1,639</td><td class="hi">$1,715</td><td class="total-col">$1,661</td></tr>
+<tr><td>WA Term</td><td>5.2</td><td>5.3</td><td>5.4</td><td class="d">—</td><td>5.6</td><td>5.9</td><td>6.1</td><td class="hi">6.0</td><td class="total-col">6.0</td></tr>
+<tr><td>WA APR</td><td>23.93%</td><td>19.97%</td><td>20.13%</td><td class="d">—</td><td>22.27%</td><td>19.38%</td><td>16.40%</td><td class="hi">13.78%</td><td class="total-col">16.46%</td></tr>
+<tr><td>WA Vantage</td><td>692</td><td>683</td><td>675</td><td class="d">—</td><td>639</td><td>693</td><td>714</td><td class="hi">714</td><td class="total-col">709</td></tr>
+<tr><td>Avg. RS</td><td>N/A</td><td>N/A</td><td>N/A</td><td class="d">—</td><td>N/A</td><td>2.8</td><td>2.4</td><td class="hi">2.4</td><td class="total-col">2.4</td></tr>
+<tr><td>Med. Income</td><td>90K</td><td>97K</td><td>79K</td><td class="d">—</td><td>53K</td><td>72K</td><td>81K</td><td class="hi">84K</td><td class="total-col">81K</td></tr>
+<tr><td>% $ from CK Low Risk</td><td>31%</td><td>39%</td><td>44%</td><td class="d">—</td><td>67%</td><td>53%</td><td>56%</td><td class="hi">61%</td><td class="total-col">56%</td></tr>
+<tr><td>% Mobile Channel</td><td>26%</td><td>16%</td><td>24%</td><td class="d">—</td><td>56%</td><td>40%</td><td>34%</td><td class="hi">35%</td><td class="total-col">34%</td></tr>
+<tr><td>Avg. DTI</td><td>37%</td><td>40%</td><td>42%</td><td class="d">—</td><td>48%</td><td>41%</td><td>39%</td><td class="hi">39%</td><td class="total-col">40%</td></tr>
+<tr><td>% Had a State Refund</td><td>47%</td><td>31%</td><td>29%</td><td class="d">—</td><td>44%</td><td>41%</td><td>40%</td><td class="hi">37%</td><td class="total-col">39%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="commentary" id="commentary10"></div>
+  </div>
+
+  <div class="foot">
+    <div class="foot-l">
+      Data as of 2026-04-07 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (funded_loan=1)<br>
+      Joined with intuit_lending_loanprofiles_dwh.loan_origination &middot; tax_dm.agg_auth_id_accepted_refund
+    </div>
+    <div class="foot-r">10</div>
+  </div>
+</div>
+<div class="slide" id="slide11">
+  <div class="accent"></div>
+
+  <div class="hdr-section">
+    <div class="hdr">
+      <div class="hdr-left">
+        <div class="hdr-bar"></div>
+        <div>
+          <h1>FNPL Monthly Performance</h1>
+          <div class="sub">As-of snapshot &middot; Based on origination month &middot; 2026-04-04</div>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="bl">MBR Report</div>
+        <div class="bv">April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-wrap">
+    <div class="table-subtitle">Funded-loan performance by origination month: loan counts and balances; 7DPD / 30DPD rates; roll to charge-off; charge-off; target loss; % paid off. Total column is the portfolio rollup. Em dash (—) means not applicable for that month or vintage.</div>
+    <div class="tbl-wrap">
+    <table class="tbl">
+      <colgroup>
+        <col class="lc">
+        <col><col><col><col><col><col><col><col>
+        <col class="tc">
+      </colgroup>
+      <thead><tr>
+        <th>Metrics</th>
+        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th><th>Apr-26</th>
+        <th class="total">Total</th>
+      </tr></thead>
+      <tbody>
+        <tr class="section-row"><td colspan="10">Volume</td></tr>
+<tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td>25,084</td><td class="hi">8,194</td><td class="total-col">40,965</td></tr>
+<tr><td>$ Loans</td><td>$0.1M</td><td>$3.3M</td><td>$0.5M</td><td class="d">—</td><td>$0.0M</td><td>$9.0M</td><td>$41.1M</td><td class="hi">$14.1M</td><td class="total-col">$68.0M</td></tr>
+<tr class="section-row"><td colspan="10">7DPD+ Delinquency</td></tr>
+<tr><td># 7DPD+ Rate</td><td>6.5%</td><td>5.8%</td><td>6.8%</td><td class="d">—</td><td>0.0%</td><td>4.9%</td><td class="d">—</td><td class="d">—</td><td class="total-col">5.2%</td></tr>
+<tr><td>$ 7DPD+ Rate</td><td>4.4%</td><td>4.1%</td><td>5.2%</td><td class="d">—</td><td>0.0%</td><td>4.3%</td><td class="d">—</td><td class="d">—</td><td class="total-col">4.3%</td></tr>
+<tr class="section-row"><td colspan="10">30DPD+ Delinquency</td></tr>
+<tr><td># 30DPD+ Rate</td><td>6.5%</td><td>4.3%</td><td>6.8%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">4.7%</td></tr>
+<tr><td>$ 30DPD+ Rate</td><td>4.4%</td><td>3.5%</td><td>5.2%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">3.7%</td></tr>
+<tr class="section-row"><td colspan="10">Roll to charge-off</td></tr>
+<tr><td># Roll rate -> 30D to CO</td><td>50.0%</td><td>44.9%</td><td>38.9%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">44.0%</td></tr>
+<tr><td>$ Roll rate -> 30D to CO</td><td>60.5%</td><td>109.4%</td><td>124.8%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">109.8%</td></tr>
+<tr class="section-row"><td colspan="10">Charge-off</td></tr>
+<tr><td># Charge off rate</td><td>3.2%</td><td>1.9%</td><td>2.6%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td class="total-col">0.1%</td></tr>
+<tr><td>$ Charge off rate</td><td>1.7%</td><td>1.8%</td><td>2.9%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td class="total-col">0.1%</td></tr>
+<tr class="section-row"><td colspan="10">Target loss</td></tr>
+<tr><td># Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col d">—</td></tr>
+<tr><td>$ Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col d">—</td></tr>
+<tr class="section-row"><td colspan="10">Payoff</td></tr>
+<tr><td>% Paid Off</td><td>88.7%</td><td>33.7%</td><td>26.4%</td><td class="d">—</td><td>11.1%</td><td>5.4%</td><td>2.5%</td><td class="hi">0.4%</td><td class="total-col">4.0%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="commentary" id="commentary11"></div>
+  </div>
+
+  <div class="foot">
+    <div class="foot-l">
+      Data as of 2026-04-07 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (funded_loan=1)<br>
+      Joined with intuit_lending_loanprofiles_dwh.loan_origination &middot; intuit_lending_servicing_capital_dwh.loan_repayment_daily
+    </div>
+    <div class="foot-r">11</div>
+  </div>
+</div>
+<div class="slide" id="slide12">
+  <div class="accent"></div>
+  <div class="hdr-section">
+    <div class="hdr">
+      <div class="hdr-left">
+        <div class="hdr-bar"></div>
+        <div>
+          <h1>DPD30+ by Vintage &amp; Vantage Group</h1>
+          <div class="sub">Origination month cohort &middot; Constant denominator &middot; MoB checkpoint performance</div>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="bl">MBR Report</div>
+        <div class="bv">April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vintage-body">
+    <div class="shared-legend" id="legend12"></div>
+    <div class="chart-grid">
+      <div class="chart-box">
+        <div class="chart-title" id="title12_0"></div>
+        <div class="chart-div" id="c12_0"></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title" id="title12_1"></div>
+        <div class="chart-div" id="c12_1"></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title" id="title12_2"></div>
+        <div class="chart-div" id="c12_2"></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title" id="title12_3"></div>
+        <div class="chart-div" id="c12_3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>Source: sandbox_risk_7216.fnpl_base_alpha_ga2 ⟶ loan_origination ⟶ loan_repayment_daily (DoB snapshots: day 1 + every 30d)</span>
+    <span class="foot-tag">FNPL Risk</span>
+  </div>
+</div>
+<div class="slide" id="slide13">
+  <div class="accent"></div>
+  <div class="hdr-section">
+    <div class="hdr">
+      <div class="hdr-left">
+        <div class="hdr-bar"></div>
+        <div>
+          <h1>DPD30+ by Vintage &amp; Term</h1>
+          <div class="sub">Origination month cohort &middot; 3-Month and 6-Month terms shown &middot; 9-Month omitted (no DPD30+ data yet)</div>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="bl">MBR Report</div>
+        <div class="bv">April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vintage-body">
+    <div class="shared-legend" id="legend13"></div>
+    <div class="chart-row" id="chartRow13"></div>
+  </div>
+
+  <div class="foot">
+    <span>Source: sandbox_risk_7216.fnpl_base_alpha_ga2 ⟶ loan_origination ⟶ loan_repayment_daily (DoB snapshots: day 1 + every 30d)</span>
+    <span class="foot-tag">FNPL Risk</span>
+  </div>
+</div>
+<script>
+(function(){(function(){
+const M = ["Sep-25", "Oct-25", "Nov-25", "Dec-25", "Jan-26", "Feb-26", "Mar-26", "Apr-26"];
+const B = [{"n": "Super Prime", "c": "#1D4E89", "v": [19, 248, 0, 0, 96, 1633, 45648, 16947]}, {"n": "Prime", "c": "#19A0AA", "v": [164, 2082, 0, 0, 989, 8344, 71189, 29112]}, {"n": "Near Prime", "c": "#F0C929", "v": [170, 1928, 0, 0, 910, 6259, 25615, 10127]}, {"n": "Subprime", "c": "#E07B39", "v": [256, 2977, 0, 0, 1696, 9333, 29783, 10811]}, {"n": "Invalid", "c": "#C44536", "v": [24, 304, 0, 0, 109, 1328, 10531, 1317]}];
+
+const T = M.map(function(_,i){ return B.reduce(function(s,b){ return s+b.v[i]; }, 0); });
+const traces = B.map(function(b){
+  return {
+    name:b.n, x:M, type:'bar',
+    y: b.v.map(function(v,i){ return T[i]>0 ? v/T[i]*100 : 0; }),
+    marker:{ color:b.c },
+    hovertemplate:'%{x}: %{y:.1f}%<extra>'+b.n+'</extra>',
+  };
+});
+
+const aY = [19.43, 31.16, null, null, 30.18, 42.44, 67.23, 71.83];
+
+traces.push({
+  name:'Approval Rate', x:M, yaxis:'y2', type:'scatter',
+  y:aY, mode:'lines+markers+text',
+  line:{ color:'#0F172A', width:2.5, shape:'spline', dash:'dot' },
+  marker:{ size:8, color:'#F8FAFC', symbol:'circle', line:{ color:'#0F172A', width:2.5 } },
+  text:aY.map(function(v){ return v!==null ? v.toFixed(0)+'%' : ''; }),
+  textposition:'top center',
+  textfont:{ size:12, color:'#0F172A', family:'Inter, sans-serif' },
+  connectgaps:false,
+});
+
+Plotly.newPlot('chart9', traces, {
+  barmode:'stack', bargap:0.32,
+  plot_bgcolor:'#fff', paper_bgcolor:'#fff',
+  font:{ family:'Inter, sans-serif', size:10, color:'#94A3B8' },
+  margin:{ l:82, r:50, t:4, b:0 },
+  legend:{
+    orientation:'h', y:1.06, x:0.5, xanchor:'center',
+    font:{ size:8.5, color:'#64748B', family:'Inter, sans-serif' },
+    bgcolor:'rgba(0,0,0,0)', traceorder:'normal', itemwidth:28,
+  },
+  xaxis:{ showticklabels:false, showline:false, showgrid:false, zeroline:false },
+  yaxis:{
+    title:{ text:'Vantage Distribution %', font:{ size:9, color:'#64748B' }, standoff:6 },
+    range:[0,110], ticksuffix:'%', tickvals:[0,25,50,75,100],
+    gridcolor:'#F1F5F9', gridwidth:1,
+    zeroline:false, showline:true, linecolor:'#E2E8F0', linewidth:1,
+    tickfont:{ size:9, color:'#94A3B8' },
+  },
+  yaxis2:{
+    title:{ text:'Approval Rate %', font:{ size:9, color:'#64748B' }, standoff:6 },
+    range:[0,110], overlaying:'y', side:'right',
+    ticksuffix:'%', tickvals:[0,25,50,75,100],
+    showticklabels:true, showgrid:false,
+    showline:true, linecolor:'#E2E8F0', linewidth:1,
+    tickfont:{ size:9, color:'#94A3B8' },
+  },
+},{ responsive:false, displayModeBar:false });
+})();})();
+(function(){(function(){
+var D = {"latest": {"label": "Apr-26", "wa_term": 5.95, "wa_apr": 13.780000000000001, "wa_vantage": 714, "ck_low_risk": 61.12, "mobile": 35.010000000000005, "avg_dti": 39.0, "loans": 8194}, "prior": {"label": "Mar-26", "wa_term": 6.08, "wa_apr": 16.400000000000002, "wa_vantage": 714, "ck_low_risk": 55.93, "mobile": 33.900000000000006, "avg_dti": 39.0, "loans": 25084}, "total": {"ck_low_risk": 55.74}};
+
+function dir(c, p) { return c > p ? 'increased' : c < p ? 'decreased' : 'remained stable'; }
+
+var bullets = [];
+
+if (D.latest && D.prior && D.latest.wa_term && D.prior.wa_term) {
+  var d = dir(D.latest.wa_term, D.prior.wa_term);
+  bullets.push(
+    '<strong>WA Term</strong> has ' + d + ' to <strong>' + D.latest.wa_term.toFixed(1) + '</strong> in ' + D.latest.label +
+    ' (from ' + D.prior.wa_term.toFixed(1) + ' in ' + D.prior.label + '), indicating customers are ' +
+    (D.latest.wa_term > D.prior.wa_term ? 'opting for longer loan terms. Based on A/B performance, longer term loans have higher risk \u2014 we will continue to closely monitor GA performance by Term.' :
+     D.latest.wa_term < D.prior.wa_term ? 'choosing shorter loan terms.' : 'maintaining similar term preferences.')
+  );
+}
+
+if (D.latest && D.total && D.latest.ck_low_risk != null) {
+  var valL = D.latest.ck_low_risk > 1 ? D.latest.ck_low_risk : Math.round(D.latest.ck_low_risk * 100);
+  var valT = D.total.ck_low_risk > 1 ? D.total.ck_low_risk : Math.round(D.total.ck_low_risk * 100);
+  bullets.push(
+    'As we see better quality applicants filing and applying for FNPL, <strong>' + valL + '%</strong> of ' +
+    D.latest.label + ' funded loans are from <strong>CK low risk</strong> placements vs ~' +
+    valT + '% overall.'
+  );
+}
+
+if (D.latest && D.prior && D.latest.loans && D.prior.loans) {
+  var chg = ((D.latest.loans - D.prior.loans) / D.prior.loans * 100).toFixed(0);
+  var d2 = D.latest.loans > D.prior.loans ? 'grew' : 'declined';
+  bullets.push(
+    'Funded loan volume ' + d2 + ' by <strong>' + Math.abs(chg) + '%</strong> ' +
+    '(' + D.latest.loans.toLocaleString() + ' loans in ' + D.latest.label +
+    ' vs ' + D.prior.loans.toLocaleString() + ' in ' + D.prior.label + ').'
+  );
+}
+
+document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
+  return '<div class="callout"><div class="num">' + (i+1) + '</div><div class="txt">' + b + '</div></div>';
+}).join('');
+})();})();
+(function(){})();
+(function(){(function(){
+const PALETTE = ['#1D4E89','#19A0AA','#E07B39','#C44536','#F0C929','#7C3AED','#475569','#0E7490','#B45309'];
+const MO = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
+const VG_ORDER = ['4. Super Prime','3. Prime','2. Near Prime','1. Subprime'];
+const VG_NICE  = {'4. Super Prime':'Super Prime (≥780)','3. Prime':'Prime (660–779)','2. Near Prime':'Near Prime (600–659)','1. Subprime':'Subprime (<600)'};
+
+function vLabel(om){ const d=new Date(om+'T00:00:00'); return MO[d.getMonth()+1]+'-'+String(d.getFullYear()).slice(2); }
+function mobN(m){ return parseInt(m.replace('M','')); }
+function allMobs(cap){ const a=[]; for(let i=0;i<=cap;i++) a.push('M'+i); return a; }
+
+function buildVintageColors(rows){
+  const oms=[...new Set(rows.map(r=>r.om))].sort();
+  const map={}; oms.forEach((o,i)=>{ map[o]=PALETTE[i%PALETTE.length]; });
+  return {oms, map};
+}
+
+function renderSlide12(DATA, MOB_CAP){
+  const filtered = DATA.filter(r=> mobN(r.mob)<=MOB_CAP);
+  const {oms, map} = buildVintageColors(filtered);
+  const MOBS = allMobs(MOB_CAP);
+
+  document.getElementById('legend12').innerHTML = oms.map(om=>
+    '<span class="leg-item"><span class="leg-dot" style="background:'+map[om]+'"></span>'+vLabel(om)+'</span>'
+  ).join('');
+
+  VG_ORDER.forEach(function(vg,idx){
+    const sub = filtered.filter(r=>r.vg===vg);
+    const vints = [...new Set(sub.map(r=>r.om))].sort();
+    document.getElementById('title12_'+idx).textContent = (idx+1)+'. '+VG_NICE[vg];
+
+    const traces = oms.map(om=>{
+      const pts = sub.filter(r=>r.om===om).sort((a,b)=>mobN(a.mob)-mobN(b.mob));
+      if(!pts.length){
+        return { x:['M0'], y:[0], mode:'lines', line:{color:map[om],width:1,dash:'dot'}, showlegend:false, hoverinfo:'skip' };
+      }
+      return {
+        x: pts.map(p=>p.mob),
+        y: pts.map(p=>+(p.r*100).toFixed(2)),
+        mode:'lines+markers+text',
+        line:{shape:'spline',smoothing:1.2,width:2.5,color:map[om]},
+        marker:{size:6,color:map[om]},
+        text: pts.map(p=> p.r>0 ? (p.r*100).toFixed(1)+'%' : ''),
+        textposition:'top center',
+        textfont:{size:9,color:map[om],family:'Inter'},
+        showlegend:false,
+        hovertemplate:'%{x}: %{y:.2f}%<extra>'+vLabel(om)+' (n='+pts[0].tl+')</extra>'
+      };
+    });
+
+    Plotly.newPlot('c12_'+idx, traces, {
+      xaxis:{categoryorder:'array',categoryarray:MOBS,tickfont:{size:9,family:'Inter'},title:{text:'Month on Books',font:{size:9,family:'Inter'}}},
+      yaxis:{ticksuffix:'%',rangemode:'tozero',tickfont:{size:9,family:'Inter'},title:{text:'DPD 30+ Rate',font:{size:9,family:'Inter'}}},
+      margin:{l:42,r:8,t:4,b:32},
+      paper_bgcolor:'transparent',plot_bgcolor:'transparent',
+      font:{family:'Inter'}
+    },{responsive:true,displayModeBar:false});
+  });
+}
+
+/* ── DATA (agent replaces at build time) ── */
+var SLIDE12_DATA = [{"vg": "1. Subprime", "om": "2025-09-30", "mob": "M0", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M1", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M2", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M3", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M4", "tl": 7, "r": 0.14285714285714285}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M5", "tl": 7, "r": 0.14285714285714285}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M0", "tl": 145, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M1", "tl": 145, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M2", "tl": 145, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M3", "tl": 145, "r": 0.06206896551724138}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M4", "tl": 145, "r": 0.07586206896551724}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M5", "tl": 145, "r": 0.06206896551724138}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M0", "tl": 22, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M1", "tl": 22, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M2", "tl": 22, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M3", "tl": 22, "r": 0.045454545454545456}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M4", "tl": 22, "r": 0.09090909090909091}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M5", "tl": 22, "r": 0.09090909090909091}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M0", "tl": 2, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M1", "tl": 2, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M2", "tl": 2, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-02-28", "mob": "M0", "tl": 421, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-02-28", "mob": "M1", "tl": 421, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-03-31", "mob": "M0", "tl": 1525, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-03-31", "mob": "M1", "tl": 1525, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-04-30", "mob": "M0", "tl": 513, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M0", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M1", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M2", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M3", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M4", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M5", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M0", "tl": 552, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M1", "tl": 552, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M2", "tl": 552, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M3", "tl": 552, "r": 0.021739130434782608}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M4", "tl": 552, "r": 0.03804347826086957}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M5", "tl": 552, "r": 0.04710144927536232}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M0", "tl": 101, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M1", "tl": 101, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M2", "tl": 101, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M3", "tl": 101, "r": 0.04950495049504951}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M4", "tl": 101, "r": 0.06930693069306931}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M5", "tl": 101, "r": 0.1188118811881188}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M0", "tl": 5, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M1", "tl": 5, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M2", "tl": 5, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-02-28", "mob": "M0", "tl": 1721, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-02-28", "mob": "M1", "tl": 1721, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-03-31", "mob": "M0", "tl": 5600, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-03-31", "mob": "M1", "tl": 5600, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-04-30", "mob": "M0", "tl": 1931, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M0", "tl": 36, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M1", "tl": 36, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M2", "tl": 36, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M3", "tl": 36, "r": 0.05555555555555555}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M4", "tl": 36, "r": 0.027777777777777776}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M5", "tl": 36, "r": 0.05555555555555555}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M0", "tl": 797, "r": 0.0}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M1", "tl": 797, "r": 0.0}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M2", "tl": 797, "r": 0.0}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M3", "tl": 797, "r": 0.02258469259723965}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M4", "tl": 797, "r": 0.02258469259723965}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M5", "tl": 797, "r": 0.027603513174404015}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M0", "tl": 132, "r": 0.0}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M1", "tl": 132, "r": 0.0}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M2", "tl": 132, "r": 0.0}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M3", "tl": 132, "r": 0.015151515151515152}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M4", "tl": 132, "r": 0.007575757575757576}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M5", "tl": 132, "r": 0.015151515151515152}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M0", "tl": 2, "r": 0.0}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M1", "tl": 2, "r": 0.0}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M2", "tl": 2, "r": 0.0}, {"vg": "3. Prime", "om": "2026-02-28", "mob": "M0", "tl": 3159, "r": 0.0}, {"vg": "3. Prime", "om": "2026-02-28", "mob": "M1", "tl": 3159, "r": 0.0}, {"vg": "3. Prime", "om": "2026-03-31", "mob": "M0", "tl": 14071, "r": 0.0}, {"vg": "3. Prime", "om": "2026-03-31", "mob": "M1", "tl": 14071, "r": 0.0}, {"vg": "3. Prime", "om": "2026-04-30", "mob": "M0", "tl": 4455, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M0", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M1", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M2", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M3", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M4", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M5", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M0", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M1", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M2", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M3", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M4", "tl": 119, "r": 0.008403361344537815}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M5", "tl": 119, "r": 0.008403361344537815}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M0", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M1", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M2", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M3", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M4", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M5", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-02-28", "mob": "M0", "tl": 437, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-02-28", "mob": "M1", "tl": 437, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-03-31", "mob": "M0", "tl": 3888, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-03-31", "mob": "M1", "tl": 3888, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-04-30", "mob": "M0", "tl": 1295, "r": 0.0}];
+var SLIDE12_MOB_CAP = 5;
+renderSlide12(SLIDE12_DATA, SLIDE12_MOB_CAP);
+})();})();
+(function(){(function(){
+const PALETTE = ['#1D4E89','#19A0AA','#E07B39','#C44536','#F0C929','#7C3AED','#475569','#0E7490','#B45309'];
+const MO = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
+const TERM_LABEL = {'3':'3-Month Term','6':'6-Month Term','9':'9-Month Term','12':'12-Month Term'};
+
+function vLabel(om){ const d=new Date(om+'T00:00:00'); return MO[d.getMonth()+1]+'-'+String(d.getFullYear()).slice(2); }
+function mobN(m){ return parseInt(m.replace('M','')); }
+function allMobs(cap){ const a=[]; for(let i=0;i<=cap;i++) a.push('M'+i); return a; }
+function fmt(n){ return n>=1000 ? n.toLocaleString() : String(n); }
+
+/** Vintages that appear in cohort summary tables — keeps legend aligned with table columns (no orphan legend like Jan-26 when only one term had it in raw DPD). */
+function cohortVintageMonths(COHORT, TERMS){
+  var seen = {};
+  COHORT.forEach(function(c){
+    if (TERMS.indexOf(String(c.t)) >= 0) seen[c.om] = true;
+  });
+  return Object.keys(seen).sort();
+}
+
+/** Align every series to full M0..M(MOB_CAP). Use numeric x (0..cap) + ticktext labels so Plotly does not thin or mis-order category ticks on narrow panels (esp. 3-month). */
+function padSeriesToMobs(pts, MOB_CAP){
+  var MOBS = allMobs(MOB_CAP);
+  var byM = {};
+  pts.forEach(function(p){ byM[p.mob] = p; });
+  var x = [];
+  for (var i = 0; i <= MOB_CAP; i++) x.push(i);
+  var y = MOBS.map(function(m){
+    var p = byM[m];
+    return p ? +(p.r * 100).toFixed(2) : null;
+  });
+  var text = MOBS.map(function(m){
+    var p = byM[m];
+    return p && p.r > 0 ? (p.r * 100).toFixed(1) + '%' : '';
+  });
+  var customdata = MOBS.map(function(m){ return [m]; });
+  return { x: x, y: y, text: text, customdata: customdata };
+}
+
+function renderSlide13(DPD_DATA, COHORT, MOB_CAP, TERMS){
+  const filtered = DPD_DATA.filter(r=> mobN(r.mob)<=MOB_CAP);
+  const oms = cohortVintageMonths(COHORT, TERMS);
+  const map = {};
+  oms.forEach(function(om, i){ map[om] = PALETTE[i % PALETTE.length]; });
+  const MOBS = allMobs(MOB_CAP);
+
+  document.getElementById('legend13').innerHTML = oms.map(function(om){
+    return '<span class="leg-item"><span class="leg-dot" style="background:'+map[om]+'"></span>'+vLabel(om)+'</span>';
+  }).join('');
+
+  var row = document.getElementById('chartRow13');
+
+  /** Plot after every chart-box exists so flex gives each panel ~half width; plotting the first panel
+   *  while only one child exists measured ~full row width and clipped M3+ under overflow:hidden. */
+  var plotJobs = [];
+
+  TERMS.forEach(function(term){
+    var box = document.createElement('div');
+    box.className = 'chart-box';
+
+    var title = document.createElement('div');
+    title.className = 'chart-title';
+    title.textContent = TERM_LABEL[term] || (term+'-Month Term');
+    box.appendChild(title);
+
+    var chartDiv = document.createElement('div');
+    chartDiv.className = 'chart-div';
+    chartDiv.id = 'c13_'+term;
+    box.appendChild(chartDiv);
+
+    var cRows = COHORT.filter(function(r){ return String(r.t) === String(term); }).sort(function(a,b){ return a.om.localeCompare(b.om); });
+    if(cRows.length){
+      var tbl = document.createElement('table');
+      tbl.className = 'vtbl';
+      var hdr = '<tr><th></th>'+cRows.map(r=>'<th>'+vLabel(r.om)+'</th>').join('')+'</tr>';
+      var r1 = '<tr><td># Loans</td>'+cRows.map(r=>'<td>'+fmt(r.n)+'</td>').join('')+'</tr>';
+      var r2 = '<tr><td>Avg Vantage</td>'+cRows.map(r=>'<td>'+r.v+'</td>').join('')+'</tr>';
+      var r3 = '<tr><td>Med. Income</td>'+cRows.map(r=>'<td>$'+r.mi+'K</td>').join('')+'</tr>';
+      tbl.innerHTML = hdr+r1+r2+r3;
+      box.appendChild(tbl);
+    }
+
+    row.appendChild(box);
+
+    var sub = filtered.filter(function(r){ return String(r.t) === String(term); });
+    var yMax = 0;
+    sub.forEach(function(r){ yMax = Math.max(yMax, r.r * 100); });
+    // Per-term y-scale. 3-mo DPD30+ is often 0% until M3+ so a wide 0–10% axis looks "empty";
+    // cap the ceiling tighter (max ~10%) so non-zero rates use more vertical space.
+    var yTop;
+    if (yMax <= 0) {
+      yTop = 5;
+    } else if (String(term) === '3') {
+      yTop = Math.min(10, Math.max(yMax * 1.48 + 1.05, 4));
+    } else {
+      yTop = Math.min(100, yMax * 1.32 + 0.65);
+    }
+
+    var yDtick = (yTop <= 8) ? 1 : 2;
+
+    var traces = oms.map(function(om){
+      var pts = sub.filter(function(r){ return r.om === om; }).sort(function(a,b){ return mobN(a.mob) - mobN(b.mob); });
+      if (!pts.length) return null;
+      var pad = padSeriesToMobs(pts, MOB_CAP);
+      return {
+        x: pad.x,
+        y: pad.y,
+        customdata: pad.customdata,
+        mode:'lines+markers+text',
+        connectgaps:false,
+        line:{shape:'spline',smoothing:1.22,width:2.5,color:map[om]},
+        marker:{size:5,color:map[om]},
+        text: pad.text,
+        textposition:'top center',
+        textfont:{size:8.5,color:map[om],family:'Inter'},
+        showlegend:false,
+        hovertemplate:'%{customdata[0]}: %{y:.2f}%<extra>'+vLabel(om)+'</extra>'
+      };
+    }).filter(Boolean);
+
+    var tickPos = [];
+    for (var ti = 0; ti <= MOB_CAP; ti++) tickPos.push(ti);
+    plotJobs.push({ term: term, traces: traces, yTop: yTop, yDtick: yDtick, tickPos: tickPos });
+  });
+
+  void row.offsetHeight;
+  plotJobs.forEach(function(job){
+    var chartDiv = document.getElementById('c13_'+job.term);
+    var plotW = Math.max(260, chartDiv.getBoundingClientRect().width);
+    Plotly.newPlot('c13_'+job.term, job.traces, {
+      width: plotW,
+      xaxis:{
+        type:'linear',
+        tickmode:'array',
+        tickvals:job.tickPos,
+        ticktext:MOBS,
+        range:[-0.35, MOB_CAP + 0.35],
+        fixedrange:true,
+        tickfont:{size:9,family:'Inter'},
+        title:{text:'Month on Books',font:{size:9,family:'Inter'}},
+        automargin:true,
+        zeroline:false
+      },
+      yaxis:{ticksuffix:'%',range:[0,job.yTop],dtick:job.yDtick,tickfont:{size:9,family:'Inter'},title:{text:'DPD 30+ Rate',font:{size:9,family:'Inter'}},zeroline:true,zerolinewidth:1,zerolinecolor:'#E2E8F0'},
+      margin:{l:46,r:10,t:6,b:36},
+      height:300,
+      paper_bgcolor:'transparent',plot_bgcolor:'transparent',
+      font:{family:'Inter'}
+    },{responsive:false,displayModeBar:false});
+  });
+}
+
+/* ── DATA (agent replaces at build time) ── */
+var SLIDE13_DPD = [{"t": "3", "om": "2025-09-30", "mob": "M0", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M1", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M2", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M3", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M4", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M5", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M0", "tl": 367, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M1", "tl": 367, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M2", "tl": 367, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M3", "tl": 367, "r": 0.02452316076294278}, {"t": "3", "om": "2025-10-31", "mob": "M4", "tl": 367, "r": 0.027247956403269755}, {"t": "3", "om": "2025-10-31", "mob": "M5", "tl": 367, "r": 0.0326975476839237}, {"t": "3", "om": "2025-11-30", "mob": "M0", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M1", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M2", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M3", "tl": 60, "r": 0.016666666666666666}, {"t": "3", "om": "2025-11-30", "mob": "M4", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M5", "tl": 60, "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M0", "tl": 1, "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M1", "tl": 1, "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M2", "tl": 1, "r": 0.0}, {"t": "3", "om": "2026-02-28", "mob": "M0", "tl": 1282, "r": 0.0}, {"t": "3", "om": "2026-02-28", "mob": "M1", "tl": 1282, "r": 0.0}, {"t": "3", "om": "2026-03-31", "mob": "M0", "tl": 10936, "r": 0.0}, {"t": "3", "om": "2026-03-31", "mob": "M1", "tl": 10936, "r": 0.0}, {"t": "3", "om": "2026-04-30", "mob": "M0", "tl": 3724, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M0", "tl": 44, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M1", "tl": 44, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M2", "tl": 44, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M3", "tl": 44, "r": 0.045454545454545456}, {"t": "6", "om": "2025-09-30", "mob": "M4", "tl": 44, "r": 0.045454545454545456}, {"t": "6", "om": "2025-09-30", "mob": "M5", "tl": 44, "r": 0.06818181818181818}, {"t": "6", "om": "2025-10-31", "mob": "M0", "tl": 1246, "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M1", "tl": 1246, "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M2", "tl": 1246, "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M3", "tl": 1246, "r": 0.024077046548956663}, {"t": "6", "om": "2025-10-31", "mob": "M4", "tl": 1246, "r": 0.03290529695024077}, {"t": "6", "om": "2025-10-31", "mob": "M5", "tl": 1246, "r": 0.03691813804173355}, {"t": "6", "om": "2025-11-30", "mob": "M0", "tl": 205, "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M1", "tl": 205, "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M2", "tl": 205, "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M3", "tl": 205, "r": 0.03414634146341464}, {"t": "6", "om": "2025-11-30", "mob": "M4", "tl": 205, "r": 0.04878048780487805}, {"t": "6", "om": "2025-11-30", "mob": "M5", "tl": 205, "r": 0.07804878048780488}, {"t": "6", "om": "2026-01-31", "mob": "M0", "tl": 8, "r": 0.0}, {"t": "6", "om": "2026-01-31", "mob": "M1", "tl": 8, "r": 0.0}, {"t": "6", "om": "2026-01-31", "mob": "M2", "tl": 8, "r": 0.0}, {"t": "6", "om": "2026-02-28", "mob": "M0", "tl": 3607, "r": 0.0}, {"t": "6", "om": "2026-02-28", "mob": "M1", "tl": 3607, "r": 0.0}, {"t": "6", "om": "2026-03-31", "mob": "M0", "tl": 5146, "r": 0.0}, {"t": "6", "om": "2026-03-31", "mob": "M1", "tl": 5146, "r": 0.0}, {"t": "6", "om": "2026-04-30", "mob": "M0", "tl": 1488, "r": 0.0}];
+var SLIDE13_COHORT = [{"t": "3", "om": "2025-09-30", "n": 18, "v": 694, "mi": 102}, {"t": "3", "om": "2025-10-31", "n": 367, "v": 692, "mi": 93}, {"t": "3", "om": "2025-11-30", "n": 60, "v": 686, "mi": 75}, {"t": "3", "om": "2026-02-28", "n": 1282, "v": 701, "mi": 69}, {"t": "3", "om": "2026-03-31", "n": 10936, "v": 725, "mi": 84}, {"t": "3", "om": "2026-04-30", "n": 3724, "v": 725, "mi": 89}, {"t": "6", "om": "2025-09-30", "n": 44, "v": 685, "mi": 86}, {"t": "6", "om": "2025-10-31", "n": 1246, "v": 674, "mi": 98}, {"t": "6", "om": "2025-11-30", "n": 205, "v": 669, "mi": 80}, {"t": "6", "om": "2026-02-28", "n": 3607, "v": 683, "mi": 73}, {"t": "6", "om": "2026-03-31", "n": 5146, "v": 698, "mi": 75}, {"t": "6", "om": "2026-04-30", "n": 1488, "v": 695, "mi": 79}];
+var SLIDE13_MOB_CAP = 5;
+var SLIDE13_TERMS = ["3", "6"];
+renderSlide13(SLIDE13_DPD, SLIDE13_COHORT, SLIDE13_MOB_CAP, SLIDE13_TERMS);
+})();})();
+</script>
+</body>
+</html>
