@@ -1064,7 +1064,7 @@ body.edit-mode .slide, body.edit-mode .slide-fixed {
     <div class="dot"></div>
       </div>
       <span class="slide-counter">1 / 10</span>
-      <button class="mode-toggle" onclick="var u=new URL(location);u.searchParams.set('mode','edit');location=u.toString();">✏ Edit Mode</button>
+      <button class="mode-toggle" id="editModeBtn">✏ Edit Mode</button>
     </div>
   </div>
   <script>
@@ -1492,16 +1492,34 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
 })();
 /* edit mode */
 (function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('mode') !== 'edit') return;
-
-  document.body.classList.add('edit-mode');
-
   var editables = document.querySelectorAll('[data-editable]');
-  editables.forEach(function(el) {
-    el.setAttribute('contenteditable', 'true');
-    el.setAttribute('spellcheck', 'false');
-  });
+  var toast = document.querySelector('.edit-toast');
+  var editBtn = document.getElementById('editModeBtn');
+  var saveBtn = document.querySelector('.edit-btn-save');
+  var exitBtn = document.querySelector('.edit-btn-exit');
+
+  function showToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, ms || 3000);
+  }
+
+  function enterEditMode() {
+    document.body.classList.add('edit-mode');
+    editables.forEach(function(el) {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+    });
+  }
+
+  function exitEditMode() {
+    document.body.classList.remove('edit-mode');
+    editables.forEach(function(el) {
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('spellcheck');
+      if (document.activeElement === el) el.blur();
+    });
+  }
 
   /* prevent arrow keys from changing slides when editing */
   document.addEventListener('keydown', function(e) {
@@ -1510,13 +1528,27 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
     }
   }, true);
 
-  /* toast helper */
-  var toast = document.querySelector('.edit-toast');
-  function showToast(msg, ms) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(function(){ toast.classList.remove('show'); }, ms || 3000);
+  /* Edit Mode button (bottom bar in present mode) */
+  if (editBtn) {
+    editBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      enterEditMode();
+    });
   }
+
+  /* Present Mode button (edit banner) */
+  if (exitBtn) {
+    exitBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      exitEditMode();
+    });
+  }
+
+  /* auto-enter edit mode if ?mode=edit is in the URL */
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'edit') enterEditMode();
 
   /* GitHub API config */
   var REPO_OWNER = 'namrataverma-rgb';
@@ -1529,7 +1561,7 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
     if (creds) return JSON.parse(creds);
     var token = prompt(
       'Enter your GitHub Personal Access Token (PAT) to save.\n\n' +
-      'Generate one at: github.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)\n' +
+      'Generate one at: github.com \u2192 Settings \u2192 Developer Settings \u2192 Personal Access Tokens \u2192 Tokens (classic)\n' +
       'Scope needed: repo'
     );
     if (!token) return null;
@@ -1538,18 +1570,15 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
     return obj;
   }
 
-  /* Save: collect current DOM, push to GitHub */
   async function saveToGitHub() {
     var creds = getCredentials();
-    if (!creds) { showToast('Save cancelled — no token provided.'); return; }
+    if (!creds) { showToast('Save cancelled \u2014 no token provided.'); return; }
 
     showToast('Saving...', 60000);
-    var saveBtn = document.querySelector('.edit-btn-save');
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
 
     try {
-      /* remove edit artifacts before serializing */
       editables.forEach(function(el) {
         el.removeAttribute('contenteditable');
         el.removeAttribute('spellcheck');
@@ -1557,20 +1586,18 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
 
       var htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 
-      /* restore editability */
       editables.forEach(function(el) {
         el.setAttribute('contenteditable', 'true');
         el.setAttribute('spellcheck', 'false');
       });
 
-      /* get current file SHA */
       var getResp = await fetch(API_BASE + '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH, {
         headers: { 'Authorization': 'token ' + creds.token, 'Accept': 'application/vnd.github.v3+json' }
       });
 
       if (getResp.status === 401) {
         localStorage.removeItem('mbr_github_creds');
-        showToast('Invalid token — cleared. Try again.');
+        showToast('Invalid token \u2014 cleared. Try again.');
         saveBtn.disabled = false;
         saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
         return;
@@ -1578,11 +1605,8 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
 
       var fileData = await getResp.json();
       var sha = fileData.sha;
-
-      /* base64 encode content */
       var encoded = btoa(unescape(encodeURIComponent(htmlContent)));
 
-      /* PUT to update file */
       var putResp = await fetch(API_BASE + '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH, {
         method: 'PUT',
         headers: {
@@ -1611,13 +1635,7 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
     saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
   }
 
-  /* wire up buttons */
-  document.querySelector('.edit-btn-save').onclick = saveToGitHub;
-  document.querySelector('.edit-btn-exit').onclick = function() {
-    var url = new URL(window.location);
-    url.searchParams.delete('mode');
-    window.location = url.toString();
-  };
+  if (saveBtn) saveBtn.addEventListener('click', saveToGitHub);
 })();
   </script>
 </body>
