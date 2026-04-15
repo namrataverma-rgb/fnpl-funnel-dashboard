@@ -882,11 +882,11 @@ body.edit-mode .delete-slide-fab { display: flex; }
     </div>
 
     <div class="kpis">
-      <div class="kp"><div class="kl">Total Apps (Mar)</div><div class="kv">184,045</div><div class="kd">▲ 585% vs Feb</div></div>
-      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">66.7<span class="u">%</span></div><div class="kn">▲ +20.4pp vs Feb</div></div>
-      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">700</div><div class="kd">▲ +69 vs Feb</div></div>
-      <div class="kp"><div class="kl">Median Income</div><div class="kv">$82<span class="u">K</span></div><div class="kd">▲ +$24K vs Feb</div></div>
-      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">24.8<span class="u">%</span></div><div class="kn">▲ +18.7pp vs Feb</div></div>
+      <div class="kp"><div class="kl">Total Apps (Feb)</div><div class="kv">26,860</div><div class="kd">▲ 607% vs Jan</div></div>
+      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">46.3<span class="u">%</span></div><div class="kn">▲ +6.1pp vs Jan</div></div>
+      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">631</div><div class="kd">▲ +22 vs Jan</div></div>
+      <div class="kp"><div class="kl">Median Income</div><div class="kv">$58<span class="u">K</span></div><div class="kd">▲ +$3K vs Jan</div></div>
+      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">6.1<span class="u">%</span></div><div class="kn">▲ +3.6pp vs Jan</div></div>
     </div>
   </div>
   <div class="ct">Vantage Score Distribution &amp; Contingent Approval Rate</div>
@@ -904,10 +904,10 @@ body.edit-mode .delete-slide-fab { display: flex; }
         <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
       </tr></thead>
       <tbody>
-        <tr><td>Num of Apps</td><td>633</td><td>7,539</td><td>17</td><td class="d">—</td><td>3,798</td><td>26,860</td><td class="hi">184,045</td><td>101,424</td></tr>
-        <tr><td>Avg Vantage</td><td>617</td><td>620</td><td>664</td><td class="d">—</td><td>609</td><td>631</td><td class="hi">700</td><td>698</td></tr>
-        <tr><td>Median Income</td><td>$69K</td><td>$70K</td><td>$97K</td><td class="d">—</td><td>$55K</td><td>$58K</td><td class="hi">$82K</td><td>$81K</td></tr>
-        <tr><td>Approval Rate</td><td>28.3%</td><td>37.9%</td><td class="d">—</td><td class="d">—</td><td>40.2%</td><td>46.3%</td><td class="hi">66.7%</td><td>71.1%</td></tr>
+        <tr><td>Num of Apps</td><td>633</td><td>7,539</td><td>17</td><td class="d">—</td><td>3,798</td><td>26,860</td><td class="hi">79,128</td></tr>
+        <tr><td>Avg Vantage</td><td>617</td><td>620</td><td>664</td><td class="d">—</td><td>609</td><td>631</td><td class="hi">701</td></tr>
+        <tr><td>Median Income</td><td>$69K</td><td>$70K</td><td>$97K</td><td class="d">—</td><td>$55K</td><td>$58K</td><td class="hi">$81K</td></tr>
+        <tr><td>Approval Rate</td><td>28.3%</td><td>37.9%</td><td class="d">—</td><td class="d">—</td><td>40.2%</td><td>46.3%</td><td class="hi">66.2%</td></tr>
       </tbody>
     </table>
     </div>
@@ -1146,11 +1146,11 @@ body.edit-mode .delete-slide-fab { display: flex; }
 (function(){
 const M = ["Sep-25","Oct-25","Nov-25","Dec-25","Jan-26","Feb-26","Mar-26"];
 const B = [
-    {n:'Super Prime',v:[19,248,0,0,96,1631,45619,24208],c:'#1D4E89'},
-    {n:'Prime',v:[164,2082,0,0,988,8326,71051,43181],c:'#19A0AA'},
-    {n:'Near Prime',v:[170,1928,0,0,909,6248,25532,15458],c:'#F0C929'},
-    {n:'Subprime',v:[256,2977,0,0,1696,9330,29715,16552],c:'#E07B39'},
-    {n:'Invalid/Null',v:[24,304,0,0,109,1325,12128,2025],c:'#C44536'}
+    {n:'Super Prime',v:[19,248,0,0,96,1631,20440],c:'#1D4E89'},
+    {n:'Prime',v:[164,2082,0,0,988,8326,29625],c:'#19A0AA'},
+    {n:'Near Prime',v:[170,1928,0,0,909,6248,10485],c:'#F0C929'},
+    {n:'Subprime',v:[256,2977,0,0,1696,9330,13046],c:'#E07B39'},
+    {n:'Invalid/Null',v:[24,304,0,0,109,1325,5532],c:'#C44536'}
   ];
 
 const T = M.map(function(_,i){ return B.reduce(function(s,b){ return s+b.v[i]; }, 0); });
@@ -1163,7 +1163,7 @@ const traces = B.map(function(b){
   };
 });
 
-const aY = [28.28,37.87,null,null,40.18,46.28,66.65,71.05];
+const aY = [28.28,37.87,null,null,40.18,46.28,66.18];
 
 traces.push({
   name:'Approval Rate', x:M, yaxis:'y2', type:'scatter',
