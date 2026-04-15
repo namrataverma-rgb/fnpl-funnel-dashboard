@@ -1,133 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FNPL MBR — Mar 2026</title>
-<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
-<style>
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  <meta charset="UTF-8">
+  <title>FNPL MBR — Mar 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+  <style>
 html, body { height: 100%; overflow: hidden; }
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background: #0F172A;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  -webkit-font-smoothing: antialiased;
   user-select: none;
 }
-
 .presenter {
   position: relative;
   width: 100vw; height: 100vh;
   display: flex; align-items: center; justify-content: center;
 }
-
 .slide-track {
   position: relative;
-  width: 1280px; height: 720px;
-  flex-shrink: 0;
+  width: 1280px; height: 720px; flex-shrink: 0;
 }
-
 .slide, .slide-fixed {
   position: absolute; top: 0; left: 0;
   width: 1280px; height: 720px;
-  background: #fff;
-  border-radius: 6px;
+  background: #fff; border-radius: 6px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0; pointer-events: none;
   transform: translateX(80px);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
-
 .slide.active, .slide-fixed.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(0);
-  z-index: 2;
+  opacity: 1; pointer-events: auto;
+  transform: translateX(0); z-index: 2;
 }
-
 .slide.exit-left, .slide-fixed.exit-left {
-  opacity: 0;
-  transform: translateX(-80px);
+  opacity: 0; transform: translateX(-80px);
 }
-
-/* Navigation arrows */
 .nav-btn {
-  position: absolute; top: 50%;
-  transform: translateY(-50%);
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  border: none; cursor: pointer;
-  background: rgba(255,255,255,0.12);
-  color: #fff; font-size: 22px;
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.12); color: #fff; font-size: 22px;
   display: flex; align-items: center; justify-content: center;
   backdrop-filter: blur(8px);
-  transition: background 0.2s, transform 0.15s;
-  z-index: 10;
+  transition: background 0.2s, transform 0.15s; z-index: 10;
 }
-.nav-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-50%) scale(1.08); }
-.nav-btn:active { transform: translateY(-50%) scale(0.95); }
+.nav-btn:hover { background: rgba(255,255,255,0.25); }
 .nav-btn.prev { left: max(12px, calc(50% - 680px)); }
 .nav-btn.next { right: max(12px, calc(50% - 680px)); }
 .nav-btn:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
-
-/* Bottom bar */
 .bottom-bar {
-  position: absolute; bottom: 16px; left: 50%;
-  transform: translateX(-50%);
-  display: flex; align-items: center; gap: 12px;
-  z-index: 10;
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; z-index: 10;
 }
-.slide-dots {
-  display: flex; gap: 6px;
-}
+.slide-dots { display: flex; gap: 6px; }
 .dot {
   width: 8px; height: 8px; border-radius: 50%;
-  background: rgba(255,255,255,0.25);
-  cursor: pointer;
+  background: rgba(255,255,255,0.25); cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
-.dot:hover { background: rgba(255,255,255,0.5); }
 .dot.active { background: #fff; transform: scale(1.3); }
-
 .slide-counter {
   font-size: 12px; color: rgba(255,255,255,0.5);
   font-weight: 600; letter-spacing: 1px;
-  font-variant-numeric: tabular-nums;
 }
-
-/* Scale down on small screens */
-@media (max-width: 1360px) or (max-height: 780px) {
-  .slide-track, .slide, .slide-fixed {
+.mode-toggle {
+  padding: 5px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+  font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
+  cursor: pointer; letter-spacing: 0.3px;
+  transition: background 0.2s, color 0.2s;
+  text-transform: uppercase;
+}
+.mode-toggle:hover { background: rgba(255,255,255,0.18); color: #fff; }
+body.edit-mode .mode-toggle { display: none; }
+@media (max-width: 1360px), (max-height: 780px) {
+  .slide-track {
+    transform: scale(calc(min(100vw / 1360, 100vh / 780)));
     transform-origin: center center;
   }
-  .presenter {
-    transform: scale(calc(min(100vw / 1320, 100vh / 780)));
-  }
 }
 
-/* === Slide-specific styles === */
+.edit-banner {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: #FEF3C7; border-bottom: 2px solid #F59E0B;
+  padding: 8px 24px; align-items: center; gap: 16px;
+  font-family: 'Inter', sans-serif; font-size: 13px; color: #92400E;
+}
+body.edit-mode .edit-banner { display: flex; }
+body.edit-mode { padding-top: 44px; }
+body.edit-mode .presenter { height: calc(100vh - 44px); }
+.edit-banner .edit-label { font-weight: 700; }
+.edit-banner .edit-hint { flex: 1; }
+.edit-banner .edit-btn {
+  padding: 6px 18px; border-radius: 6px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.edit-banner .edit-btn:hover { opacity: 0.85; }
+.edit-btn-save { background: #059669; color: #fff; }
+.edit-btn-exit { background: #0F172A; color: #fff; }
+body.edit-mode [data-editable] {
+  outline: 2px dashed rgba(35,108,255,0.4);
+  outline-offset: 4px;
+  border-radius: 4px;
+  cursor: text;
+  transition: outline-color 0.2s;
+}
+body.edit-mode [data-editable]:hover {
+  outline-color: rgba(35,108,255,0.7);
+}
+body.edit-mode [data-editable]:focus {
+  outline: 2px solid #236CFF;
+  outline-offset: 4px;
+  background: rgba(35,108,255,0.03);
+}
+body.edit-mode .slide, body.edit-mode .slide-fixed {
+  user-select: text;
+}
+.edit-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #0F172A; color: #fff; padding: 10px 24px; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  z-index: 1001; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.edit-toast.show { opacity: 1; }
 
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Add-slide modal */
+.add-slide-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(15,23,42,0.55); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.add-slide-overlay.open { display: flex; }
+.add-slide-modal {
+  background: #fff; border-radius: 14px; padding: 32px 36px 28px;
+  width: 620px; max-width: 92vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  font-family: 'Inter', sans-serif;
+}
+.add-slide-modal h2 {
+  font-size: 20px; font-weight: 700; color: #0F172A; margin: 0 0 6px;
+}
+.add-slide-modal .modal-sub {
+  font-size: 13px; color: #64748B; margin-bottom: 20px;
+}
+.add-slide-templates {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-bottom: 20px;
+}
+.tpl-card {
+  border: 2px solid #E2E8F0; border-radius: 10px; padding: 16px;
+  cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+  background: #F8FAFC;
+}
+.tpl-card:hover { border-color: #236CFF; box-shadow: 0 0 0 3px rgba(35,108,255,0.12); }
+.tpl-card .tpl-preview {
+  height: 80px; border-radius: 6px; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; overflow: hidden;
+}
+.tpl-card .tpl-name { font-size: 14px; font-weight: 700; color: #0F172A; }
+.tpl-card .tpl-desc { font-size: 11px; color: #64748B; margin-top: 2px; }
+.add-slide-close {
+  display: block; margin: 0 auto; padding: 8px 28px; border-radius: 8px;
+  border: 1px solid #CBD5E1; background: #fff; color: #334155;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.add-slide-close:hover { background: #F1F5F9; }
+body.edit-mode .add-slide-fab {
+  display: flex;
+}
+.add-slide-fab {
+  display: none; position: fixed; bottom: 24px; right: 24px; z-index: 1001;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #236CFF; color: #fff; border: none;
+  font-size: 28px; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(35,108,255,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.add-slide-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(35,108,255,0.5); }
+body.edit-mode .delete-slide-fab { display: flex; }
+.delete-slide-fab {
+  display: none; position: fixed; bottom: 24px; right: 84px; z-index: 1001;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #DC2626; color: #fff; border: none;
+  font-size: 22px; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(220,38,38,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.delete-slide-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(220,38,38,0.5); }
+.confirm-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(15,23,42,0.55); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.confirm-overlay.open { display: flex; }
+.confirm-modal {
+  background: #fff; border-radius: 14px; padding: 28px 32px 24px;
+  width: 420px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  font-family: 'Inter', sans-serif; text-align: center;
+}
+.confirm-modal h3 {
+  font-size: 18px; font-weight: 700; color: #0F172A; margin: 0 0 8px;
+}
+.confirm-modal p {
+  font-size: 13px; color: #64748B; margin: 0 0 20px; line-height: 1.5;
+}
+.confirm-btns { display: flex; gap: 10px; justify-content: center; }
+.confirm-btns button {
+  padding: 8px 24px; border-radius: 8px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.confirm-btns button:hover { opacity: 0.85; }
+.confirm-del { background: #DC2626; color: #fff; }
+.confirm-cancel { background: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; }
 
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide9 — DO NOT REMOVE ID PREFIX === */
+/* --- template.html --- */
+/* === ALL CSS SCOPED UNDER #slide9 — DO NOT REMOVE ID PREFIX === */
   #slide9 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -224,20 +322,8 @@ body {
   }
   #slide9 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
   #slide9 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
-
-
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide10 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide10.html --- */
+/* === ALL CSS SCOPED UNDER #slide10 — DO NOT REMOVE ID PREFIX === */
   #slide10 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -334,20 +420,8 @@ body {
   }
   #slide10 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
   #slide10 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
-
-
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide11 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide11.html --- */
+/* === ALL CSS SCOPED UNDER #slide11 — DO NOT REMOVE ID PREFIX === */
   #slide11 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -463,20 +537,8 @@ body {
   }
   #slide11 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
   #slide11 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
-
-
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide12 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide12.html --- */
+/* === ALL CSS SCOPED UNDER #slide12 — DO NOT REMOVE ID PREFIX === */
   #slide12 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -546,20 +608,8 @@ body {
     border: 1px solid #E2E8F0; border-radius: 4px;
     padding: 2px 8px; font-weight: 600; color: #64748B;
   }
-
-
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide13 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide13.html --- */
+/* === ALL CSS SCOPED UNDER #slide13 — DO NOT REMOVE ID PREFIX === */
   #slide13 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -641,14 +691,60 @@ body {
     border: 1px solid #E2E8F0; border-radius: 4px;
     padding: 2px 8px; font-weight: 600; color: #64748B;
   }
-
-</style>
+  </style>
 </head>
 <body>
-<div class="presenter">
-  <button class="nav-btn prev" id="prevBtn">&#8249;</button>
-  <div class="slide-track">
-<!-- Slide 1 -->
+  <div class="edit-banner">
+    <span class="edit-label">📝 Live editing on.</span>
+    <span class="edit-hint">Click any highlighted area to edit. Changes are saved for everyone.</span>
+    <button class="edit-btn edit-btn-save">💾 Save for Everyone</button>
+    <button class="edit-btn edit-btn-exit">▶ Present Mode</button>
+  </div>
+  <div class="edit-toast"></div>
+  <button class="delete-slide-fab" id="deleteSlideFab" title="Delete Current Slide">🗑</button>
+  <button class="add-slide-fab" id="addSlideFab" title="Add Slide">+</button>
+  <div class="confirm-overlay" id="deleteConfirmOverlay">
+    <div class="confirm-modal">
+      <h3>🗑 Delete This Slide?</h3>
+      <p id="deleteConfirmMsg">This will remove the current slide from the deck. This cannot be undone.</p>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" id="deleteCancelBtn">Cancel</button>
+        <button class="confirm-del" id="deleteConfirmBtn">Delete Slide</button>
+      </div>
+    </div>
+  </div>
+  <div class="add-slide-overlay" id="addSlideOverlay">
+    <div class="add-slide-modal">
+      <h2>Add New Slide</h2>
+      <div class="modal-sub">Choose a template. The new slide will be inserted after the current slide.</div>
+      <div class="add-slide-templates">
+        <div class="tpl-card" data-tpl="title">
+          <div class="tpl-preview" style="background:#0F172A;color:#fff;font-size:15px;font-weight:700;letter-spacing:1px;flex-direction:column;gap:4px;"><span>TITLE</span><span style="font-size:10px;color:#94A3B8;font-weight:400;">subtitle</span></div>
+          <div class="tpl-name">Title Slide</div>
+          <div class="tpl-desc">Dark cover with Intuit branding</div>
+        </div>
+        <div class="tpl-card" data-tpl="takeaway">
+          <div class="tpl-preview" style="background:#fff;border:1px solid #E2E8F0;font-size:12px;color:#0F172A;flex-direction:column;gap:0;padding:0;overflow:hidden;"><div style="height:3px;width:100%;background:linear-gradient(90deg,#1D4E89,#19A0AA,#F0C929,#E07B39,#C44536);"></div><div style="padding:8px 12px;"><strong style="font-size:13px;">Key Takeaway</strong><div style="font-size:10px;color:#64748B;margin-top:4px;">• bullet points</div></div></div>
+          <div class="tpl-name">Key Takeaway</div>
+          <div class="tpl-desc">MBR header + editable bullet points</div>
+        </div>
+        <div class="tpl-card" data-tpl="section">
+          <div class="tpl-preview" style="background:#fff;border:1px solid #E2E8F0;color:#0F172A;font-size:20px;font-weight:800;">§</div>
+          <div class="tpl-name">Section Header</div>
+          <div class="tpl-desc">Centered divider with rainbow accent</div>
+        </div>
+        <div class="tpl-card" data-tpl="blank">
+          <div class="tpl-preview" style="background:#fff;border:1px solid #E2E8F0;font-size:11px;color:#64748B;flex-direction:column;gap:0;padding:0;overflow:hidden;"><div style="height:3px;width:100%;background:linear-gradient(90deg,#1D4E89,#19A0AA,#F0C929,#E07B39,#C44536);"></div><div style="padding:8px 12px;"><div style="width:3px;height:16px;background:#1D4E89;border-radius:1px;margin-bottom:4px;"></div>Untitled Slide</div></div>
+          <div class="tpl-name">Blank Slide</div>
+          <div class="tpl-desc">MBR chrome with editable content</div>
+        </div>
+      </div>
+      <button class="add-slide-close" id="addSlideClose">Cancel</button>
+    </div>
+  </div>
+  <div class="presenter">
+    <button type="button" class="nav-btn prev" aria-label="Previous slide">‹</button>
+    <div class="slide-track">
 <div class="slide slide-fixed" id="slide1" style="background:#0F172A;display:flex;flex-direction:column;justify-content:flex-start;padding:0;">
   <div style="padding:28px 48px 0;">
     <img src="intuit-ecosystem-white.svg" alt="Intuit ecosystem" style="height:34px;">
@@ -658,89 +754,115 @@ body {
     <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#cbd5e1;margin:0;">Consumer Risk Team</p>
   </div>
 </div>
-<!-- Slide 2 -->
 <div class="slide slide-fixed" id="slide2" style="background:#FFFFFF;display:flex;flex-direction:column;padding:48px 56px 32px;">
-  <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0 0 32px;">Agenda</h1>
-  <div style="display:flex;flex:1;align-items:flex-start;">
-    <div style="width:4px;background:#0F172A;border-radius:2px;align-self:stretch;margin-right:0;"></div>
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px 40px;flex:1;">
-      <div style="margin-bottom:24px;">
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:4px;">Executive Summary & Follow ups</div>
-        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;">10 mins</div>
+  <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:24px;"></div>
+  <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0;">Agenda</h1>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;display:flex;align-items:flex-start;position:relative;padding:0 20px;">
+      <!-- connecting line -->
+      <div style="position:absolute;top:20px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:3px;background:#E2E8F0;z-index:0;"></div>
+      <!-- stop 1 (active — Executive Summary) -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#236CFF;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 0 6px rgba(35,108,255,0.15);">
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;">1</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#0F172A;margin-bottom:6px;">Executive Summary<br>&amp; Follow ups</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;color:#94A3B8;font-weight:600;background:#F1F5F9;padding:4px 14px;border-radius:20px;margin-top:4px;">10 mins</div>
       </div>
-      <div style="margin-bottom:24px;">
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:8px;">Credit Portfolio review by Product</div>
-        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;margin-bottom:8px;">35 mins</div>
-        <div style="padding-left:24px;display:flex;flex-direction:column;gap:4px;">
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— FNPL</div>
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— PCA</div>
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— RAD</div>
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#64748B;">— TTFA</div>
+      <!-- stop 2 -->
+      <div style="flex:1.4;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#0F172A;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;">2</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#0F172A;margin-bottom:6px;">Credit Portfolio<br>review by Product</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;color:#94A3B8;font-weight:600;background:#F1F5F9;padding:4px 14px;border-radius:20px;margin-bottom:12px;">35 mins</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#334155;background:#E2E8F0;padding:4px 12px;border-radius:6px;">FNPL</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#334155;background:#E2E8F0;padding:4px 12px;border-radius:6px;">PCA</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#334155;background:#E2E8F0;padding:4px 12px;border-radius:6px;">RAD</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#334155;background:#E2E8F0;padding:4px 12px;border-radius:6px;">TTFA</span>
         </div>
       </div>
-      <div>
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:4px;">Fraud Update</div>
-        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;">10 mins</div>
+      <!-- stop 3 -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#0F172A;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;">3</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#0F172A;margin-bottom:6px;">Fraud Update</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;color:#94A3B8;font-weight:600;background:#F1F5F9;padding:4px 14px;border-radius:20px;margin-top:4px;">10 mins</div>
       </div>
     </div>
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;margin-top:16px;">Consumer Risk Team | Mar 2026</div>
 </div>
-<!-- Slide 3 -->
 <div class="slide slide-fixed" id="slide3" style="background:#FFFFFF;display:flex;flex-direction:column;padding:0;">
   <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:28px 48px 20px;">
     <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:16px;"></div>
-    <h1 style="font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;color:#0F172A;margin:0;">Executive Summary & Follow ups</h1>
+    <h1 style="font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;color:#0F172A;margin:0;">Executive Summary &amp; Follow ups</h1>
   </div>
   <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 48px 12px;">
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">FNPL</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
+      <div data-editable="fnpl-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
     </div>
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">PCA</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Gurmeet Arora</div>
+      <div data-editable="pca-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Gurmeet Arora</div>
     </div>
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">RAD</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Shan Cong</div>
+      <div data-editable="rad-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Shan Cong</div>
     </div>
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">TTFA</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
+      <div data-editable="ttfa-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
     </div>
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;padding:0 48px 16px;">Consumer Risk Team | Mar 2026</div>
 </div>
-<!-- Slide 4 -->
 <div class="slide slide-fixed" id="slide4" style="background:#FFFFFF;display:flex;flex-direction:column;padding:48px 56px 32px;">
-  <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0 0 32px;">Agenda</h1>
-  <div style="display:flex;flex:1;align-items:flex-start;">
-    <div style="width:4px;background:#0F172A;border-radius:2px;align-self:stretch;margin-right:0;"></div>
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px 40px;flex:1;">
-      <div style="margin-bottom:24px;">
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#CBD5E1;margin-bottom:4px;">Executive Summary & Follow ups</div>
-        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#CBD5E1;">10 mins</div>
+  <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:24px;"></div>
+  <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0;">Agenda</h1>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;display:flex;align-items:flex-start;position:relative;padding:0 20px;">
+      <!-- connecting line -->
+      <div style="position:absolute;top:20px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:3px;background:#E2E8F0;z-index:0;"></div>
+      <!-- progress fill to stop 2 -->
+      <div style="position:absolute;top:20px;left:calc(16.66% + 20px);width:calc(33.33%);height:3px;background:#236CFF;z-index:0;"></div>
+      <!-- stop 1 (dimmed — done) -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;opacity:0.35;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#94A3B8;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;">1</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#94A3B8;margin-bottom:6px;">Executive Summary<br>&amp; Follow ups</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;color:#CBD5E1;font-weight:600;background:#F1F5F9;padding:4px 14px;border-radius:20px;margin-top:4px;">10 mins</div>
       </div>
-      <div style="margin-bottom:24px;">
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:8px;">Credit Portfolio review by Product</div>
-        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;margin-bottom:8px;">35 mins</div>
-        <div style="padding-left:24px;display:flex;flex-direction:column;gap:4px;">
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#0F172A;font-weight:700;display:flex;align-items:center;gap:8px;"><span style="color:#236CFF;">&#9654;</span> FNPL</div>
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#CBD5E1;">— PCA</div>
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#CBD5E1;">— RAD</div>
-          <div style="font-family:'Inter',sans-serif;font-size:15px;color:#CBD5E1;">— TTFA</div>
+      <!-- stop 2 (active — FNPL highlighted) -->
+      <div style="flex:1.4;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#236CFF;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 0 6px rgba(35,108,255,0.15);">
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;">2</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#0F172A;margin-bottom:6px;">Credit Portfolio<br>review by Product</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;color:#94A3B8;font-weight:600;background:#F1F5F9;padding:4px 14px;border-radius:20px;margin-bottom:12px;">35 mins</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:#fff;background:#236CFF;padding:5px 14px;border-radius:6px;">&#9654; FNPL</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#CBD5E1;background:#F8FAFC;padding:4px 12px;border-radius:6px;border:1px solid #E2E8F0;">PCA</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#CBD5E1;background:#F8FAFC;padding:4px 12px;border-radius:6px;border:1px solid #E2E8F0;">RAD</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#CBD5E1;background:#F8FAFC;padding:4px 12px;border-radius:6px;border:1px solid #E2E8F0;">TTFA</span>
         </div>
       </div>
-      <div>
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#CBD5E1;margin-bottom:4px;">Fraud Update</div>
-        <div style="font-family:'Inter',sans-serif;font-size:14px;color:#CBD5E1;">10 mins</div>
+      <!-- stop 3 (dimmed — upcoming) -->
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:1;opacity:0.35;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#94A3B8;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+          <span style="font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#fff;">3</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:#94A3B8;margin-bottom:6px;">Fraud Update</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;color:#CBD5E1;font-weight:600;background:#F1F5F9;padding:4px 14px;border-radius:20px;margin-top:4px;">10 mins</div>
       </div>
     </div>
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;margin-top:16px;">Consumer Risk Team | Mar 2026</div>
 </div>
-<!-- Slide 9 -->
 <div class="slide" id="slide9">
   <div class="accent"></div>
 
@@ -760,11 +882,11 @@ body {
     </div>
 
     <div class="kpis">
-      <div class="kp"><div class="kl">Total Apps (Feb)</div><div class="kv">26,860</div><div class="kd">+23,062 vs prior</div></div>
-      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">46.28<span class="u">%</span></div><div class="kn">+6.1 pp vs prior</div></div>
-      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">631</div><div class="kd">+22 vs prior</div></div>
-      <div class="kp"><div class="kl">Median Income</div><div class="kv">$58<span class="u">K</span></div><div class="kd">+3K vs prior</div></div>
-      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">6.1<span class="u">%</span></div><div class="kn">+3.5 pp vs prior</div></div>
+      <div class="kp"><div class="kl">Total Apps (Mar)</div><div class="kv">184,045</div><div class="kd">▲ 585% vs Feb</div></div>
+      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">66.7<span class="u">%</span></div><div class="kn">▲ +20.4pp vs Feb</div></div>
+      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">700</div><div class="kd">▲ +69 vs Feb</div></div>
+      <div class="kp"><div class="kl">Median Income</div><div class="kv">$82<span class="u">K</span></div><div class="kd">▲ +$24K vs Feb</div></div>
+      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">24.8<span class="u">%</span></div><div class="kn">▲ +18.7pp vs Feb</div></div>
     </div>
   </div>
   <div class="ct">Vantage Score Distribution &amp; Contingent Approval Rate</div>
@@ -776,25 +898,16 @@ body {
 
     <div class="tbl-wrap">
     <table class="tbl">
-      <colgroup>
-        <col class="lc">
-        <col>
-        <col>
-        <col>
-        <col>
-        <col>
-        <col>
-        <col class="rc">
-      </colgroup>
+      <col class="lc"><col><col><col><col><col><col><col><col class="rc">
       <thead><tr>
         <th>Metric</th>
-        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
+        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
       </tr></thead>
       <tbody>
-        <tr><td>Num of Apps</td><td class="">633</td><td class="">7,539</td><td class="">17</td><td class="">3,798</td><td class="">26,860</td><td class="hi">79,128</td><td></td></tr>
-        <tr><td>Avg Vantage</td><td class="">617</td><td class="">620</td><td class="">664</td><td class="">609</td><td class="">631</td><td class="hi">701</td><td></td></tr>
-        <tr><td>Median Income</td><td class="">$69K</td><td class="">$70K</td><td class="">$97K</td><td class="">$55K</td><td class="">$58K</td><td class="hi">$81K</td><td></td></tr>
-        <tr><td>Approval Rate</td><td class="">28.3%</td><td class="">37.9%</td><td>N/A</td><td class="">40.2%</td><td class="">46.3%</td><td class="hi">66.2%</td><td></td></tr>
+        <tr><td>Num of Apps</td><td>633</td><td>7,539</td><td>17</td><td class="d">—</td><td>3,798</td><td>26,860</td><td class="hi">184,045</td><td>101,424</td></tr>
+        <tr><td>Avg Vantage</td><td>617</td><td>620</td><td>664</td><td class="d">—</td><td>609</td><td>631</td><td class="hi">700</td><td>698</td></tr>
+        <tr><td>Median Income</td><td>$69K</td><td>$70K</td><td>$97K</td><td class="d">—</td><td>$55K</td><td>$58K</td><td class="hi">$82K</td><td>$81K</td></tr>
+        <tr><td>Approval Rate</td><td>28.3%</td><td>37.9%</td><td class="d">—</td><td class="d">—</td><td>40.2%</td><td>46.3%</td><td class="hi">66.7%</td><td>71.1%</td></tr>
       </tbody>
     </table>
     </div>
@@ -808,65 +921,6 @@ body {
     <div class="foot-r">9</div>
   </div>
 </div>
-
-<script>
-(function(){
-const M = ["Sep-25", "Oct-25", "Nov-25", "Jan-26", "Feb-26", "Mar-26"];
-const B = [{"n": "Super Prime", "v": [19, 248, 0, 96, 1631, 20440], "c": "#1D4E89"}, {"n": "Prime", "v": [164, 2082, 0, 988, 8326, 29625], "c": "#19A0AA"}, {"n": "Near Prime", "v": [170, 1928, 0, 909, 6248, 10485], "c": "#F0C929"}, {"n": "Subprime", "v": [256, 2977, 0, 1696, 9330, 13046], "c": "#E07B39"}, {"n": "Invalid / NULL", "v": [24, 304, 0, 109, 1325, 5532], "c": "#C44536"}];
-
-const T = M.map(function(_,i){ return B.reduce(function(s,b){ return s+b.v[i]; }, 0); });
-const traces = B.map(function(b){
-  return {
-    name:b.n, x:M, type:'bar',
-    y: b.v.map(function(v,i){ return T[i]>0 ? v/T[i]*100 : 0; }),
-    marker:{ color:b.c },
-    hovertemplate:'%{x}: %{y:.1f}%<extra>'+b.n+'</extra>',
-  };
-});
-
-const aY = [28.28, 37.87, null, 40.18, 46.28, 66.18];
-
-traces.push({
-  name:'Approval Rate', x:M, yaxis:'y2', type:'scatter',
-  y:aY, mode:'lines+markers+text',
-  line:{ color:'#0F172A', width:2.5, shape:'linear', dash:'dot' },
-  marker:{ size:8, color:'#F8FAFC', symbol:'circle', line:{ color:'#0F172A', width:2.5 } },
-  text:aY.map(function(v){ return v!==null ? v.toFixed(0)+'%' : ''; }),
-  textposition:'top center',
-  textfont:{ size:12, color:'#0F172A', family:'Inter, sans-serif' },
-  connectgaps:false,
-});
-
-Plotly.newPlot('chart9', traces, {
-  barmode:'stack', bargap:0.32,
-  plot_bgcolor:'#fff', paper_bgcolor:'#fff',
-  font:{ family:'Inter, sans-serif', size:10, color:'#94A3B8' },
-  margin:{ l:82, r:50, t:4, b:0 },
-  legend:{
-    orientation:'h', y:1.06, x:0.5, xanchor:'center',
-    font:{ size:8.5, color:'#64748B', family:'Inter, sans-serif' },
-    bgcolor:'rgba(0,0,0,0)', traceorder:'normal', itemwidth:28,
-  },
-  xaxis:{ showticklabels:false, showline:false, showgrid:false, zeroline:false },
-  yaxis:{
-    title:{ text:'Vantage Distribution %', font:{ size:9, color:'#64748B' }, standoff:6 },
-    range:[0,110], ticksuffix:'%', tickvals:[0,25,50,75,100],
-    gridcolor:'#F1F5F9', gridwidth:1,
-    zeroline:false, showline:true, linecolor:'#E2E8F0', linewidth:1,
-    tickfont:{ size:9, color:'#94A3B8' },
-  },
-  yaxis2:{
-    title:{ text:'Approval Rate %', font:{ size:9, color:'#64748B' }, standoff:6 },
-    range:[0,110], overlaying:'y', side:'right',
-    ticksuffix:'%', tickvals:[0,25,50,75,100],
-    showticklabels:true, showgrid:false,
-    showline:true, linecolor:'#E2E8F0', linewidth:1,
-    tickfont:{ size:9, color:'#94A3B8' },
-  },
-},{ responsive:false, displayModeBar:false });
-})();
-</script>
-<!-- Slide 10 -->
 <div class="slide" id="slide10">
   <div class="accent"></div>
 
@@ -891,27 +945,27 @@ Plotly.newPlot('chart9', traces, {
     <table class="tbl">
       <colgroup>
         <col class="lc">
-        <col><col><col><col><col><col>
+        <col><col><col><col><col><col><col>
         <col class="tc">
       </colgroup>
       <thead><tr>
         <th>Metrics</th>
-        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
+        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
         <th class="total">Total</th>
       </tr></thead>
       <tbody>
-        <tr><td># Loans</td><td class=''>62</td><td class=''>1,613</td><td class=''>265</td><td class=''>9</td><td class=''>5,738</td><td class='hi'>11,335</td><td class='total-col'>19,022</td></tr>
-        <tr><td>$ Loans</td><td class=''>0.1M</td><td class=''>3.3M</td><td class=''>0.5M</td><td class=''>0.0M</td><td class=''>9.0M</td><td class='hi'>17.6M</td><td class='total-col'>30.4M</td></tr>
-        <tr><td>Avg. Loan Size</td><td class=''>$1,746</td><td class=''>$2,045</td><td class=''>$1,818</td><td class=''>$934</td><td class=''>$1,563</td><td class='hi'>$1,549</td><td class='total-col'>$1,600</td></tr>
-        <tr><td>WA Term</td><td class=''>5.2</td><td class=''>5.3</td><td class=''>5.4</td><td class=''>5.6</td><td class=''>5.9</td><td class='hi'>6.5</td><td class='total-col'>6.2</td></tr>
-        <tr><td>WA APR</td><td class=''>23.93%</td><td class=''>19.97%</td><td class=''>20.13%</td><td class=''>22.27%</td><td class=''>19.38%</td><td class='hi'>19.24%</td><td class='total-col'>19.39%</td></tr>
-        <tr><td>WA Vantage</td><td class=''>692</td><td class=''>683</td><td class=''>675</td><td class=''>639</td><td class=''>693</td><td class='hi'>708</td><td class='total-col'>700</td></tr>
-        <tr><td>Avg. RS</td><td class=''>N/A</td><td class=''>N/A</td><td class=''>N/A</td><td class=''>N/A</td><td class=''>2.8</td><td class='hi'>2.5</td><td class='total-col'>2.5</td></tr>
-        <tr><td>Med. Income</td><td class=''>$90K</td><td class=''>$97K</td><td class=''>$79K</td><td class=''>$53K</td><td class=''>$72K</td><td class='hi'>$77K</td><td class='total-col'>$77K</td></tr>
-        <tr><td>% $ from CK Low Risk</td><td class=''>31%</td><td class=''>39%</td><td class=''>42%</td><td class=''>67%</td><td class=''>53%</td><td class='hi'>51%</td><td class='total-col'>50%</td></tr>
-        <tr><td>% Mobile Channel</td><td class=''>26%</td><td class=''>16%</td><td class=''>24%</td><td class=''>56%</td><td class=''>40%</td><td class='hi'>37%</td><td class='total-col'>36%</td></tr>
-        <tr><td>Avg. DTI</td><td class=''>37%</td><td class=''>40%</td><td class=''>42%</td><td class=''>48%</td><td class=''>41%</td><td class='hi'>40%</td><td class='total-col'>40%</td></tr>
-        <tr><td>% Had a State Refund</td><td class=''>47%</td><td class=''>31%</td><td class=''>29%</td><td class=''>44%</td><td class=''>41%</td><td class='hi'>41%</td><td class='total-col'>40%</td></tr>
+        <tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td class="hi">25,084</td><td>21,621</td><td class="total-col">54,392</td></tr>
+        <tr><td>$ Loans</td><td>$0.1M</td><td>$3.3M</td><td>$0.5M</td><td class="d">—</td><td>$0.0M</td><td>$9.0M</td><td class="hi">$41.1M</td><td>$37.1M</td><td class="total-col">$91.1M</td></tr>
+        <tr><td>Avg. Loan Size</td><td>$1,746</td><td>$2,045</td><td>$1,818</td><td class="d">—</td><td>$934</td><td>$1,563</td><td class="hi">$1,639</td><td>$1,717</td><td class="total-col">$1,675</td></tr>
+        <tr><td>WA Term</td><td>5.1</td><td>5.3</td><td>5.4</td><td class="d">—</td><td>5.6</td><td>5.9</td><td class="hi">6.1</td><td>5.9</td><td class="total-col">6.0</td></tr>
+        <tr><td>WA APR</td><td>23.93%</td><td>19.97%</td><td>20.13%</td><td class="d">—</td><td>22.27%</td><td>19.38%</td><td class="hi">16.40%</td><td>13.84%</td><td class="total-col">15.81%</td></tr>
+        <tr><td>WA Vantage</td><td>692</td><td>683</td><td>675</td><td class="d">—</td><td>639</td><td>693</td><td class="hi">714</td><td>716</td><td class="total-col">711</td></tr>
+        <tr><td>Avg. RS</td><td>N/A</td><td>N/A</td><td>N/A</td><td class="d">—</td><td>N/A</td><td>2.8</td><td class="hi">2.4</td><td>2.3</td><td class="total-col">2.4</td></tr>
+        <tr><td>Med. Income</td><td>$90K</td><td>$97K</td><td>$79K</td><td class="d">—</td><td>$53K</td><td>$72K</td><td class="hi">$81K</td><td>$85K</td><td class="total-col">$82K</td></tr>
+        <tr><td>% $ from CK Low Risk</td><td>31%</td><td>39%</td><td>44%</td><td class="d">—</td><td>67%</td><td>53%</td><td class="hi">56%</td><td>59%</td><td class="total-col">56%</td></tr>
+        <tr><td>% Mobile Channel</td><td>26%</td><td>16%</td><td>24%</td><td class="d">—</td><td>56%</td><td>40%</td><td class="hi">34%</td><td>31%</td><td class="total-col">33%</td></tr>
+        <tr><td>Avg. DTI</td><td>37%</td><td>40%</td><td>42%</td><td class="d">—</td><td>48%</td><td>41%</td><td class="hi">39%</td><td>39%</td><td class="total-col">39%</td></tr>
+        <tr><td>% Had a State Refund</td><td>47%</td><td>31%</td><td>29%</td><td class="d">—</td><td>44%</td><td>41%</td><td class="hi">40%</td><td>37%</td><td class="total-col">39%</td></tr>
       </tbody>
     </table>
     </div>
@@ -927,51 +981,6 @@ Plotly.newPlot('chart9', traces, {
     <div class="foot-r">10</div>
   </div>
 </div>
-
-<script>
-(function(){
-var D = {"latest": {"label": "Mar-26", "wa_term": 6.58, "wa_apr": 0.1934, "wa_vantage": 707, "ck_low_risk": 51, "mobile": 38, "avg_dti": null, "loans": 7773}, "prior": {"label": "Feb-26", "wa_term": 5.92, "wa_apr": 0.1938, "wa_vantage": 693, "ck_low_risk": 52, "mobile": 40, "avg_dti": null, "loans": 5738}, "total": {"ck_low_risk": 50}};
-
-function dir(c, p) { return c > p ? 'increased' : c < p ? 'decreased' : 'remained stable'; }
-
-var bullets = [];
-
-if (D.latest && D.prior && D.latest.wa_term && D.prior.wa_term) {
-  var d = dir(D.latest.wa_term, D.prior.wa_term);
-  bullets.push(
-    '<strong>WA Term</strong> has ' + d + ' to <strong>' + D.latest.wa_term.toFixed(1) + '</strong> in ' + D.latest.label +
-    ' (from ' + D.prior.wa_term.toFixed(1) + ' in ' + D.prior.label + '), indicating customers are ' +
-    (D.latest.wa_term > D.prior.wa_term ? 'opting for longer loan terms. Based on A/B performance, longer term loans have higher risk \u2014 we will continue to closely monitor GA performance by Term.' :
-     D.latest.wa_term < D.prior.wa_term ? 'choosing shorter loan terms.' : 'maintaining similar term preferences.')
-  );
-}
-
-if (D.latest && D.total && D.latest.ck_low_risk != null) {
-  var valL = D.latest.ck_low_risk > 1 ? D.latest.ck_low_risk : Math.round(D.latest.ck_low_risk * 100);
-  var valT = D.total.ck_low_risk > 1 ? D.total.ck_low_risk : Math.round(D.total.ck_low_risk * 100);
-  bullets.push(
-    'As we see better quality applicants filing and applying for FNPL, <strong>' + valL + '%</strong> of ' +
-    D.latest.label + ' funded loans are from <strong>CK low risk</strong> placements vs ~' +
-    valT + '% overall.'
-  );
-}
-
-if (D.latest && D.prior && D.latest.loans && D.prior.loans) {
-  var chg = ((D.latest.loans - D.prior.loans) / D.prior.loans * 100).toFixed(0);
-  var d2 = D.latest.loans > D.prior.loans ? 'grew' : 'declined';
-  bullets.push(
-    'Funded loan volume ' + d2 + ' by <strong>' + Math.abs(chg) + '%</strong> ' +
-    '(' + D.latest.loans.toLocaleString() + ' loans in ' + D.latest.label +
-    ' vs ' + D.prior.loans.toLocaleString() + ' in ' + D.prior.label + ').'
-  );
-}
-
-document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
-  return '<div class="callout"><div class="num">' + (i+1) + '</div><div class="txt">' + b + '</div></div>';
-}).join('');
-})();
-</script>
-<!-- Slide 11 -->
 <div class="slide" id="slide11">
   <div class="accent"></div>
 
@@ -992,40 +1001,40 @@ document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
   </div>
 
   <div class="viz-wrap">
-    <div class="table-subtitle">Funded-loan performance by origination month. Total column is all funded loans in extract. Servicing snapshot as of Mar 12, 2026 (three days before data cutoff). Em dash means not applicable.</div>
+    <div class="table-subtitle">Funded loan performance by origination month. 'Total' aggregates all months. '—' indicates metric is not yet applicable (insufficient days on books for that cohort).</div>
     <div class="tbl-wrap">
     <table class="tbl">
       <colgroup>
         <col class="lc">
-        <col><col><col><col><col><col>
+        <col><col><col><col><col><col><col>
         <col class="tc">
       </colgroup>
       <thead><tr>
         <th>Metrics</th>
-        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
+        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th>
         <th class="total">Total</th>
       </tr></thead>
       <tbody>
-        <tr class="section-row"><td colspan="8">Volume</td></tr>
-        <tr><td># Loans</td><td class=''>62</td><td class=''>1,613</td><td class=''>265</td><td class=''>9</td><td class=''>5,738</td><td class='hi'>11,335</td><td class='total-col'>19,022</td></tr>
-        <tr><td>$ Loans</td><td class=''>$0.1M</td><td class=''>$3.3M</td><td class=''>$0.5M</td><td class=''>$0.0M</td><td class=''>$9.0M</td><td class='hi'>$17.6M</td><td class='total-col'>$30.4M</td></tr>
-        <tr class="section-row"><td colspan="8">7DPD+ Delinquency</td></tr>
-        <tr><td># 7DPD+ Rate</td><td class=''>6.5%</td><td class=''>5.2%</td><td class=''>10.2%</td><td class=''>0.0%</td><td class="d">—</td><td class="d">—</td><td class='total-col'>5.9%</td></tr>
-        <tr><td>$ 7DPD+ Rate</td><td class=''>4.4%</td><td class=''>3.9%</td><td class=''>7.0%</td><td class=''>0.0%</td><td class="d">—</td><td class="d">—</td><td class='total-col'>4.3%</td></tr>
-        <tr class="section-row"><td colspan="8">30DPD+ Delinquency</td></tr>
-        <tr><td># 30DPD+ Rate</td><td class=''>4.8%</td><td class=''>3.7%</td><td class=''>6.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class='total-col'>4.0%</td></tr>
-        <tr><td>$ 30DPD+ Rate</td><td class=''>3.9%</td><td class=''>3.1%</td><td class=''>5.1%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class='total-col'>3.3%</td></tr>
-        <tr class="section-row"><td colspan="8">Roll to charge-off</td></tr>
-        <tr><td># Roll rate -> 30D to CO</td><td class=''>33.3%</td><td class=''>5.1%</td><td class=''>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class='total-col'>5.1%</td></tr>
-        <tr><td>$ Roll rate -> 30D to CO</td><td class=''>43.5%</td><td class=''>5.8%</td><td class=''>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class='total-col'>5.5%</td></tr>
-        <tr class="section-row"><td colspan="8">Charge-off</td></tr>
-        <tr><td># Charge off rate</td><td class=''>1.6%</td><td class=''>0.2%</td><td class=''>0.0%</td><td class=''>0.0%</td><td class=''>0.0%</td><td class='hi'>0.0%</td><td class='total-col'>0.0%</td></tr>
-        <tr><td>$ Charge off rate</td><td class=''>1.2%</td><td class=''>0.2%</td><td class=''>0.0%</td><td class=''>0.0%</td><td class=''>0.0%</td><td class='hi'>0.0%</td><td class='total-col'>0.0%</td></tr>
-        <tr class="section-row"><td colspan="8">Target loss</td></tr>
-        <tr><td># Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col d">—</td></tr>
-        <tr><td>$ Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col d">—</td></tr>
-        <tr class="section-row"><td colspan="8">Payoff</td></tr>
-        <tr><td>% Paid Off</td><td class=''>30.6%</td><td class=''>28.7%</td><td class=''>25.7%</td><td class=''>11.1%</td><td class=''>2.5%</td><td class='hi'>2.3%</td><td class='total-col'>5.0%</td></tr>
+        <tr class="section-row"><td colspan="10">Volume</td></tr>
+        <tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td class="hi">25,084</td><td>21,621</td><td class="total-col">54,392</td></tr>
+        <tr><td>$ Loans</td><td>$0.1M</td><td>$3.3M</td><td>$0.5M</td><td class="d">—</td><td>$0.0M</td><td>$9.0M</td><td class="hi">$41.1M</td><td>$37.1M</td><td class="total-col">$91.1M</td></tr>
+        <tr class="section-row"><td colspan="10">7DPD+ Delinquency</td></tr>
+        <tr><td># 7DPD+ Rate</td><td>8.1%</td><td>5.9%</td><td>9.1%</td><td class="d">—</td><td>0.0%</td><td>4.7%</td><td class="hi">5.4%</td><td class="d">—</td><td class="total-col">5.2%</td></tr>
+        <tr><td>$ 7DPD+ Rate</td><td>4.6%</td><td>4.1%</td><td>6.1%</td><td class="d">—</td><td>0.0%</td><td>4.4%</td><td class="hi">3.4%</td><td class="d">—</td><td class="total-col">4.1%</td></tr>
+        <tr class="section-row"><td colspan="10">30DPD+ Delinquency</td></tr>
+        <tr><td># 30DPD+ Rate</td><td>6.5%</td><td>4.3%</td><td>6.4%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">4.6%</td></tr>
+        <tr><td>$ 30DPD+ Rate</td><td>4.4%</td><td>3.5%</td><td>5.3%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">3.7%</td></tr>
+        <tr class="section-row"><td colspan="10">Roll to charge-off</td></tr>
+        <tr><td># Roll rate -> 30D to CO</td><td>50.0%</td><td>44.9%</td><td>41.2%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">44.4%</td></tr>
+        <tr><td>$ Roll rate -> 30D to CO</td><td>37.7%</td><td>52.2%</td><td>55.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">52.2%</td></tr>
+        <tr class="section-row"><td colspan="10">Charge-off</td></tr>
+        <tr><td># Charge off rate</td><td>3.2%</td><td>1.9%</td><td>2.6%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td>0.0%</td><td class="total-col">0.1%</td></tr>
+        <tr><td>$ Charge off rate</td><td>1.7%</td><td>1.8%</td><td>2.9%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td>0.0%</td><td class="total-col">0.1%</td></tr>
+        <tr class="section-row"><td colspan="10">Target loss</td></tr>
+        <tr><td># Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">—</td></tr>
+        <tr><td>$ Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">—</td></tr>
+        <tr class="section-row"><td colspan="10">Payoff</td></tr>
+        <tr><td>% Paid Off</td><td>90.3%</td><td>37.1%</td><td>27.2%</td><td class="d">—</td><td>11.1%</td><td>6.3%</td><td class="hi">3.3%</td><td>1.0%</td><td class="total-col">3.9%</td></tr>
       </tbody>
     </table>
     </div>
@@ -1041,7 +1050,6 @@ document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
     <div class="foot-r">11</div>
   </div>
 </div>
-<!-- Slide 12 -->
 <div class="slide" id="slide12">
   <div class="accent"></div>
   <div class="hdr-section">
@@ -1087,8 +1095,158 @@ document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
     <span class="foot-tag">FNPL Risk</span>
   </div>
 </div>
+<div class="slide" id="slide13">
+  <div class="accent"></div>
+  <div class="hdr-section">
+    <div class="hdr">
+      <div class="hdr-left">
+        <div class="hdr-bar"></div>
+        <div>
+          <h1>DPD30+ by Vintage &amp; Term</h1>
+          <div class="sub">Origination month cohort &middot; 3-Month and 6-Month terms shown &middot; 9-Month omitted (no DPD30+ data yet)</div>
+        </div>
+      </div>
+      <div class="badge">
+        <div class="bl">MBR Report</div>
+        <div class="bv">Mar 2026</div>
+      </div>
+    </div>
+  </div>
 
-<script>
+  <div class="vintage-body">
+    <div class="shared-legend" id="legend13"></div>
+    <div class="chart-row" id="chartRow13"></div>
+  </div>
+
+  <div class="foot">
+    <span>Source: sandbox_risk_7216.fnpl_base_alpha_ga2 ⟶ loan_origination ⟶ loan_repayment_daily (DoB snapshots: day 1 + every 30d)</span>
+    <span class="foot-tag">FNPL Risk</span>
+  </div>
+</div>
+    </div>
+    <button type="button" class="nav-btn next" aria-label="Next slide">›</button>
+    <div class="bottom-bar">
+      <div class="slide-dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+      </div>
+      <span class="slide-counter">1 / 9</span>
+      <button class="mode-toggle" id="editModeBtn">✏ Edit Mode</button>
+    </div>
+  </div>
+  <script>
+/* template.html */
+(function(){
+const M = ["Sep-25","Oct-25","Nov-25","Dec-25","Jan-26","Feb-26","Mar-26"];
+const B = [
+    {n:'Super Prime',v:[19,248,0,0,96,1631,45619,24208],c:'#1D4E89'},
+    {n:'Prime',v:[164,2082,0,0,988,8326,71051,43181],c:'#19A0AA'},
+    {n:'Near Prime',v:[170,1928,0,0,909,6248,25532,15458],c:'#F0C929'},
+    {n:'Subprime',v:[256,2977,0,0,1696,9330,29715,16552],c:'#E07B39'},
+    {n:'Invalid/Null',v:[24,304,0,0,109,1325,12128,2025],c:'#C44536'}
+  ];
+
+const T = M.map(function(_,i){ return B.reduce(function(s,b){ return s+b.v[i]; }, 0); });
+const traces = B.map(function(b){
+  return {
+    name:b.n, x:M, type:'bar',
+    y: b.v.map(function(v,i){ return T[i]>0 ? v/T[i]*100 : 0; }),
+    marker:{ color:b.c },
+    hovertemplate:'%{x}: %{y:.1f}%<extra>'+b.n+'</extra>',
+  };
+});
+
+const aY = [28.28,37.87,null,null,40.18,46.28,66.65,71.05];
+
+traces.push({
+  name:'Approval Rate', x:M, yaxis:'y2', type:'scatter',
+  y:aY, mode:'lines+markers+text',
+  line:{ color:'#0F172A', width:2.5, shape:'linear', dash:'dot' },
+  marker:{ size:8, color:'#F8FAFC', symbol:'circle', line:{ color:'#0F172A', width:2.5 } },
+  text:aY.map(function(v){ return v!==null ? v.toFixed(0)+'%' : ''; }),
+  textposition:'top center',
+  textfont:{ size:12, color:'#0F172A', family:'Inter, sans-serif' },
+  connectgaps:false,
+});
+
+Plotly.newPlot('chart9', traces, {
+  barmode:'stack', bargap:0.32,
+  plot_bgcolor:'#fff', paper_bgcolor:'#fff',
+  font:{ family:'Inter, sans-serif', size:10, color:'#94A3B8' },
+  margin:{ l:82, r:50, t:4, b:0 },
+  legend:{
+    orientation:'h', y:1.06, x:0.5, xanchor:'center',
+    font:{ size:8.5, color:'#64748B', family:'Inter, sans-serif' },
+    bgcolor:'rgba(0,0,0,0)', traceorder:'normal', itemwidth:28,
+  },
+  xaxis:{ showticklabels:false, showline:false, showgrid:false, zeroline:false },
+  yaxis:{
+    title:{ text:'Vantage Distribution %', font:{ size:9, color:'#64748B' }, standoff:6 },
+    range:[0,110], ticksuffix:'%', tickvals:[0,25,50,75,100],
+    gridcolor:'#F1F5F9', gridwidth:1,
+    zeroline:false, showline:true, linecolor:'#E2E8F0', linewidth:1,
+    tickfont:{ size:9, color:'#94A3B8' },
+  },
+  yaxis2:{
+    title:{ text:'Approval Rate %', font:{ size:9, color:'#64748B' }, standoff:6 },
+    range:[0,110], overlaying:'y', side:'right',
+    ticksuffix:'%', tickvals:[0,25,50,75,100],
+    showticklabels:true, showgrid:false,
+    showline:true, linecolor:'#E2E8F0', linewidth:1,
+    tickfont:{ size:9, color:'#94A3B8' },
+  },
+},{ responsive:false, displayModeBar:false });
+})();
+/* template-slide10.html */
+(function(){
+var D = {"latest":{"label":"Mar-26","wa_term":5.9,"wa_apr":13.84,"wa_vantage":716,"ck_low_risk":59,"mobile":31,"avg_dti":39,"loans":21621},"prior":{"label":"Mar-26","wa_term":6.1,"wa_apr":16.4,"wa_vantage":714,"ck_low_risk":56,"mobile":34,"avg_dti":39,"loans":25084},"total":{"ck_low_risk":56}};
+
+function dir(c, p) { return c > p ? 'increased' : c < p ? 'decreased' : 'remained stable'; }
+
+var bullets = [];
+
+if (D.latest && D.prior && D.latest.wa_term && D.prior.wa_term) {
+  var d = dir(D.latest.wa_term, D.prior.wa_term);
+  bullets.push(
+    '<strong>WA Term</strong> has ' + d + ' to <strong>' + D.latest.wa_term.toFixed(1) + '</strong> in ' + D.latest.label +
+    ' (from ' + D.prior.wa_term.toFixed(1) + ' in ' + D.prior.label + '), indicating customers are ' +
+    (D.latest.wa_term > D.prior.wa_term ? 'opting for longer loan terms. Based on A/B performance, longer term loans have higher risk \u2014 we will continue to closely monitor GA performance by Term.' :
+     D.latest.wa_term < D.prior.wa_term ? 'choosing shorter loan terms.' : 'maintaining similar term preferences.')
+  );
+}
+
+if (D.latest && D.total && D.latest.ck_low_risk != null) {
+  var valL = D.latest.ck_low_risk > 1 ? D.latest.ck_low_risk : Math.round(D.latest.ck_low_risk * 100);
+  var valT = D.total.ck_low_risk > 1 ? D.total.ck_low_risk : Math.round(D.total.ck_low_risk * 100);
+  bullets.push(
+    'As we see better quality applicants filing and applying for FNPL, <strong>' + valL + '%</strong> of ' +
+    D.latest.label + ' funded loans are from <strong>CK low risk</strong> placements vs ~' +
+    valT + '% overall.'
+  );
+}
+
+if (D.latest && D.prior && D.latest.loans && D.prior.loans) {
+  var chg = ((D.latest.loans - D.prior.loans) / D.prior.loans * 100).toFixed(0);
+  var d2 = D.latest.loans > D.prior.loans ? 'grew' : 'declined';
+  bullets.push(
+    'Funded loan volume ' + d2 + ' by <strong>' + Math.abs(chg) + '%</strong> ' +
+    '(' + D.latest.loans.toLocaleString() + ' loans in ' + D.latest.label +
+    ' vs ' + D.prior.loans.toLocaleString() + ' in ' + D.prior.label + ').'
+  );
+}
+
+document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
+  return '<div class="callout"><div class="num">' + (i+1) + '</div><div class="txt">' + b + '</div></div>';
+}).join('');
+})();
+/* template-slide12.html */
 (function(){
 const PALETTE = ['#1D4E89','#19A0AA','#E07B39','#C44536','#F0C929','#7C3AED','#475569','#0E7490','#B45309'];
 const MO = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
@@ -1171,43 +1329,12 @@ function renderSlide12(DATA, MOB_CAP){
 }
 
 /* ── DATA (agent replaces at build time) ── */
-var SLIDE12_DATA = [{"vg": "1. Subprime", "om": "2025-09-30", "mob": "M0", "r": 0.0, "tl": 7}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M1", "r": 0.0, "tl": 7}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M2", "r": 0.0, "tl": 7}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M3", "r": 0.142857, "tl": 7}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M4", "r": 0.142857, "tl": 7}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M0", "r": 0.0, "tl": 145}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M1", "r": 0.0, "tl": 145}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M2", "r": 0.0, "tl": 145}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M3", "r": 0.062069, "tl": 145}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M4", "r": 0.075862, "tl": 145}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M0", "r": 0.0, "tl": 22}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M1", "r": 0.0, "tl": 22}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M2", "r": 0.0, "tl": 22}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M3", "r": 0.045455, "tl": 22}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M4", "r": 0.090909, "tl": 22}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M0", "r": 0.0, "tl": 2}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M1", "r": 0.0, "tl": 2}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M2", "r": 0.0, "tl": 2}, {"vg": "1. Subprime", "om": "2026-02-28", "mob": "M0", "r": 0.0, "tl": 421}, {"vg": "1. Subprime", "om": "2026-02-28", "mob": "M1", "r": 0.0, "tl": 421}, {"vg": "1. Subprime", "om": "2026-03-31", "mob": "M0", "r": 0.0, "tl": 534}, {"vg": "1. Subprime", "om": "2026-03-31", "mob": "M1", "r": 0.0, "tl": 534}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M0", "r": 0.0, "tl": 14}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M1", "r": 0.0, "tl": 14}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M2", "r": 0.0, "tl": 14}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M3", "r": 0.0, "tl": 14}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M4", "r": 0.0, "tl": 14}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M0", "r": 0.0, "tl": 552}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M1", "r": 0.0, "tl": 552}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M2", "r": 0.0, "tl": 552}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M3", "r": 0.021739, "tl": 552}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M4", "r": 0.038043, "tl": 552}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M0", "r": 0.0, "tl": 101}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M1", "r": 0.0, "tl": 101}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M2", "r": 0.0, "tl": 101}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M3", "r": 0.049505, "tl": 101}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M4", "r": 0.069307, "tl": 101}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M0", "r": 0.0, "tl": 5}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M1", "r": 0.0, "tl": 5}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M2", "r": 0.0, "tl": 5}, {"vg": "2. Near Prime", "om": "2026-02-28", "mob": "M0", "r": 0.0, "tl": 1721}, {"vg": "2. Near Prime", "om": "2026-02-28", "mob": "M1", "r": 0.0, "tl": 1721}, {"vg": "2. Near Prime", "om": "2026-03-31", "mob": "M0", "r": 0.0, "tl": 1898}, {"vg": "2. Near Prime", "om": "2026-03-31", "mob": "M1", "r": 0.0, "tl": 1898}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M0", "r": 0.0, "tl": 36}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M1", "r": 0.0, "tl": 36}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M2", "r": 0.0, "tl": 36}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M3", "r": 0.055556, "tl": 36}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M4", "r": 0.027778, "tl": 36}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M0", "r": 0.0, "tl": 797}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M1", "r": 0.0, "tl": 797}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M2", "r": 0.0, "tl": 797}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M3", "r": 0.022585, "tl": 797}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M4", "r": 0.022585, "tl": 797}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M0", "r": 0.0, "tl": 132}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M1", "r": 0.0, "tl": 132}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M2", "r": 0.0, "tl": 132}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M3", "r": 0.015152, "tl": 132}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M4", "r": 0.007576, "tl": 132}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M0", "r": 0.0, "tl": 2}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M1", "r": 0.0, "tl": 2}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M2", "r": 0.0, "tl": 2}, {"vg": "3. Prime", "om": "2026-02-28", "mob": "M0", "r": 0.0, "tl": 3159}, {"vg": "3. Prime", "om": "2026-02-28", "mob": "M1", "r": 0.0, "tl": 3159}, {"vg": "3. Prime", "om": "2026-03-31", "mob": "M0", "r": 0.0, "tl": 4355}, {"vg": "3. Prime", "om": "2026-03-31", "mob": "M1", "r": 0.0, "tl": 4355}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M0", "r": 0.0, "tl": 5}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M1", "r": 0.0, "tl": 5}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M2", "r": 0.0, "tl": 5}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M3", "r": 0.0, "tl": 5}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M4", "r": 0.0, "tl": 5}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M0", "r": 0.0, "tl": 119}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M1", "r": 0.0, "tl": 119}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M2", "r": 0.0, "tl": 119}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M3", "r": 0.0, "tl": 119}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M4", "r": 0.008403, "tl": 119}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M0", "r": 0.0, "tl": 10}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M1", "r": 0.0, "tl": 10}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M2", "r": 0.0, "tl": 10}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M3", "r": 0.0, "tl": 10}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M4", "r": 0.0, "tl": 10}, {"vg": "4. Super Prime", "om": "2026-02-28", "mob": "M0", "r": 0.0, "tl": 437}, {"vg": "4. Super Prime", "om": "2026-02-28", "mob": "M1", "r": 0.0, "tl": 437}, {"vg": "4. Super Prime", "om": "2026-03-31", "mob": "M0", "r": 0.0, "tl": 986}, {"vg": "4. Super Prime", "om": "2026-03-31", "mob": "M1", "r": 0.0, "tl": 986}];
+var SLIDE12_DATA = [{"vg":"1. Subprime","om":"2025-09-30","mob":"M0","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M1","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M2","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M3","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M4","r":0.14285714285714285,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M5","r":0.14285714285714285,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M6","r":0.14285714285714285,"tl":7},{"vg":"1. Subprime","om":"2025-10-31","mob":"M0","r":0.0,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M1","r":0.0,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M2","r":0.0,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M3","r":0.06206896551724138,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M4","r":0.07586206896551724,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M5","r":0.06206896551724138,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M6","r":0.020689655172413793,"tl":145},{"vg":"1. Subprime","om":"2025-11-30","mob":"M0","r":0.0,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M1","r":0.0,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M2","r":0.0,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M3","r":0.045454545454545456,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M4","r":0.09090909090909091,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M5","r":0.09090909090909091,"tl":22},{"vg":"1. Subprime","om":"2026-01-31","mob":"M0","r":0.0,"tl":2},{"vg":"1. Subprime","om":"2026-01-31","mob":"M1","r":0.0,"tl":2},{"vg":"1. Subprime","om":"2026-01-31","mob":"M2","r":0.0,"tl":2},{"vg":"1. Subprime","om":"2026-02-28","mob":"M0","r":0.0,"tl":421},{"vg":"1. Subprime","om":"2026-02-28","mob":"M1","r":0.0,"tl":421},{"vg":"1. Subprime","om":"2026-03-31","mob":"M0","r":0.0,"tl":1525},{"vg":"1. Subprime","om":"2026-03-31","mob":"M1","r":0.0,"tl":1525},{"vg":"1. Subprime","om":"2026-04-30","mob":"M0","r":0.0,"tl":1360},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M0","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M1","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M2","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M3","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M4","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M5","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M6","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M0","r":0.0,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M1","r":0.0,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M2","r":0.0,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M3","r":0.021739130434782608,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M4","r":0.03804347826086957,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M5","r":0.04710144927536232,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M6","r":0.021739130434782608,"tl":552},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M0","r":0.0,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M1","r":0.0,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M2","r":0.0,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M3","r":0.04950495049504951,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M4","r":0.06930693069306931,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M5","r":0.1188118811881188,"tl":101},{"vg":"2. Near Prime","om":"2026-01-31","mob":"M0","r":0.0,"tl":5},{"vg":"2. Near Prime","om":"2026-01-31","mob":"M1","r":0.0,"tl":5},{"vg":"2. Near Prime","om":"2026-01-31","mob":"M2","r":0.0,"tl":5},{"vg":"2. Near Prime","om":"2026-02-28","mob":"M0","r":0.0,"tl":1721},{"vg":"2. Near Prime","om":"2026-02-28","mob":"M1","r":0.0,"tl":1721},{"vg":"2. Near Prime","om":"2026-03-31","mob":"M0","r":0.0,"tl":5600},{"vg":"2. Near Prime","om":"2026-03-31","mob":"M1","r":0.0,"tl":5600},{"vg":"2. Near Prime","om":"2026-04-30","mob":"M0","r":0.0,"tl":4815},{"vg":"3. Prime","om":"2025-09-30","mob":"M0","r":0.0,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M1","r":0.0,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M2","r":0.0,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M3","r":0.05555555555555555,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M4","r":0.027777777777777776,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M5","r":0.05555555555555555,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M6","r":0.05555555555555555,"tl":36},{"vg":"3. Prime","om":"2025-10-31","mob":"M0","r":0.0,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M1","r":0.0,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M2","r":0.0,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M3","r":0.02258469259723965,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M4","r":0.02258469259723965,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M5","r":0.027603513174404015,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M6","r":0.012547051442910916,"tl":797},{"vg":"3. Prime","om":"2025-11-30","mob":"M0","r":0.0,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M1","r":0.0,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M2","r":0.0,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M3","r":0.015151515151515152,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M4","r":0.007575757575757576,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M5","r":0.015151515151515152,"tl":132},{"vg":"3. Prime","om":"2026-01-31","mob":"M0","r":0.0,"tl":2},{"vg":"3. Prime","om":"2026-01-31","mob":"M1","r":0.0,"tl":2},{"vg":"3. Prime","om":"2026-01-31","mob":"M2","r":0.0,"tl":2},{"vg":"3. Prime","om":"2026-02-28","mob":"M0","r":0.0,"tl":3159},{"vg":"3. Prime","om":"2026-02-28","mob":"M1","r":0.0,"tl":3159},{"vg":"3. Prime","om":"2026-03-31","mob":"M0","r":0.0,"tl":14071},{"vg":"3. Prime","om":"2026-03-31","mob":"M1","r":0.0,"tl":14071},{"vg":"3. Prime","om":"2026-04-30","mob":"M0","r":0.0,"tl":11954},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M0","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M1","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M2","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M3","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M4","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M5","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M6","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M0","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M1","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M2","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M3","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M4","r":0.008403361344537815,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M5","r":0.008403361344537815,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M6","r":0.008403361344537815,"tl":119},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M0","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M1","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M2","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M3","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M4","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M5","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2026-02-28","mob":"M0","r":0.0,"tl":437},{"vg":"4. Super Prime","om":"2026-02-28","mob":"M1","r":0.0,"tl":437},{"vg":"4. Super Prime","om":"2026-03-31","mob":"M0","r":0.0,"tl":3888},{"vg":"4. Super Prime","om":"2026-03-31","mob":"M1","r":0.0,"tl":3888},{"vg":"4. Super Prime","om":"2026-04-30","mob":"M0","r":0.0,"tl":3492}];
 var SLIDE12_MOB_CAP = 4;
 window.__deferredSlideInit = window.__deferredSlideInit || {};
 window.__deferredSlideInit['slide12'] = function(){ renderSlide12(SLIDE12_DATA, SLIDE12_MOB_CAP); };
 })();
-</script>
-<!-- Slide 13 -->
-<div class="slide" id="slide13">
-  <div class="accent"></div>
-  <div class="hdr-section">
-    <div class="hdr">
-      <div class="hdr-left">
-        <div class="hdr-bar"></div>
-        <div>
-          <h1>DPD30+ by Vintage &amp; Term</h1>
-          <div class="sub">Origination month cohort &middot; 3-Month and 6-Month terms</div>
-        </div>
-      </div>
-      <div class="badge">
-        <div class="bl">MBR Report</div>
-        <div class="bv">Mar 2026</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="vintage-body">
-    <div class="shared-legend" id="legend13"></div>
-    <div class="chart-row" id="chartRow13"></div>
-  </div>
-
-  <div class="foot">
-    <span>Source: sandbox_risk_7216.fnpl_base_alpha_ga2 ⟶ loan_origination ⟶ loan_repayment_daily (DoB snapshots: day 1 + every 30d)</span>
-    <span class="foot-tag">FNPL Risk</span>
-  </div>
-</div>
-
-<script>
+/* template-slide13.html */
 (function(){
 const PALETTE = ['#1D4E89','#19A0AA','#E07B39','#C44536','#F0C929','#7C3AED','#475569','#0E7490','#B45309'];
 const MO = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
@@ -1362,76 +1489,469 @@ function renderSlide13(DPD_DATA, COHORT, MOB_CAP, TERMS){
 }
 
 /* ── DATA (agent replaces at build time) ── */
-var SLIDE13_DPD = [{"t": "3", "om": "2025-09-30", "mob": "M0", "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M1", "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M2", "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M3", "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M4", "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M0", "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M1", "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M2", "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M3", "r": 0.024523}, {"t": "3", "om": "2025-10-31", "mob": "M4", "r": 0.027248}, {"t": "3", "om": "2025-11-30", "mob": "M0", "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M1", "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M2", "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M3", "r": 0.016667}, {"t": "3", "om": "2025-11-30", "mob": "M4", "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M0", "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M1", "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M2", "r": 0.0}, {"t": "3", "om": "2026-02-28", "mob": "M0", "r": 0.0}, {"t": "3", "om": "2026-02-28", "mob": "M1", "r": 0.0}, {"t": "3", "om": "2026-03-31", "mob": "M0", "r": 0.0}, {"t": "3", "om": "2026-03-31", "mob": "M1", "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M0", "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M1", "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M2", "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M3", "r": 0.045455}, {"t": "6", "om": "2025-09-30", "mob": "M4", "r": 0.045455}, {"t": "6", "om": "2025-10-31", "mob": "M0", "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M1", "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M2", "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M3", "r": 0.024077}, {"t": "6", "om": "2025-10-31", "mob": "M4", "r": 0.032905}, {"t": "6", "om": "2025-11-30", "mob": "M0", "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M1", "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M2", "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M3", "r": 0.034146}, {"t": "6", "om": "2025-11-30", "mob": "M4", "r": 0.04878}, {"t": "6", "om": "2026-01-31", "mob": "M0", "r": 0.0}, {"t": "6", "om": "2026-01-31", "mob": "M1", "r": 0.0}, {"t": "6", "om": "2026-01-31", "mob": "M2", "r": 0.0}, {"t": "6", "om": "2026-02-28", "mob": "M0", "r": 0.0}, {"t": "6", "om": "2026-02-28", "mob": "M1", "r": 0.0}, {"t": "6", "om": "2026-03-31", "mob": "M0", "r": 0.0}, {"t": "6", "om": "2026-03-31", "mob": "M1", "r": 0.0}, {"t": "9", "om": "2026-02-28", "mob": "M0", "r": 0.0}, {"t": "9", "om": "2026-02-28", "mob": "M1", "r": 0.0}, {"t": "9", "om": "2026-03-31", "mob": "M0", "r": 0.0}, {"t": "9", "om": "2026-03-31", "mob": "M1", "r": 0.0}];
-var SLIDE13_COHORT = [{"t": "3", "om": "2025-09-30", "n": 18, "v": 694, "mi": 102}, {"t": "3", "om": "2025-10-31", "n": 367, "v": 692, "mi": 93}, {"t": "3", "om": "2025-11-30", "n": 60, "v": 686, "mi": 75}, {"t": "3", "om": "2026-01-31", "n": 1, "v": 577, "mi": 3}, {"t": "3", "om": "2026-02-28", "n": 1282, "v": 701, "mi": 69}, {"t": "3", "om": "2026-03-31", "n": 2806, "v": 717, "mi": 75}, {"t": "6", "om": "2025-09-30", "n": 44, "v": 685, "mi": 86}, {"t": "6", "om": "2025-10-31", "n": 1246, "v": 674, "mi": 98}, {"t": "6", "om": "2025-11-30", "n": 205, "v": 669, "mi": 80}, {"t": "6", "om": "2026-01-31", "n": 8, "v": 651, "mi": 53}, {"t": "6", "om": "2026-02-28", "n": 3607, "v": 683, "mi": 73}, {"t": "6", "om": "2026-03-31", "n": 1772, "v": 697, "mi": 74}, {"t": "9", "om": "2026-02-28", "n": 849, "v": 679, "mi": 71}, {"t": "9", "om": "2026-03-31", "n": 3195, "v": 684, "mi": 78}];
+var SLIDE13_DPD = [{"t":"3","om":"2025-09-30","mob":"M0","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M1","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M2","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M3","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M4","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M5","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M6","r":0.0,"tl":18},{"t":"3","om":"2025-10-31","mob":"M0","r":0.0,"tl":367},{"t":"3","om":"2025-10-31","mob":"M1","r":0.0,"tl":367},{"t":"3","om":"2025-10-31","mob":"M2","r":0.0,"tl":367},{"t":"3","om":"2025-10-31","mob":"M3","r":0.02452316076294278,"tl":367},{"t":"3","om":"2025-10-31","mob":"M4","r":0.027247956403269755,"tl":367},{"t":"3","om":"2025-10-31","mob":"M5","r":0.0326975476839237,"tl":367},{"t":"3","om":"2025-10-31","mob":"M6","r":0.013623978201634877,"tl":367},{"t":"3","om":"2025-11-30","mob":"M0","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M1","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M2","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M3","r":0.016666666666666666,"tl":60},{"t":"3","om":"2025-11-30","mob":"M4","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M5","r":0.0,"tl":60},{"t":"3","om":"2026-01-31","mob":"M0","r":0.0,"tl":1},{"t":"3","om":"2026-01-31","mob":"M1","r":0.0,"tl":1},{"t":"3","om":"2026-01-31","mob":"M2","r":0.0,"tl":1},{"t":"3","om":"2026-02-28","mob":"M0","r":0.0,"tl":1282},{"t":"3","om":"2026-02-28","mob":"M1","r":0.0,"tl":1282},{"t":"3","om":"2026-03-31","mob":"M0","r":0.0,"tl":10936},{"t":"3","om":"2026-03-31","mob":"M1","r":0.0,"tl":10936},{"t":"3","om":"2026-04-30","mob":"M0","r":0.0,"tl":10060},{"t":"6","om":"2025-09-30","mob":"M0","r":0.0,"tl":44},{"t":"6","om":"2025-09-30","mob":"M1","r":0.0,"tl":44},{"t":"6","om":"2025-09-30","mob":"M2","r":0.0,"tl":44},{"t":"6","om":"2025-09-30","mob":"M3","r":0.045454545454545456,"tl":44},{"t":"6","om":"2025-09-30","mob":"M4","r":0.045454545454545456,"tl":44},{"t":"6","om":"2025-09-30","mob":"M5","r":0.06818181818181818,"tl":44},{"t":"6","om":"2025-09-30","mob":"M6","r":0.06818181818181818,"tl":44},{"t":"6","om":"2025-10-31","mob":"M0","r":0.0,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M1","r":0.0,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M2","r":0.0,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M3","r":0.024077046548956663,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M4","r":0.03290529695024077,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M5","r":0.03691813804173355,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M6","r":0.016853932584269662,"tl":1246},{"t":"6","om":"2025-11-30","mob":"M0","r":0.0,"tl":205},{"t":"6","om":"2025-11-30","mob":"M1","r":0.0,"tl":205},{"t":"6","om":"2025-11-30","mob":"M2","r":0.0,"tl":205},{"t":"6","om":"2025-11-30","mob":"M3","r":0.03414634146341464,"tl":205},{"t":"6","om":"2025-11-30","mob":"M4","r":0.04878048780487805,"tl":205},{"t":"6","om":"2025-11-30","mob":"M5","r":0.07804878048780488,"tl":205},{"t":"6","om":"2026-01-31","mob":"M0","r":0.0,"tl":8},{"t":"6","om":"2026-01-31","mob":"M1","r":0.0,"tl":8},{"t":"6","om":"2026-01-31","mob":"M2","r":0.0,"tl":8},{"t":"6","om":"2026-02-28","mob":"M0","r":0.0,"tl":3607},{"t":"6","om":"2026-02-28","mob":"M1","r":0.0,"tl":3607},{"t":"6","om":"2026-03-31","mob":"M0","r":0.0,"tl":5146},{"t":"6","om":"2026-03-31","mob":"M1","r":0.0,"tl":5146},{"t":"6","om":"2026-04-30","mob":"M0","r":0.0,"tl":3914}];
+var SLIDE13_COHORT = [{"t":"3","om":"2025-09-30","n":18,"v":694,"mi":102},{"t":"3","om":"2025-10-31","n":367,"v":692,"mi":93},{"t":"3","om":"2025-11-30","n":60,"v":686,"mi":75},{"t":"3","om":"2026-01-31","n":1,"v":577,"mi":3},{"t":"3","om":"2026-02-28","n":1282,"v":701,"mi":69},{"t":"3","om":"2026-03-31","n":10936,"v":725,"mi":84},{"t":"3","om":"2026-04-30","n":10060,"v":726,"mi":88},{"t":"6","om":"2025-09-30","n":44,"v":685,"mi":86},{"t":"6","om":"2025-10-31","n":1246,"v":674,"mi":98},{"t":"6","om":"2025-11-30","n":205,"v":669,"mi":80},{"t":"6","om":"2026-01-31","n":8,"v":651,"mi":53},{"t":"6","om":"2026-02-28","n":3607,"v":683,"mi":73},{"t":"6","om":"2026-03-31","n":5146,"v":698,"mi":75},{"t":"6","om":"2026-04-30","n":3914,"v":697,"mi":79}];
 var SLIDE13_MOB_CAP = 4;
-var SLIDE13_TERMS = ["3", "6"];
+var SLIDE13_TERMS = ["3","6"];
 window.__deferredSlideInit = window.__deferredSlideInit || {};
 window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, SLIDE13_COHORT, SLIDE13_MOB_CAP, SLIDE13_TERMS); };
 })();
-</script>
-  </div>
-  <button class="nav-btn next" id="nextBtn">&#8250;</button>
-  <div class="bottom-bar">
-    <div class="slide-dots"><div class="dot" title="Slide 1"></div><div class="dot" title="Slide 2"></div><div class="dot" title="Slide 3"></div><div class="dot" title="Slide 4"></div><div class="dot" title="Slide 9"></div><div class="dot" title="Slide 10"></div><div class="dot" title="Slide 11"></div><div class="dot" title="Slide 12"></div><div class="dot" title="Slide 13"></div></div>
-    <span class="slide-counter" id="slideCounter"></span>
-  </div>
-</div>
-<script>
-
+/* presenter */
 (function(){
   var slides = document.querySelectorAll('.slide-track > .slide, .slide-track > .slide-fixed');
   var dots = document.querySelectorAll('.dot');
-  var counter = document.getElementById('slideCounter');
-  var prevBtn = document.getElementById('prevBtn');
-  var nextBtn = document.getElementById('nextBtn');
+  var counter = document.querySelector('.slide-counter');
+  var prevBtn = document.querySelector('.nav-btn.prev');
+  var nextBtn = document.querySelector('.nav-btn.next');
   var cur = 0;
-  var total = slides.length;
+  var N = slides.length;
 
-  function go(idx) {
-    if (idx < 0 || idx >= total) return;
-    var dir = idx > cur ? 1 : -1;
-    slides[cur].classList.remove('active');
-    slides[cur].classList.add(dir > 0 ? 'exit-left' : '');
-    setTimeout(function(){ slides[cur === idx ? cur : (idx - dir + total) % total].classList.remove('exit-left'); }, 420);
-    cur = idx;
-    slides[cur].className = slides[cur].className.replace(/\b(exit-left)\b/g, '').trim();
-    slides[cur].classList.add('active');
-    dots.forEach(function(d, i){ d.classList.toggle('active', i === cur); });
-    counter.textContent = (cur + 1) + ' / ' + total;
-    prevBtn.disabled = cur === 0;
-    nextBtn.disabled = cur === total - 1;
+  var inited = {};
+
+  function initSlide(el) {
+    var id = el.id;
+    if (!id || inited[id]) return;
+    var dsi = window.__deferredSlideInit;
+    if (dsi && typeof dsi[id] === 'function') {
+      dsi[id]();
+      inited[id] = true;
+    }
   }
 
-  // Init
+  function go(idx) {
+    if (idx < 0 || idx >= N) return;
+    var prev = cur;
+    slides[prev].classList.remove('active');
+    if (idx > prev) slides[prev].classList.add('exit-left');
+    setTimeout(function(){ slides[prev] && slides[prev].classList.remove('exit-left'); }, 400);
+    cur = idx;
+    slides[cur].classList.remove('exit-left');
+    slides[cur].classList.add('active');
+    dots.forEach(function(d,i){ d.classList.toggle('active', i===cur); });
+    counter.textContent = (cur+1) + ' / ' + N;
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === N-1;
+    setTimeout(function(){
+      initSlide(slides[cur]);
+      window.dispatchEvent(new Event('resize'));
+      if (typeof Plotly !== 'undefined') {
+        var plots = slides[cur].querySelectorAll('.js-plotly-plot');
+        plots.forEach(function(p){ Plotly.Plots.resize(p); });
+      }
+    }, 60);
+  }
+
+  slides.forEach(function(s){ s.classList.remove('active'); });
   slides[0].classList.add('active');
-  dots[0].classList.add('active');
-  counter.textContent = '1 / ' + total;
+  dots[0] && dots[0].classList.add('active');
+  counter.textContent = '1 / ' + N;
   prevBtn.disabled = true;
+  nextBtn.disabled = N <= 1;
 
-  prevBtn.onclick = function(){ go(cur - 1); };
-  nextBtn.onclick = function(){ go(cur + 1); };
-  dots.forEach(function(d, i){ d.onclick = function(){ go(i); }; });
+  prevBtn.onclick = function(){ go(cur-1); };
+  nextBtn.onclick = function(){ go(cur+1); };
+  dots.forEach(function(d,i){ d.onclick = function(){ go(i); }; });
 
-  // Keyboard
+  window.__presenter = {
+    go: go,
+    currentIndex: function(){ return cur; },
+    refresh: function() {
+      slides = document.querySelectorAll('.slide-track > .slide, .slide-track > .slide-fixed');
+      N = slides.length;
+      var dotsWrap = document.querySelector('.slide-dots');
+      dotsWrap.innerHTML = '';
+      for (var i = 0; i < N; i++) {
+        var d = document.createElement('div');
+        d.className = 'dot' + (i === cur ? ' active' : '');
+        (function(idx){ d.onclick = function(){ go(idx); }; })(i);
+        dotsWrap.appendChild(d);
+      }
+      dots = document.querySelectorAll('.dot');
+      counter.textContent = (cur+1) + ' / ' + N;
+      prevBtn.disabled = cur === 0;
+      nextBtn.disabled = cur === N-1;
+    }
+  };
+
   document.addEventListener('keydown', function(e){
-    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(cur + 1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
-    if (e.key === 'Home') { e.preventDefault(); go(0); }
-    if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(cur+1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur-1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(N-1); }
   });
 
-  // Touch swipe
-  var x0 = null;
-  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+  var tx = 0;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; });
   document.addEventListener('touchend', function(e){
-    if (x0 === null) return;
-    var dx = e.changedTouches[0].clientX - x0;
-    if (Math.abs(dx) > 50) { dx < 0 ? go(cur + 1) : go(cur - 1); }
-    x0 = null;
-  }, {passive:true});
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+  });
 })();
+/* edit mode */
+(function(){
+  var editables = document.querySelectorAll('[data-editable]');
+  var toast = document.querySelector('.edit-toast');
+  var editBtn = document.getElementById('editModeBtn');
+  var saveBtn = document.querySelector('.edit-btn-save');
+  var exitBtn = document.querySelector('.edit-btn-exit');
 
-</script>
+  function showToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, ms || 3000);
+  }
+
+  function enterEditMode() {
+    document.body.classList.add('edit-mode');
+    editables.forEach(function(el) {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+    });
+  }
+
+  function exitEditMode() {
+    document.body.classList.remove('edit-mode');
+    editables.forEach(function(el) {
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('spellcheck');
+      if (document.activeElement === el) el.blur();
+    });
+  }
+
+  /* prevent arrow keys from changing slides when editing */
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement && document.activeElement.hasAttribute('data-editable')) {
+      e.stopPropagation();
+    }
+  }, true);
+
+  /* Edit Mode button (bottom bar in present mode) */
+  if (editBtn) {
+    editBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      enterEditMode();
+    });
+  }
+
+  /* Present Mode button (edit banner) */
+  if (exitBtn) {
+    exitBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      exitEditMode();
+    });
+  }
+
+  /* auto-enter edit mode if ?mode=edit is in the URL */
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'edit') enterEditMode();
+
+  /* GitHub API config */
+  var REPO_OWNER = 'namrataverma-rgb';
+  var REPO_NAME = 'fnpl-funnel-dashboard';
+  var FILE_PATH = 'mbr/FNPL_MBR_Mar26.html';
+  var API_BASE = 'https://api.github.com';
+
+  function getCredentials() {
+    var creds = localStorage.getItem('mbr_github_creds');
+    if (creds) return JSON.parse(creds);
+    var token = prompt(
+      'Enter your GitHub Personal Access Token (PAT) to save.\n\n' +
+      'Generate one at: github.com \u2192 Settings \u2192 Developer Settings \u2192 Personal Access Tokens \u2192 Tokens (classic)\n' +
+      'Scope needed: repo'
+    );
+    if (!token) return null;
+    var obj = { token: token.trim() };
+    localStorage.setItem('mbr_github_creds', JSON.stringify(obj));
+    return obj;
+  }
+
+  function serializeCleanHTML() {
+    /* Strip ALL edit-mode artifacts so the saved file loads clean */
+    document.body.classList.remove('edit-mode');
+    saveBtn.disabled = false;
+    saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
+    toast.classList.remove('show');
+    toast.textContent = '';
+    var overlay = document.getElementById('addSlideOverlay');
+    if (overlay) overlay.classList.remove('open');
+
+    editables = document.querySelectorAll('[data-editable]');
+    editables.forEach(function(el) {
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('spellcheck');
+    });
+
+    /* Reset slide active state so only slide[0] is active on load */
+    var allSlides = document.querySelectorAll('.slide-track > .slide, .slide-track > .slide-fixed');
+    var activeIdx = -1;
+    allSlides.forEach(function(s, i) { if (s.classList.contains('active')) activeIdx = i; s.classList.remove('active'); });
+
+    /* Clear dynamically-rendered chart content so re-init on load doesn't duplicate */
+    var cr13 = document.getElementById('chartRow13');
+    var cr13HTML = cr13 ? cr13.innerHTML : '';
+    if (cr13) cr13.innerHTML = '';
+    var lg13 = document.getElementById('legend13');
+    var lg13HTML = lg13 ? lg13.innerHTML : '';
+    if (lg13) lg13.innerHTML = '';
+    var lg12 = document.getElementById('legend12');
+    var lg12HTML = lg12 ? lg12.innerHTML : '';
+    if (lg12) lg12.innerHTML = '';
+    ['c12_0','c12_1','c12_2','c12_3'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) { el._savedHTML = el.innerHTML; el.innerHTML = ''; el.classList.remove('js-plotly-plot'); }
+    });
+
+    var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+    /* Restore edit-mode state */
+    document.body.classList.add('edit-mode');
+    editables.forEach(function(el) {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+    });
+    if (activeIdx >= 0 && allSlides[activeIdx]) allSlides[activeIdx].classList.add('active');
+    if (cr13) cr13.innerHTML = cr13HTML;
+    if (lg13) lg13.innerHTML = lg13HTML;
+    if (lg12) lg12.innerHTML = lg12HTML;
+    ['c12_0','c12_1','c12_2','c12_3'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && el._savedHTML) { el.innerHTML = el._savedHTML; el.classList.add('js-plotly-plot'); delete el._savedHTML; }
+    });
+
+    return html;
+  }
+
+  async function saveToGitHub() {
+    var creds = getCredentials();
+    if (!creds) { showToast('Save cancelled \u2014 no token provided.'); return; }
+
+    showToast('Saving...', 60000);
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      var htmlContent = serializeCleanHTML();
+
+      var getResp = await fetch(API_BASE + '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH, {
+        headers: { 'Authorization': 'token ' + creds.token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+
+      if (getResp.status === 401) {
+        localStorage.removeItem('mbr_github_creds');
+        showToast('Invalid token \u2014 cleared. Try again.');
+        saveBtn.disabled = false;
+        saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
+        return;
+      }
+
+      var fileData = await getResp.json();
+      var sha = fileData.sha;
+      var encoded = btoa(unescape(encodeURIComponent(htmlContent)));
+
+      var putResp = await fetch(API_BASE + '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + creds.token,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Update MBR deck (live edit)',
+          content: encoded,
+          sha: sha
+        })
+      });
+
+      if (putResp.ok) {
+        showToast('\u2705 Saved! Changes are live on the dashboard.', 4000);
+      } else {
+        var err = await putResp.json();
+        showToast('\u274C Save failed: ' + (err.message || putResp.status), 5000);
+      }
+    } catch (e) {
+      showToast('\u274C Error: ' + e.message, 5000);
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
+  }
+
+  if (saveBtn) saveBtn.addEventListener('click', saveToGitHub);
+
+  /* ── Add Slide ── */
+  var overlay = document.getElementById('addSlideOverlay');
+  var fab = document.getElementById('addSlideFab');
+  var closeModal = document.getElementById('addSlideClose');
+
+  function openModal() { overlay.classList.add('open'); }
+  function closeModalFn() { overlay.classList.remove('open'); }
+
+  if (fab) fab.addEventListener('click', openModal);
+  if (closeModal) closeModal.addEventListener('click', closeModalFn);
+  if (overlay) overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeModalFn();
+  });
+
+  var ACCENT = '<div style="height:4px;margin:0 -40px;background:linear-gradient(90deg,#1D4E89,#19A0AA,#F0C929,#E07B39,#C44536);flex-shrink:0;"></div>';
+  var FOOT = '<div style="padding:8px 0 10px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">'
+    + '<div style="font-size:7.5px;color:#CBD5E1;line-height:1.6;font-family:Inter,sans-serif;">Consumer Risk Team &middot; Mar 2026</div>'
+    + '<div style="font-size:10px;font-weight:800;color:#E2E8F0;font-family:Inter,sans-serif;"></div></div>';
+
+  function hdrSection(title, sub) {
+    return '<div style="background:#F8FAFC;margin:0 -40px;padding:16px 40px 12px;flex-shrink:0;border-bottom:1px solid #EEF0F4;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+      + '<div style="display:flex;align-items:center;gap:14px;">'
+      + '<div style="width:5px;height:42px;border-radius:2px;background:#1D4E89;flex-shrink:0;"></div>'
+      + '<div><h1 style="font-size:24px;font-weight:800;color:#0F172A;letter-spacing:-0.3px;margin:0;font-family:Inter,sans-serif;">' + title + '</h1>'
+      + '<div style="font-size:11.5px;color:#94A3B8;margin-top:2px;font-family:Inter,sans-serif;">' + sub + '</div></div></div>'
+      + '<div style="border:1.5px solid #E2E8F0;border-radius:7px;padding:5px 16px;text-align:center;">'
+      + '<div style="font-size:8px;color:#94A3B8;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;font-family:Inter,sans-serif;">MBR Report</div>'
+      + '<div style="font-size:16px;font-weight:700;color:#0F172A;font-family:Inter,sans-serif;">Mar 2026</div>'
+      + '</div></div></div>';
+  }
+
+  var SHELL_OPEN = '<div class="slide slide-fixed" style="width:1280px;height:720px;background:#FFFFFF;overflow:hidden;display:flex;flex-direction:column;padding:0 40px;"';
+
+  var TEMPLATES = {
+    title: function(n) {
+      return '<div class="slide slide-fixed" id="slideNew' + n + '" style="width:1280px;height:720px;background:#0F172A;display:flex;flex-direction:column;justify-content:flex-start;padding:0;overflow:hidden;">'
+        + '<div style="padding:28px 48px 0;"><img src="intuit-ecosystem-white.svg" style="height:32px;" onerror="this.style.display=\'none\'"></div>'
+        + '<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 64px 48px;">'
+        + '<h1 data-editable="new-title-' + n + '" style="font-family:Poppins,sans-serif;font-size:44px;font-weight:700;color:#FFFFFF;margin:0 0 16px;line-height:1.15;">Slide Title</h1>'
+        + '<p data-editable="new-subtitle-' + n + '" style="font-family:Inter,sans-serif;font-size:18px;color:#94A3B8;margin:0;">Add your subtitle here</p></div>'
+        + '<div style="padding:0 48px 24px;text-align:right;font-family:Inter,sans-serif;font-size:12px;color:#475569;">Consumer Risk Team | Mar 2026</div>'
+        + '</div>';
+    },
+    takeaway: function(n) {
+      return SHELL_OPEN + ' id="slideNew' + n + '">'
+        + ACCENT
+        + hdrSection('Key Takeaway', 'Click heading to edit')
+        + '<div style="flex:1;display:flex;flex-direction:column;min-height:0;margin:0 40px;padding-top:14px;">'
+        + '<div data-editable="new-body-' + n + '" style="flex:1;font-family:Inter,sans-serif;font-size:14px;color:#334155;line-height:2;">'
+        + '<div style="margin-bottom:8px;">\u2022 First key point \u2014 click to edit</div>'
+        + '<div style="margin-bottom:8px;">\u2022 Second key point</div>'
+        + '<div>\u2022 Third key point</div>'
+        + '</div></div>'
+        + FOOT + '</div>';
+    },
+    section: function(n) {
+      return '<div class="slide slide-fixed" id="slideNew' + n + '" style="width:1280px;height:720px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;overflow:hidden;">'
+        + '<div style="height:4px;width:120px;background:linear-gradient(90deg,#1D4E89,#19A0AA,#F0C929,#E07B39,#C44536);border-radius:2px;margin-bottom:28px;"></div>'
+        + '<h1 data-editable="new-section-' + n + '" style="font-family:Poppins,sans-serif;font-size:42px;font-weight:700;color:#0F172A;margin:0 0 12px;text-align:center;">Section Title</h1>'
+        + '<p data-editable="new-sectiondesc-' + n + '" style="font-family:Inter,sans-serif;font-size:16px;color:#64748B;margin:0;text-align:center;">Brief description of this section</p>'
+        + '<div style="position:absolute;bottom:24px;right:40px;font-family:Inter,sans-serif;font-size:12px;color:#94A3B8;">Consumer Risk Team | Mar 2026</div>'
+        + '</div>';
+    },
+    blank: function(n) {
+      return SHELL_OPEN + ' id="slideNew' + n + '">'
+        + ACCENT
+        + hdrSection('Untitled Slide', 'Click heading to edit')
+        + '<div style="flex:1;display:flex;flex-direction:column;min-height:0;margin:0 40px;padding-top:14px;">'
+        + '<div data-editable="new-blank-' + n + '" style="flex:1;font-family:Inter,sans-serif;font-size:14px;color:#64748B;line-height:2;">Click here to start typing\u2026</div>'
+        + '</div>'
+        + FOOT + '</div>';
+    }
+  };
+
+  var addCount = 0;
+
+  var tplCards = document.querySelectorAll('.tpl-card[data-tpl]');
+  tplCards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      var tpl = card.getAttribute('data-tpl');
+      if (!TEMPLATES[tpl]) return;
+      addCount++;
+      var html = TEMPLATES[tpl](addCount);
+
+      var track = document.querySelector('.slide-track');
+      var p = window.__presenter;
+      var curIdx = p ? p.currentIndex() : 0;
+      var allSlides = track.querySelectorAll('.slide, .slide-fixed');
+      var afterEl = allSlides[curIdx];
+
+      var tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      var newSlide = tmp.firstChild;
+
+      if (afterEl && afterEl.nextSibling) {
+        track.insertBefore(newSlide, afterEl.nextSibling);
+      } else {
+        track.appendChild(newSlide);
+      }
+
+      if (p) {
+        p.refresh();
+        p.go(curIdx + 1);
+      }
+
+      /* make new editable areas active */
+      var newEditables = newSlide.querySelectorAll('[data-editable]');
+      newEditables.forEach(function(el) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'false');
+      });
+      editables = document.querySelectorAll('[data-editable]');
+
+      closeModalFn();
+      showToast('Slide added after slide ' + (curIdx + 1), 2000);
+    });
+  });
+
+  /* ── Delete Slide ── */
+  var delFab = document.getElementById('deleteSlideFab');
+  var delOverlay = document.getElementById('deleteConfirmOverlay');
+  var delConfirmBtn = document.getElementById('deleteConfirmBtn');
+  var delCancelBtn = document.getElementById('deleteCancelBtn');
+  var delMsg = document.getElementById('deleteConfirmMsg');
+
+  function openDeleteConfirm() {
+    var p = window.__presenter;
+    if (!p) return;
+    var idx = p.currentIndex();
+    var allSlides = document.querySelectorAll('.slide-track > .slide, .slide-track > .slide-fixed');
+    if (allSlides.length <= 1) {
+      showToast('Cannot delete the only slide.', 2000);
+      return;
+    }
+    var slide = allSlides[idx];
+    var title = slide.querySelector('h1');
+    var name = title ? title.textContent.trim().substring(0, 40) : 'Slide ' + (idx + 1);
+    delMsg.textContent = 'Delete "' + name + '" (slide ' + (idx + 1) + ' of ' + allSlides.length + ')? This cannot be undone.';
+    delOverlay.classList.add('open');
+  }
+
+  function closeDeleteConfirm() { delOverlay.classList.remove('open'); }
+
+  if (delFab) delFab.addEventListener('click', openDeleteConfirm);
+  if (delCancelBtn) delCancelBtn.addEventListener('click', closeDeleteConfirm);
+  if (delOverlay) delOverlay.addEventListener('click', function(e) {
+    if (e.target === delOverlay) closeDeleteConfirm();
+  });
+
+  if (delConfirmBtn) delConfirmBtn.addEventListener('click', function() {
+    var p = window.__presenter;
+    if (!p) return;
+    var idx = p.currentIndex();
+    var track = document.querySelector('.slide-track');
+    var allSlides = track.querySelectorAll('.slide, .slide-fixed');
+    if (allSlides.length <= 1) { closeDeleteConfirm(); return; }
+
+    var target = allSlides[idx];
+    var newIdx = idx > 0 ? idx - 1 : 0;
+
+    allSlides[newIdx].classList.add('active');
+    target.remove();
+
+    p.refresh();
+    p.go(newIdx);
+
+    editables = document.querySelectorAll('[data-editable]');
+    closeDeleteConfirm();
+    showToast('Slide deleted.', 2000);
+  });
+})();
+  </script>
 </body>
 </html>
