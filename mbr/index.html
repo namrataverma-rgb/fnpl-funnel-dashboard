@@ -1,26 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FNPL MBR — HTML decks</title>
-  <style>
-    body { font-family: system-ui, Segoe UI, Roboto, sans-serif; max-width: 720px; margin: 48px auto; padding: 0 24px; color: #0f172a; }
-    h1 { font-size: 1.35rem; font-weight: 700; margin-bottom: 8px; }
-    p { color: #64748b; font-size: 0.95rem; margin-bottom: 24px; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li { border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; }
-    a { display: block; padding: 14px 16px; color: #1d4e89; font-weight: 600; text-decoration: none; }
-    a:hover { background: #f8fafc; }
-    .hint { font-size: 0.8rem; color: #94a3b8; margin-top: 32px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNPL Monthly Business Review — Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #0F172A; color: #E2E8F0;
+    min-height: 100vh; display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+  .hero {
+    padding: 48px 56px 36px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .hero-top { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .hero-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: linear-gradient(135deg, #1D4E89, #19A0AA);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .hero h1 { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700; color: #F1F5F9; }
+  .hero p { font-size: 14px; color: #94A3B8; line-height: 1.6; max-width: 700px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px; padding: 36px 56px; flex: 1;
+  }
+  .card {
+    background: #1E293B; border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; padding: 28px 24px; display: flex; flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    text-decoration: none; color: inherit; position: relative; overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    border-color: rgba(29,78,137,0.4);
+  }
+  .card-badge {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px; color: #94A3B8;
+    margin-bottom: 12px;
+  }
+  .card h2 { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: #F1F5F9; margin-bottom: 8px; }
+  .card .meta { font-size: 12px; color: #64748B; line-height: 1.6; }
+  .card .arrow {
+    position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
+    font-size: 20px; color: #475569; transition: color 0.2s, transform 0.2s;
+  }
+  .card:hover .arrow { color: #19A0AA; transform: translateY(-50%) translateX(4px); }
+
+  .card.latest { border-color: rgba(25,160,170,0.3); }
+  .card.latest::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929);
+  }
+
+  .footer {
+    padding: 24px 56px; text-align: center;
+    font-size: 11px; color: #475569; border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .footer a { color: #64748B; text-decoration: none; }
+  .footer a:hover { color: #94A3B8; }
+</style>
 </head>
 <body>
-  <h1>FNPL Monthly Business Review — HTML</h1>
-  <p>Combined deck (Cover + Slides 9–13). Add a list entry when you publish a new month.</p>
-  <ul>
-    <li><a href="FNPL_MBR_Apr26.html">April 2026</a></li>
-  </ul>
-  <p class="hint">Source: <code>cg-credit-risk/exports/fnpl-mbr/</code> — update this index when adding <code>FNPL_MBR_&lt;MonYY&gt;.html</code>.</p>
+
+<div class="hero">
+  <div class="hero-top">
+    <div class="hero-icon">📊</div>
+    <h1>FNPL Monthly Business Review</h1>
+  </div>
+  <p>Interactive slide decks generated from Databricks data. Each month's deck includes Application Profile, Funded Loans Profile, Monthly Performance, DPD30+ by Vantage Group, and DPD30+ by Term.</p>
+</div>
+
+<div class="grid" id="deck-grid">
+  <a class="card latest" href="FNPL_MBR_Apr26.html">
+    <span class="card-badge">Latest</span>
+    <h2>Apr 2026</h2>
+    <div class="meta">
+      Data cutoff: Apr 15, 2026<br>
+      Base table: fnpl_base_alpha_ga2<br>
+      10 slides &middot; Cover + Agenda + Exec Summary + GA 2.0 + Slides 9&ndash;13
+    </div>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<div class="footer">
+  Consumer Risk Team &middot; <a href="../index.html">FNPL Funnel Dashboard</a> &middot; Auto-generated by MBR Skill
+</div>
+
 </body>
 </html>

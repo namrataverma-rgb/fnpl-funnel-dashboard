@@ -1,31 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FNPL MBR — Apr 2026</title>
-<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
-<style>
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
-html,body{margin:0;padding:0;background:#CBD5E1;}
-body{display:block!important;min-height:auto!important;}
-.slide-fixed{width:1280px;height:720px;margin:0 auto 32px;box-shadow:0 4px 24px rgba(15,23,42,.12);}
-.slide{width:1280px;height:720px;margin:0 auto 32px;box-shadow:0 4px 24px rgba(15,23,42,.12);}
-#slide9 #chart9{width:100%;height:100%;}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
+  <meta charset="UTF-8">
+  <title>FNPL MBR — Apr 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+  <style>
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #0F172A;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  user-select: none;
+}
+.presenter {
+  position: relative;
+  width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+.slide-track {
+  position: relative;
+  width: 1280px; height: 720px; flex-shrink: 0;
+}
+.slide, .slide-fixed {
+  position: absolute; top: 0; left: 0;
+  width: 1280px; height: 720px;
+  background: #fff; border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transform: translateX(80px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.slide.active, .slide-fixed.active {
+  opacity: 1; pointer-events: auto;
+  transform: translateX(0); z-index: 2;
+}
+.slide.exit-left, .slide-fixed.exit-left {
+  opacity: 0; transform: translateX(-80px);
+}
+.nav-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.12); color: #fff; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, transform 0.15s; z-index: 10;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.25); }
+.nav-btn.prev { left: max(12px, calc(50% - 680px)); }
+.nav-btn.next { right: max(12px, calc(50% - 680px)); }
+.nav-btn:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+.bottom-bar {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; z-index: 10;
+}
+.slide-dots { display: flex; gap: 6px; }
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.25); cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.dot.active { background: #fff; transform: scale(1.3); }
+.slide-counter {
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  font-weight: 600; letter-spacing: 1px;
+}
+@media (max-width: 1360px), (max-height: 780px) {
+  .slide-track {
+    transform: scale(calc(min(100vw / 1360, 100vh / 780)));
+    transform-origin: center center;
   }
-
-  /* === ALL CSS SCOPED UNDER #slide9 — DO NOT REMOVE ID PREFIX === */
+}
+/* --- template.html --- */
+/* === ALL CSS SCOPED UNDER #slide9 — DO NOT REMOVE ID PREFIX === */
   #slide9 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -75,7 +124,7 @@ body{display:block!important;min-height:auto!important;}
   }
 
   #slide9 .chart-area { flex: 1; min-height: 0; margin-bottom: 10px; }
-  #slide9 #chart { width: 100%; height: 100%; }
+  #slide9 #chart9 { width: 100%; height: 100%; min-height: 200px; }
 
   #slide9 .tbl-wrap {
     border-radius: 10px;
@@ -122,18 +171,8 @@ body{display:block!important;min-height:auto!important;}
   }
   #slide9 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
   #slide9 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide10 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide10.html --- */
+/* === ALL CSS SCOPED UNDER #slide10 — DO NOT REMOVE ID PREFIX === */
   #slide10 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -230,18 +269,8 @@ body{display:block!important;min-height:auto!important;}
   }
   #slide10 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
   #slide10 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide11 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide11.html --- */
+/* === ALL CSS SCOPED UNDER #slide11 — DO NOT REMOVE ID PREFIX === */
   #slide11 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -357,18 +386,8 @@ body{display:block!important;min-height:auto!important;}
   }
   #slide11 .foot-l { font-size: 7.5px; color: #CBD5E1; line-height: 1.6; }
   #slide11 .foot-r { font-size: 10px; font-weight: 800; color: #E2E8F0; }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide12 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide12.html --- */
+/* === ALL CSS SCOPED UNDER #slide12 — DO NOT REMOVE ID PREFIX === */
   #slide12 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -394,7 +413,8 @@ body{display:block!important;min-height:auto!important;}
 
   #slide12 .vintage-body {
     flex: 1; display: flex; flex-direction: column;
-    min-height: 0; padding: 8px 0 0;
+    min-height: 0; min-width: 0;
+    padding: 8px 0 0;
   }
 
   #slide12 .shared-legend {
@@ -404,20 +424,29 @@ body{display:block!important;min-height:auto!important;}
   #slide12 .leg-item { display: inline-flex; align-items: center; font-size: 10.5px; color: #334155; font-weight: 500; }
   #slide12 .leg-dot { width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; flex-shrink: 0; }
 
+  /* 2×2 equal quadrants: explicit 1fr rows + cols so panels stay even (not content-sized rows). */
   #slide12 .chart-grid {
-    flex: 1; display: grid; grid-template-columns: 1fr 1fr;
-    gap: 10px 16px; min-height: 0;
+    flex: 1; display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px 14px; min-height: 0; min-width: 0;
+    align-items: stretch; justify-items: stretch;
   }
   #slide12 .chart-box {
-    border: 1px solid #E8ECF0; border-radius: 8px; padding: 6px 8px 4px;
-    background: #FAFBFC; display: flex; flex-direction: column; min-height: 0;
+    border: 1px solid #E8ECF0; border-radius: 8px; padding: 6px 6px 4px;
+    background: #FAFBFC; display: flex; flex-direction: column;
+    min-height: 0; min-width: 0;
+    height: 100%;
   }
   #slide12 .chart-title {
     font-size: 11px; font-weight: 700; color: #0F172A;
     text-transform: uppercase; text-align: center; letter-spacing: 0.3px;
     flex-shrink: 0; margin-bottom: 2px;
   }
-  #slide12 .chart-div { flex: 1; min-height: 0; }
+  #slide12 .chart-div {
+    flex: 1; min-height: 0; min-width: 0;
+    width: 100%;
+  }
 
   #slide12 .foot {
     display: flex; justify-content: space-between; align-items: center;
@@ -428,18 +457,8 @@ body{display:block!important;min-height:auto!important;}
     border: 1px solid #E2E8F0; border-radius: 4px;
     padding: 2px 8px; font-weight: 600; color: #64748B;
   }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #94A3B8;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* === ALL CSS SCOPED UNDER #slide13 — DO NOT REMOVE ID PREFIX === */
+/* --- template-slide13.html --- */
+/* === ALL CSS SCOPED UNDER #slide13 — DO NOT REMOVE ID PREFIX === */
   #slide13 {
     width: 1280px; height: 720px;
     background: #FFFFFF;
@@ -521,11 +540,12 @@ body{display:block!important;min-height:auto!important;}
     border: 1px solid #E2E8F0; border-radius: 4px;
     padding: 2px 8px; font-weight: 600; color: #64748B;
   }
-</style>
+  </style>
 </head>
-<body style="padding:32px 0 64px;">
-<!-- Cover -->
-<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Cover</div>
+<body>
+  <div class="presenter">
+    <button type="button" class="nav-btn prev" aria-label="Previous slide">‹</button>
+    <div class="slide-track">
 <div class="slide slide-fixed" id="slide1" style="background:#0F172A;display:flex;flex-direction:column;justify-content:flex-start;padding:0;">
   <div style="padding:28px 48px 0;">
     <img src="intuit-ecosystem-white.svg" alt="Intuit ecosystem" style="height:34px;">
@@ -535,15 +555,13 @@ body{display:block!important;min-height:auto!important;}
     <p style="font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#cbd5e1;margin:0;">Consumer Risk Team</p>
   </div>
 </div>
-<!-- Agenda -->
-<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Agenda</div>
 <div class="slide slide-fixed" id="slide2" style="background:#FFFFFF;display:flex;flex-direction:column;padding:48px 56px 32px;">
   <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0 0 32px;">Agenda</h1>
   <div style="display:flex;flex:1;align-items:flex-start;">
     <div style="width:4px;background:#0F172A;border-radius:2px;align-self:stretch;margin-right:0;"></div>
     <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px 40px;flex:1;">
       <div style="margin-bottom:24px;">
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:4px;">Executive Summary & Follow ups</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#334155;margin-bottom:4px;">Executive Summary &amp; Follow ups</div>
         <div style="font-family:'Inter',sans-serif;font-size:14px;color:#64748B;">10 mins</div>
       </div>
       <div style="margin-bottom:24px;">
@@ -564,26 +582,10 @@ body{display:block!important;min-height:auto!important;}
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;margin-top:16px;">Consumer Risk Team | Apr 2026</div>
 </div>
-<!-- Executive Summary -->
-<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Executive Summary</div>
 <div class="slide slide-fixed" id="slide3" style="background:#FFFFFF;display:flex;flex-direction:column;padding:0;">
   <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:28px 48px 20px;">
     <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:16px;"></div>
-    <h1 style="font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;color:#0F172A;margin:0;">Executive Summary & Follow ups</h1>
-    <p style="font-family:'Inter',sans-serif;font-size:11px;margin:12px 0 0 0;line-height:1.4;">
-      <a id="fnpl-mbr-gh-edit" href="#" target="_blank" rel="noopener noreferrer" style="color:#1D4E89;font-weight:600;">Edit executive summary on GitHub</a>
-      <span style="color:#94A3B8;font-weight:400;"> — opens this HTML file in the repo editor</span>
-    </p>
-    <script>
-    (function(){
-      var a=document.getElementById('fnpl-mbr-gh-edit');
-      if(!a) return;
-      var base='https://github.com/namrataverma-rgb/fnpl-funnel-dashboard/edit/main/mbr/';
-      var seg=(location.pathname||'').split('/').filter(Boolean).pop()||'';
-      if(!seg||!/\.html$/i.test(seg)) seg='FNPL_MBR_Apr26.html';
-      a.href=base+encodeURIComponent(seg);
-    })();
-    </script>
+    <h1 style="font-family:'Poppins',sans-serif;font-size:28px;font-weight:700;color:#0F172A;margin:0;">Executive Summary &amp; Follow ups</h1>
   </div>
   <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 48px 12px;">
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
@@ -605,15 +607,13 @@ body{display:block!important;min-height:auto!important;}
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;padding:0 48px 16px;">Consumer Risk Team | Apr 2026</div>
 </div>
-<!-- Agenda — FNPL -->
-<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">Agenda — FNPL</div>
 <div class="slide slide-fixed" id="slide4" style="background:#FFFFFF;display:flex;flex-direction:column;padding:48px 56px 32px;">
   <h1 style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#0F172A;margin:0 0 32px;">Agenda</h1>
   <div style="display:flex;flex:1;align-items:flex-start;">
     <div style="width:4px;background:#0F172A;border-radius:2px;align-self:stretch;margin-right:0;"></div>
     <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px 40px;flex:1;">
       <div style="margin-bottom:24px;">
-        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#CBD5E1;margin-bottom:4px;">Executive Summary & Follow ups</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:600;color:#CBD5E1;margin-bottom:4px;">Executive Summary &amp; Follow ups</div>
         <div style="font-family:'Inter',sans-serif;font-size:14px;color:#CBD5E1;">10 mins</div>
       </div>
       <div style="margin-bottom:24px;">
@@ -634,8 +634,6 @@ body{display:block!important;min-height:auto!important;}
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;margin-top:16px;">Consumer Risk Team | Apr 2026</div>
 </div>
-<!-- GA 2.0 Summary -->
-<div style="margin:24px auto;font:600 11px Inter,sans-serif;color:#64748B;text-align:center;">GA 2.0 Summary</div>
 <div class="slide slide-fixed" id="slide5" style="background:#FFFFFF;display:flex;flex-direction:column;padding:0;overflow:hidden;">
   <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:28px 48px 18px;">
     <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:16px;"></div>
@@ -709,16 +707,16 @@ body{display:block!important;min-height:auto!important;}
       </div>
       <div class="badge">
         <div class="bl">MBR Report</div>
-        <div class="bv">April 2026</div>
+        <div class="bv">Apr 2026</div>
       </div>
     </div>
 
     <div class="kpis">
-      <div class="kp"><div class="kl">Total Apps (Apr)</div><div class="kv">68,314</div><div class="kd"><div class="kn">↓ vs Mar</div></div></div>
-      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">71.8<span class="u">%</span></div><div class="kn"><div class="kd">↑ 4.6 pp vs Mar</div></div></div>
-      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">701</div><div class="kd"><div class="kd">↑ vs Mar</div></div></div>
-      <div class="kp"><div class="kl">Median Income</div><div class="kv">$82<span class="u">K</span></div><div class="kd"><div class="kd">↑ vs Mar</div></div></div>
-      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">24.8<span class="u">%</span></div><div class="kn"><div class="kn">↓ vs Mar</div></div></div>
+      <div class="kp"><div class="kl">Total Apps (Mar)</div><div class="kv">184,045</div><div class="kd">▲ 585% vs Feb</div></div>
+      <div class="kp"><div class="kl">Approval Rate</div><div class="kv">66.7<span class="u">%</span></div><div class="kn">▲ +20.4pp vs Feb</div></div>
+      <div class="kp"><div class="kl">Avg Vantage</div><div class="kv">700</div><div class="kd">▲ +69 vs Feb</div></div>
+      <div class="kp"><div class="kl">Median Income</div><div class="kv">$82<span class="u">K</span></div><div class="kd">▲ +$24K vs Feb</div></div>
+      <div class="kp"><div class="kl">Super Prime Share</div><div class="kv">24.8<span class="u">%</span></div><div class="kn">▲ +18.7pp vs Feb</div></div>
     </div>
   </div>
   <div class="ct">Vantage Score Distribution &amp; Contingent Approval Rate</div>
@@ -730,15 +728,16 @@ body{display:block!important;min-height:auto!important;}
 
     <div class="tbl-wrap">
     <table class="tbl">
-      <colgroup><col class="lc"><col><col><col><col><col><col><col><col><col class="rc"></colgroup>
+      <col class="lc"><col><col><col><col><col><col><col><col><col class="rc">
       <thead><tr>
-        <th>Metrics</th><th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th><th>Apr-26</th>
+        <th>Metric</th>
+        <th>Sep-25</th><th>Oct-25</th><th>Nov-25</th><th>Dec-25</th><th>Jan-26</th><th>Feb-26</th><th>Mar-26</th><th>Apr-26</th>
       </tr></thead>
       <tbody>
-        <tr><td>Num of Apps</td><td>633</td><td>7,539</td><td>17</td><td class="d">—</td><td>3,800</td><td>26,897</td><td>182,766</td><td class="hi">68,314</td></tr>
-<tr><td>Avg Vantage</td><td>617</td><td>620</td><td>664</td><td class="d">—</td><td>609</td><td>631</td><td>700</td><td class="hi">701</td></tr>
-<tr><td>Median Income</td><td>$69K</td><td>$70K</td><td>$97K</td><td class="d">—</td><td>$55K</td><td>$58K</td><td>$81K</td><td class="hi">$82K</td></tr>
-<tr><td>Approval Rate</td><td>19.43%</td><td>31.16%</td><td>47.06%</td><td class="d">—</td><td>30.18%</td><td>42.44%</td><td>67.23%</td><td class="hi">71.83%</td></tr>
+        <tr><td>Num of Apps</td><td>633</td><td>7,539</td><td>17</td><td class="d">—</td><td>3,798</td><td>26,860</td><td>184,045</td><td class="hi">101,424</td></tr>
+        <tr><td>Avg Vantage</td><td>617</td><td>620</td><td>664</td><td class="d">—</td><td>609</td><td>631</td><td>700</td><td class="hi">698</td></tr>
+        <tr><td>Median Income</td><td>$69K</td><td>$70K</td><td>$97K</td><td class="d">—</td><td>$55K</td><td>$58K</td><td>$82K</td><td class="hi">$81K</td></tr>
+        <tr><td>Approval Rate</td><td>28.3%</td><td>37.9%</td><td class="d">—</td><td class="d">—</td><td>40.2%</td><td>46.3%</td><td>66.7%</td><td class="hi">71.1%</td></tr>
       </tbody>
     </table>
     </div>
@@ -746,7 +745,7 @@ body{display:block!important;min-height:auto!important;}
 
   <div class="foot">
     <div class="foot-l">
-      Data as of 2026-04-07 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (app_number2=1, offer_pending filtered)<br>
+      Data as of Apr 15, 2026 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (app_number2=1, offer_pending filtered)<br>
       Bands: Super Prime &ge;780 &middot; Prime 660&ndash;779 &middot; Near Prime 600&ndash;659 &middot; Subprime &lt;600
     </div>
     <div class="foot-r">9</div>
@@ -766,7 +765,7 @@ body{display:block!important;min-height:auto!important;}
       </div>
       <div class="badge">
         <div class="bl">MBR Report</div>
-        <div class="bv">April 2026</div>
+        <div class="bv">Apr 2026</div>
       </div>
     </div>
   </div>
@@ -785,18 +784,18 @@ body{display:block!important;min-height:auto!important;}
         <th class="total">Total</th>
       </tr></thead>
       <tbody>
-        <tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td>25,084</td><td class="hi">8,194</td><td class="total-col">40,965</td></tr>
-<tr><td>$ Loans</td><td>0.1M</td><td>3.3M</td><td>0.5M</td><td class="d">—</td><td>0.0M</td><td>9.0M</td><td>41.1M</td><td class="hi">14.1M</td><td class="total-col">68.0M</td></tr>
-<tr><td>Avg. Loan Size</td><td>$1,746</td><td>$2,045</td><td>$1,818</td><td class="d">—</td><td>$934</td><td>$1,563</td><td>$1,639</td><td class="hi">$1,715</td><td class="total-col">$1,661</td></tr>
-<tr><td>WA Term</td><td>5.2</td><td>5.3</td><td>5.4</td><td class="d">—</td><td>5.6</td><td>5.9</td><td>6.1</td><td class="hi">6.0</td><td class="total-col">6.0</td></tr>
-<tr><td>WA APR</td><td>23.93%</td><td>19.97%</td><td>20.13%</td><td class="d">—</td><td>22.27%</td><td>19.38%</td><td>16.40%</td><td class="hi">13.78%</td><td class="total-col">16.46%</td></tr>
-<tr><td>WA Vantage</td><td>692</td><td>683</td><td>675</td><td class="d">—</td><td>639</td><td>693</td><td>714</td><td class="hi">714</td><td class="total-col">709</td></tr>
-<tr><td>Avg. RS</td><td>N/A</td><td>N/A</td><td>N/A</td><td class="d">—</td><td>N/A</td><td>2.8</td><td>2.4</td><td class="hi">2.4</td><td class="total-col">2.4</td></tr>
-<tr><td>Med. Income</td><td>90K</td><td>97K</td><td>79K</td><td class="d">—</td><td>53K</td><td>72K</td><td>81K</td><td class="hi">84K</td><td class="total-col">81K</td></tr>
-<tr><td>% $ from CK Low Risk</td><td>31%</td><td>39%</td><td>44%</td><td class="d">—</td><td>67%</td><td>53%</td><td>56%</td><td class="hi">61%</td><td class="total-col">56%</td></tr>
-<tr><td>% Mobile Channel</td><td>26%</td><td>16%</td><td>24%</td><td class="d">—</td><td>56%</td><td>40%</td><td>34%</td><td class="hi">35%</td><td class="total-col">34%</td></tr>
-<tr><td>Avg. DTI</td><td>37%</td><td>40%</td><td>42%</td><td class="d">—</td><td>48%</td><td>41%</td><td>39%</td><td class="hi">39%</td><td class="total-col">40%</td></tr>
-<tr><td>% Had a State Refund</td><td>47%</td><td>31%</td><td>29%</td><td class="d">—</td><td>44%</td><td>41%</td><td>40%</td><td class="hi">37%</td><td class="total-col">39%</td></tr>
+        <tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td>25,084</td><td class="hi">21,621</td><td class="total-col">54,392</td></tr>
+        <tr><td>$ Loans</td><td>$0.1M</td><td>$3.3M</td><td>$0.5M</td><td class="d">—</td><td>$0.0M</td><td>$9.0M</td><td>$41.1M</td><td class="hi">$37.1M</td><td class="total-col">$91.1M</td></tr>
+        <tr><td>Avg. Loan Size</td><td>$1,746</td><td>$2,045</td><td>$1,818</td><td class="d">—</td><td>$934</td><td>$1,563</td><td>$1,639</td><td class="hi">$1,717</td><td class="total-col">$1,675</td></tr>
+        <tr><td>WA Term</td><td>5.1</td><td>5.3</td><td>5.4</td><td class="d">—</td><td>5.6</td><td>5.9</td><td>6.1</td><td class="hi">5.9</td><td class="total-col">6.0</td></tr>
+        <tr><td>WA APR</td><td>23.93%</td><td>19.97%</td><td>20.13%</td><td class="d">—</td><td>22.27%</td><td>19.38%</td><td>16.40%</td><td class="hi">13.84%</td><td class="total-col">15.81%</td></tr>
+        <tr><td>WA Vantage</td><td>692</td><td>683</td><td>675</td><td class="d">—</td><td>639</td><td>693</td><td>714</td><td class="hi">716</td><td class="total-col">711</td></tr>
+        <tr><td>Avg. RS</td><td>N/A</td><td>N/A</td><td>N/A</td><td class="d">—</td><td>N/A</td><td>2.8</td><td>2.4</td><td class="hi">2.3</td><td class="total-col">2.4</td></tr>
+        <tr><td>Med. Income</td><td>$90K</td><td>$97K</td><td>$79K</td><td class="d">—</td><td>$53K</td><td>$72K</td><td>$81K</td><td class="hi">$85K</td><td class="total-col">$82K</td></tr>
+        <tr><td>% $ from CK Low Risk</td><td>31%</td><td>39%</td><td>44%</td><td class="d">—</td><td>67%</td><td>53%</td><td>56%</td><td class="hi">59%</td><td class="total-col">56%</td></tr>
+        <tr><td>% Mobile Channel</td><td>26%</td><td>16%</td><td>24%</td><td class="d">—</td><td>56%</td><td>40%</td><td>34%</td><td class="hi">31%</td><td class="total-col">33%</td></tr>
+        <tr><td>Avg. DTI</td><td>37%</td><td>40%</td><td>42%</td><td class="d">—</td><td>48%</td><td>41%</td><td>39%</td><td class="hi">39%</td><td class="total-col">39%</td></tr>
+        <tr><td>% Had a State Refund</td><td>47%</td><td>31%</td><td>29%</td><td class="d">—</td><td>44%</td><td>41%</td><td>40%</td><td class="hi">37%</td><td class="total-col">39%</td></tr>
       </tbody>
     </table>
     </div>
@@ -806,7 +805,7 @@ body{display:block!important;min-height:auto!important;}
 
   <div class="foot">
     <div class="foot-l">
-      Data as of 2026-04-07 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (funded_loan=1)<br>
+      Data as of Apr 15, 2026 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (funded_loan=1)<br>
       Joined with intuit_lending_loanprofiles_dwh.loan_origination &middot; tax_dm.agg_auth_id_accepted_refund
     </div>
     <div class="foot-r">10</div>
@@ -821,18 +820,18 @@ body{display:block!important;min-height:auto!important;}
         <div class="hdr-bar"></div>
         <div>
           <h1>FNPL Monthly Performance</h1>
-          <div class="sub">As-of snapshot &middot; Based on origination month &middot; 2026-04-04</div>
+          <div class="sub">As-of snapshot &middot; Based on origination month &middot; Apr 12, 2026</div>
         </div>
       </div>
       <div class="badge">
         <div class="bl">MBR Report</div>
-        <div class="bv">April 2026</div>
+        <div class="bv">Apr 2026</div>
       </div>
     </div>
   </div>
 
   <div class="viz-wrap">
-    <div class="table-subtitle">Funded-loan performance by origination month: loan counts and balances; 7DPD / 30DPD rates; roll to charge-off; charge-off; target loss; % paid off. Total column is the portfolio rollup. Em dash (—) means not applicable for that month or vintage.</div>
+    <div class="table-subtitle">Funded loan performance by origination month. 'Total' aggregates all months. '—' indicates metric is not yet applicable (insufficient days on books for that cohort).</div>
     <div class="tbl-wrap">
     <table class="tbl">
       <colgroup>
@@ -847,25 +846,25 @@ body{display:block!important;min-height:auto!important;}
       </tr></thead>
       <tbody>
         <tr class="section-row"><td colspan="10">Volume</td></tr>
-<tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td>25,084</td><td class="hi">8,194</td><td class="total-col">40,965</td></tr>
-<tr><td>$ Loans</td><td>$0.1M</td><td>$3.3M</td><td>$0.5M</td><td class="d">—</td><td>$0.0M</td><td>$9.0M</td><td>$41.1M</td><td class="hi">$14.1M</td><td class="total-col">$68.0M</td></tr>
-<tr class="section-row"><td colspan="10">7DPD+ Delinquency</td></tr>
-<tr><td># 7DPD+ Rate</td><td>6.5%</td><td>5.8%</td><td>6.8%</td><td class="d">—</td><td>0.0%</td><td>4.9%</td><td class="d">—</td><td class="d">—</td><td class="total-col">5.2%</td></tr>
-<tr><td>$ 7DPD+ Rate</td><td>4.4%</td><td>4.1%</td><td>5.2%</td><td class="d">—</td><td>0.0%</td><td>4.3%</td><td class="d">—</td><td class="d">—</td><td class="total-col">4.3%</td></tr>
-<tr class="section-row"><td colspan="10">30DPD+ Delinquency</td></tr>
-<tr><td># 30DPD+ Rate</td><td>6.5%</td><td>4.3%</td><td>6.8%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">4.7%</td></tr>
-<tr><td>$ 30DPD+ Rate</td><td>4.4%</td><td>3.5%</td><td>5.2%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">3.7%</td></tr>
-<tr class="section-row"><td colspan="10">Roll to charge-off</td></tr>
-<tr><td># Roll rate -> 30D to CO</td><td>50.0%</td><td>44.9%</td><td>38.9%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">44.0%</td></tr>
-<tr><td>$ Roll rate -> 30D to CO</td><td>60.5%</td><td>109.4%</td><td>124.8%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">109.8%</td></tr>
-<tr class="section-row"><td colspan="10">Charge-off</td></tr>
-<tr><td># Charge off rate</td><td>3.2%</td><td>1.9%</td><td>2.6%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td class="total-col">0.1%</td></tr>
-<tr><td>$ Charge off rate</td><td>1.7%</td><td>1.8%</td><td>2.9%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td class="total-col">0.1%</td></tr>
-<tr class="section-row"><td colspan="10">Target loss</td></tr>
-<tr><td># Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col d">—</td></tr>
-<tr><td>$ Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col d">—</td></tr>
-<tr class="section-row"><td colspan="10">Payoff</td></tr>
-<tr><td>% Paid Off</td><td>88.7%</td><td>33.7%</td><td>26.4%</td><td class="d">—</td><td>11.1%</td><td>5.4%</td><td>2.5%</td><td class="hi">0.4%</td><td class="total-col">4.0%</td></tr>
+        <tr><td># Loans</td><td>62</td><td>1,613</td><td>265</td><td class="d">—</td><td>9</td><td>5,738</td><td>25,084</td><td class="hi">21,621</td><td class="total-col">54,392</td></tr>
+        <tr><td>$ Loans</td><td>$0.1M</td><td>$3.3M</td><td>$0.5M</td><td class="d">—</td><td>$0.0M</td><td>$9.0M</td><td>$41.1M</td><td class="hi">$37.1M</td><td class="total-col">$91.1M</td></tr>
+        <tr class="section-row"><td colspan="10">7DPD+ Delinquency</td></tr>
+        <tr><td># 7DPD+ Rate</td><td>8.1%</td><td>5.9%</td><td>9.1%</td><td class="d">—</td><td>0.0%</td><td>4.7%</td><td>5.4%</td><td class="d">—</td><td class="total-col">5.2%</td></tr>
+        <tr><td>$ 7DPD+ Rate</td><td>4.6%</td><td>4.1%</td><td>6.1%</td><td class="d">—</td><td>0.0%</td><td>4.4%</td><td>3.4%</td><td class="d">—</td><td class="total-col">4.1%</td></tr>
+        <tr class="section-row"><td colspan="10">30DPD+ Delinquency</td></tr>
+        <tr><td># 30DPD+ Rate</td><td>6.5%</td><td>4.3%</td><td>6.4%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">4.6%</td></tr>
+        <tr><td>$ 30DPD+ Rate</td><td>4.4%</td><td>3.5%</td><td>5.3%</td><td class="d">—</td><td>0.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">3.7%</td></tr>
+        <tr class="section-row"><td colspan="10">Roll to charge-off</td></tr>
+        <tr><td># Roll rate -> 30D to CO</td><td>50.0%</td><td>44.9%</td><td>41.2%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">44.4%</td></tr>
+        <tr><td>$ Roll rate -> 30D to CO</td><td>37.7%</td><td>52.2%</td><td>55.0%</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">52.2%</td></tr>
+        <tr class="section-row"><td colspan="10">Charge-off</td></tr>
+        <tr><td># Charge off rate</td><td>3.2%</td><td>1.9%</td><td>2.6%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td class="total-col">0.1%</td></tr>
+        <tr><td>$ Charge off rate</td><td>1.7%</td><td>1.8%</td><td>2.9%</td><td class="d">—</td><td>0.0%</td><td>0.0%</td><td>0.0%</td><td class="hi">0.0%</td><td class="total-col">0.1%</td></tr>
+        <tr class="section-row"><td colspan="10">Target loss</td></tr>
+        <tr><td># Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">—</td></tr>
+        <tr><td>$ Target Loss Rate</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="d">—</td><td class="total-col">—</td></tr>
+        <tr class="section-row"><td colspan="10">Payoff</td></tr>
+        <tr><td>% Paid Off</td><td>90.3%</td><td>37.1%</td><td>27.2%</td><td class="d">—</td><td>11.1%</td><td>6.3%</td><td>3.3%</td><td class="hi">1.0%</td><td class="total-col">3.9%</td></tr>
       </tbody>
     </table>
     </div>
@@ -875,7 +874,7 @@ body{display:block!important;min-height:auto!important;}
 
   <div class="foot">
     <div class="foot-l">
-      Data as of 2026-04-07 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (funded_loan=1)<br>
+      Data as of Apr 15, 2026 &middot; Source: sandbox_risk_7216.fnpl_base_alpha_ga2 (funded_loan=1)<br>
       Joined with intuit_lending_loanprofiles_dwh.loan_origination &middot; intuit_lending_servicing_capital_dwh.loan_repayment_daily
     </div>
     <div class="foot-r">11</div>
@@ -894,7 +893,7 @@ body{display:block!important;min-height:auto!important;}
       </div>
       <div class="badge">
         <div class="bl">MBR Report</div>
-        <div class="bv">April 2026</div>
+        <div class="bv">Apr 2026</div>
       </div>
     </div>
   </div>
@@ -939,7 +938,7 @@ body{display:block!important;min-height:auto!important;}
       </div>
       <div class="badge">
         <div class="bl">MBR Report</div>
-        <div class="bv">April 2026</div>
+        <div class="bv">Apr 2026</div>
       </div>
     </div>
   </div>
@@ -954,10 +953,35 @@ body{display:block!important;min-height:auto!important;}
     <span class="foot-tag">FNPL Risk</span>
   </div>
 </div>
-<script>
-(function(){(function(){
-const M = ["Sep-25", "Oct-25", "Nov-25", "Dec-25", "Jan-26", "Feb-26", "Mar-26", "Apr-26"];
-const B = [{"n": "Super Prime", "c": "#1D4E89", "v": [19, 248, 0, 0, 96, 1633, 45648, 16947]}, {"n": "Prime", "c": "#19A0AA", "v": [164, 2082, 0, 0, 989, 8344, 71189, 29112]}, {"n": "Near Prime", "c": "#F0C929", "v": [170, 1928, 0, 0, 910, 6259, 25615, 10127]}, {"n": "Subprime", "c": "#E07B39", "v": [256, 2977, 0, 0, 1696, 9333, 29783, 10811]}, {"n": "Invalid", "c": "#C44536", "v": [24, 304, 0, 0, 109, 1328, 10531, 1317]}];
+    </div>
+    <button type="button" class="nav-btn next" aria-label="Next slide">›</button>
+    <div class="bottom-bar">
+      <div class="slide-dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+      </div>
+      <span class="slide-counter">1 / 10</span>
+    </div>
+  </div>
+  <script>
+/* template.html */
+(function(){
+const M = ["Sep-25","Oct-25","Nov-25","Dec-25","Jan-26","Feb-26","Mar-26","Apr-26"];
+const B = [
+    {n:'Super Prime',v:[19,248,0,0,96,1631,45619,24208],c:'#1D4E89'},
+    {n:'Prime',v:[164,2082,0,0,988,8326,71051,43181],c:'#19A0AA'},
+    {n:'Near Prime',v:[170,1928,0,0,909,6248,25532,15458],c:'#F0C929'},
+    {n:'Subprime',v:[256,2977,0,0,1696,9330,29715,16552],c:'#E07B39'},
+    {n:'Invalid/Null',v:[24,304,0,0,109,1325,12128,2025],c:'#C44536'}
+  ];
 
 const T = M.map(function(_,i){ return B.reduce(function(s,b){ return s+b.v[i]; }, 0); });
 const traces = B.map(function(b){
@@ -969,12 +993,12 @@ const traces = B.map(function(b){
   };
 });
 
-const aY = [19.43, 31.16, null, null, 30.18, 42.44, 67.23, 71.83];
+const aY = [28.28,37.87,null,null,40.18,46.28,66.65,71.05];
 
 traces.push({
   name:'Approval Rate', x:M, yaxis:'y2', type:'scatter',
   y:aY, mode:'lines+markers+text',
-  line:{ color:'#0F172A', width:2.5, shape:'spline', dash:'dot' },
+  line:{ color:'#0F172A', width:2.5, shape:'linear', dash:'dot' },
   marker:{ size:8, color:'#F8FAFC', symbol:'circle', line:{ color:'#0F172A', width:2.5 } },
   text:aY.map(function(v){ return v!==null ? v.toFixed(0)+'%' : ''; }),
   textposition:'top center',
@@ -1009,9 +1033,10 @@ Plotly.newPlot('chart9', traces, {
     tickfont:{ size:9, color:'#94A3B8' },
   },
 },{ responsive:false, displayModeBar:false });
-})();})();
-(function(){(function(){
-var D = {"latest": {"label": "Apr-26", "wa_term": 5.95, "wa_apr": 13.780000000000001, "wa_vantage": 714, "ck_low_risk": 61.12, "mobile": 35.010000000000005, "avg_dti": 39.0, "loans": 8194}, "prior": {"label": "Mar-26", "wa_term": 6.08, "wa_apr": 16.400000000000002, "wa_vantage": 714, "ck_low_risk": 55.93, "mobile": 33.900000000000006, "avg_dti": 39.0, "loans": 25084}, "total": {"ck_low_risk": 55.74}};
+})();
+/* template-slide10.html */
+(function(){
+var D = {"latest":{"label":"Apr-26","wa_term":5.9,"wa_apr":13.84,"wa_vantage":716,"ck_low_risk":59,"mobile":31,"avg_dti":39,"loans":21621},"prior":{"label":"Mar-26","wa_term":6.1,"wa_apr":16.4,"wa_vantage":714,"ck_low_risk":56,"mobile":34,"avg_dti":39,"loans":25084},"total":{"ck_low_risk":56}};
 
 function dir(c, p) { return c > p ? 'increased' : c < p ? 'decreased' : 'remained stable'; }
 
@@ -1050,9 +1075,9 @@ if (D.latest && D.prior && D.latest.loans && D.prior.loans) {
 document.getElementById('commentary10').innerHTML = bullets.map(function(b, i) {
   return '<div class="callout"><div class="num">' + (i+1) + '</div><div class="txt">' + b + '</div></div>';
 }).join('');
-})();})();
-(function(){})();
-(function(){(function(){
+})();
+/* template-slide12.html */
+(function(){
 const PALETTE = ['#1D4E89','#19A0AA','#E07B39','#C44536','#F0C929','#7C3AED','#475569','#0E7490','#B45309'];
 const MO = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
 const VG_ORDER = ['4. Super Prime','3. Prime','2. Near Prime','1. Subprime'];
@@ -1073,38 +1098,60 @@ function renderSlide12(DATA, MOB_CAP){
   const {oms, map} = buildVintageColors(filtered);
   const MOBS = allMobs(MOB_CAP);
 
+  /* Shared Y max (%) for all four panels — avoids independent autoscale (uneven ticks / bogus floors). */
+  var yMaxPct = 0;
+  filtered.forEach(function(r){
+    var v = (r.r!=null && !isNaN(r.r)) ? Number(r.r) * 100 : 0;
+    if (v > yMaxPct) yMaxPct = v;
+  });
+  var yAxisTop = Math.max(1, yMaxPct * 1.15);
+
   document.getElementById('legend12').innerHTML = oms.map(om=>
     '<span class="leg-item"><span class="leg-dot" style="background:'+map[om]+'"></span>'+vLabel(om)+'</span>'
   ).join('');
 
+  /* Force flex/grid layout so .chart-div has real width/height before Plotly measures (same idea as Slide 13). */
+  void document.getElementById('slide12').offsetHeight;
+
   VG_ORDER.forEach(function(vg,idx){
     const sub = filtered.filter(r=>r.vg===vg);
-    const vints = [...new Set(sub.map(r=>r.om))].sort();
     document.getElementById('title12_'+idx).textContent = (idx+1)+'. '+VG_NICE[vg];
 
     const traces = oms.map(om=>{
       const pts = sub.filter(r=>r.om===om).sort((a,b)=>mobN(a.mob)-mobN(b.mob));
       if(!pts.length){
-        return { x:['M0'], y:[0], mode:'lines', line:{color:map[om],width:1,dash:'dot'}, showlegend:false, hoverinfo:'skip' };
+        return { x:['M0'], y:[0], mode:'lines', line:{color:map[om],width:1,dash:'dot',shape:'linear'}, showlegend:false, hoverinfo:'skip' };
       }
+      var n0 = (pts[0].tl!=null&&pts[0].tl!==undefined)?pts[0].tl:'\u2014';
+      /* Splines with one point break Plotly (missing ticks, duplicated axes). Use linear unless two or more MoBs. */
+      var useSpline = pts.length >= 2;
+      var lineCfg = {width:2.5,color:map[om],shape: useSpline ? 'spline' : 'linear'};
+      if (useSpline) lineCfg.smoothing = 1.2;
       return {
         x: pts.map(p=>p.mob),
         y: pts.map(p=>+(p.r*100).toFixed(2)),
         mode:'lines+markers+text',
-        line:{shape:'spline',smoothing:1.2,width:2.5,color:map[om]},
+        line: lineCfg,
         marker:{size:6,color:map[om]},
         text: pts.map(p=> p.r>0 ? (p.r*100).toFixed(1)+'%' : ''),
         textposition:'top center',
         textfont:{size:9,color:map[om],family:'Inter'},
         showlegend:false,
-        hovertemplate:'%{x}: %{y:.2f}%<extra>'+vLabel(om)+' (n='+pts[0].tl+')</extra>'
+        hovertemplate:'%{x}: %{y:.2f}%<extra>'+vLabel(om)+' (n='+n0+')</extra>'
       };
     });
 
+    var chartEl = document.getElementById('c12_'+idx);
+    var rect = chartEl.getBoundingClientRect();
+    var plotW = rect.width > 10 ? rect.width : 570;
+    var plotH = rect.height > 10 ? rect.height : 230;
+
     Plotly.newPlot('c12_'+idx, traces, {
+      width: plotW,
+      height: plotH,
       xaxis:{categoryorder:'array',categoryarray:MOBS,tickfont:{size:9,family:'Inter'},title:{text:'Month on Books',font:{size:9,family:'Inter'}}},
-      yaxis:{ticksuffix:'%',rangemode:'tozero',tickfont:{size:9,family:'Inter'},title:{text:'DPD 30+ Rate',font:{size:9,family:'Inter'}}},
-      margin:{l:42,r:8,t:4,b:32},
+      yaxis:{ticksuffix:'%',range:[0,yAxisTop],tickfont:{size:9,family:'Inter'},title:{text:'DPD 30+ Rate',font:{size:9,family:'Inter'},standoff:8}},
+      margin:{l:46,r:30,t:6,b:34},
       paper_bgcolor:'transparent',plot_bgcolor:'transparent',
       font:{family:'Inter'}
     },{responsive:true,displayModeBar:false});
@@ -1112,11 +1159,13 @@ function renderSlide12(DATA, MOB_CAP){
 }
 
 /* ── DATA (agent replaces at build time) ── */
-var SLIDE12_DATA = [{"vg": "1. Subprime", "om": "2025-09-30", "mob": "M0", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M1", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M2", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M3", "tl": 7, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M4", "tl": 7, "r": 0.14285714285714285}, {"vg": "1. Subprime", "om": "2025-09-30", "mob": "M5", "tl": 7, "r": 0.14285714285714285}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M0", "tl": 145, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M1", "tl": 145, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M2", "tl": 145, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M3", "tl": 145, "r": 0.06206896551724138}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M4", "tl": 145, "r": 0.07586206896551724}, {"vg": "1. Subprime", "om": "2025-10-31", "mob": "M5", "tl": 145, "r": 0.06206896551724138}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M0", "tl": 22, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M1", "tl": 22, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M2", "tl": 22, "r": 0.0}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M3", "tl": 22, "r": 0.045454545454545456}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M4", "tl": 22, "r": 0.09090909090909091}, {"vg": "1. Subprime", "om": "2025-11-30", "mob": "M5", "tl": 22, "r": 0.09090909090909091}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M0", "tl": 2, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M1", "tl": 2, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-01-31", "mob": "M2", "tl": 2, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-02-28", "mob": "M0", "tl": 421, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-02-28", "mob": "M1", "tl": 421, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-03-31", "mob": "M0", "tl": 1525, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-03-31", "mob": "M1", "tl": 1525, "r": 0.0}, {"vg": "1. Subprime", "om": "2026-04-30", "mob": "M0", "tl": 513, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M0", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M1", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M2", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M3", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M4", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-09-30", "mob": "M5", "tl": 14, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M0", "tl": 552, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M1", "tl": 552, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M2", "tl": 552, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M3", "tl": 552, "r": 0.021739130434782608}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M4", "tl": 552, "r": 0.03804347826086957}, {"vg": "2. Near Prime", "om": "2025-10-31", "mob": "M5", "tl": 552, "r": 0.04710144927536232}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M0", "tl": 101, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M1", "tl": 101, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M2", "tl": 101, "r": 0.0}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M3", "tl": 101, "r": 0.04950495049504951}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M4", "tl": 101, "r": 0.06930693069306931}, {"vg": "2. Near Prime", "om": "2025-11-30", "mob": "M5", "tl": 101, "r": 0.1188118811881188}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M0", "tl": 5, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M1", "tl": 5, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-01-31", "mob": "M2", "tl": 5, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-02-28", "mob": "M0", "tl": 1721, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-02-28", "mob": "M1", "tl": 1721, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-03-31", "mob": "M0", "tl": 5600, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-03-31", "mob": "M1", "tl": 5600, "r": 0.0}, {"vg": "2. Near Prime", "om": "2026-04-30", "mob": "M0", "tl": 1931, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M0", "tl": 36, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M1", "tl": 36, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M2", "tl": 36, "r": 0.0}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M3", "tl": 36, "r": 0.05555555555555555}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M4", "tl": 36, "r": 0.027777777777777776}, {"vg": "3. Prime", "om": "2025-09-30", "mob": "M5", "tl": 36, "r": 0.05555555555555555}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M0", "tl": 797, "r": 0.0}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M1", "tl": 797, "r": 0.0}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M2", "tl": 797, "r": 0.0}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M3", "tl": 797, "r": 0.02258469259723965}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M4", "tl": 797, "r": 0.02258469259723965}, {"vg": "3. Prime", "om": "2025-10-31", "mob": "M5", "tl": 797, "r": 0.027603513174404015}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M0", "tl": 132, "r": 0.0}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M1", "tl": 132, "r": 0.0}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M2", "tl": 132, "r": 0.0}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M3", "tl": 132, "r": 0.015151515151515152}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M4", "tl": 132, "r": 0.007575757575757576}, {"vg": "3. Prime", "om": "2025-11-30", "mob": "M5", "tl": 132, "r": 0.015151515151515152}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M0", "tl": 2, "r": 0.0}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M1", "tl": 2, "r": 0.0}, {"vg": "3. Prime", "om": "2026-01-31", "mob": "M2", "tl": 2, "r": 0.0}, {"vg": "3. Prime", "om": "2026-02-28", "mob": "M0", "tl": 3159, "r": 0.0}, {"vg": "3. Prime", "om": "2026-02-28", "mob": "M1", "tl": 3159, "r": 0.0}, {"vg": "3. Prime", "om": "2026-03-31", "mob": "M0", "tl": 14071, "r": 0.0}, {"vg": "3. Prime", "om": "2026-03-31", "mob": "M1", "tl": 14071, "r": 0.0}, {"vg": "3. Prime", "om": "2026-04-30", "mob": "M0", "tl": 4455, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M0", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M1", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M2", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M3", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M4", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-09-30", "mob": "M5", "tl": 5, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M0", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M1", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M2", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M3", "tl": 119, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M4", "tl": 119, "r": 0.008403361344537815}, {"vg": "4. Super Prime", "om": "2025-10-31", "mob": "M5", "tl": 119, "r": 0.008403361344537815}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M0", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M1", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M2", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M3", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M4", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2025-11-30", "mob": "M5", "tl": 10, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-02-28", "mob": "M0", "tl": 437, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-02-28", "mob": "M1", "tl": 437, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-03-31", "mob": "M0", "tl": 3888, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-03-31", "mob": "M1", "tl": 3888, "r": 0.0}, {"vg": "4. Super Prime", "om": "2026-04-30", "mob": "M0", "tl": 1295, "r": 0.0}];
+var SLIDE12_DATA = [{"vg":"1. Subprime","om":"2025-09-30","mob":"M0","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M1","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M2","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M3","r":0.0,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M4","r":0.14285714285714285,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M5","r":0.14285714285714285,"tl":7},{"vg":"1. Subprime","om":"2025-09-30","mob":"M6","r":0.14285714285714285,"tl":7},{"vg":"1. Subprime","om":"2025-10-31","mob":"M0","r":0.0,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M1","r":0.0,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M2","r":0.0,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M3","r":0.06206896551724138,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M4","r":0.07586206896551724,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M5","r":0.06206896551724138,"tl":145},{"vg":"1. Subprime","om":"2025-10-31","mob":"M6","r":0.020689655172413793,"tl":145},{"vg":"1. Subprime","om":"2025-11-30","mob":"M0","r":0.0,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M1","r":0.0,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M2","r":0.0,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M3","r":0.045454545454545456,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M4","r":0.09090909090909091,"tl":22},{"vg":"1. Subprime","om":"2025-11-30","mob":"M5","r":0.09090909090909091,"tl":22},{"vg":"1. Subprime","om":"2026-01-31","mob":"M0","r":0.0,"tl":2},{"vg":"1. Subprime","om":"2026-01-31","mob":"M1","r":0.0,"tl":2},{"vg":"1. Subprime","om":"2026-01-31","mob":"M2","r":0.0,"tl":2},{"vg":"1. Subprime","om":"2026-02-28","mob":"M0","r":0.0,"tl":421},{"vg":"1. Subprime","om":"2026-02-28","mob":"M1","r":0.0,"tl":421},{"vg":"1. Subprime","om":"2026-03-31","mob":"M0","r":0.0,"tl":1525},{"vg":"1. Subprime","om":"2026-03-31","mob":"M1","r":0.0,"tl":1525},{"vg":"1. Subprime","om":"2026-04-30","mob":"M0","r":0.0,"tl":1360},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M0","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M1","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M2","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M3","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M4","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M5","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-09-30","mob":"M6","r":0.0,"tl":14},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M0","r":0.0,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M1","r":0.0,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M2","r":0.0,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M3","r":0.021739130434782608,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M4","r":0.03804347826086957,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M5","r":0.04710144927536232,"tl":552},{"vg":"2. Near Prime","om":"2025-10-31","mob":"M6","r":0.021739130434782608,"tl":552},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M0","r":0.0,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M1","r":0.0,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M2","r":0.0,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M3","r":0.04950495049504951,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M4","r":0.06930693069306931,"tl":101},{"vg":"2. Near Prime","om":"2025-11-30","mob":"M5","r":0.1188118811881188,"tl":101},{"vg":"2. Near Prime","om":"2026-01-31","mob":"M0","r":0.0,"tl":5},{"vg":"2. Near Prime","om":"2026-01-31","mob":"M1","r":0.0,"tl":5},{"vg":"2. Near Prime","om":"2026-01-31","mob":"M2","r":0.0,"tl":5},{"vg":"2. Near Prime","om":"2026-02-28","mob":"M0","r":0.0,"tl":1721},{"vg":"2. Near Prime","om":"2026-02-28","mob":"M1","r":0.0,"tl":1721},{"vg":"2. Near Prime","om":"2026-03-31","mob":"M0","r":0.0,"tl":5600},{"vg":"2. Near Prime","om":"2026-03-31","mob":"M1","r":0.0,"tl":5600},{"vg":"2. Near Prime","om":"2026-04-30","mob":"M0","r":0.0,"tl":4815},{"vg":"3. Prime","om":"2025-09-30","mob":"M0","r":0.0,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M1","r":0.0,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M2","r":0.0,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M3","r":0.05555555555555555,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M4","r":0.027777777777777776,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M5","r":0.05555555555555555,"tl":36},{"vg":"3. Prime","om":"2025-09-30","mob":"M6","r":0.05555555555555555,"tl":36},{"vg":"3. Prime","om":"2025-10-31","mob":"M0","r":0.0,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M1","r":0.0,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M2","r":0.0,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M3","r":0.02258469259723965,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M4","r":0.02258469259723965,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M5","r":0.027603513174404015,"tl":797},{"vg":"3. Prime","om":"2025-10-31","mob":"M6","r":0.012547051442910916,"tl":797},{"vg":"3. Prime","om":"2025-11-30","mob":"M0","r":0.0,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M1","r":0.0,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M2","r":0.0,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M3","r":0.015151515151515152,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M4","r":0.007575757575757576,"tl":132},{"vg":"3. Prime","om":"2025-11-30","mob":"M5","r":0.015151515151515152,"tl":132},{"vg":"3. Prime","om":"2026-01-31","mob":"M0","r":0.0,"tl":2},{"vg":"3. Prime","om":"2026-01-31","mob":"M1","r":0.0,"tl":2},{"vg":"3. Prime","om":"2026-01-31","mob":"M2","r":0.0,"tl":2},{"vg":"3. Prime","om":"2026-02-28","mob":"M0","r":0.0,"tl":3159},{"vg":"3. Prime","om":"2026-02-28","mob":"M1","r":0.0,"tl":3159},{"vg":"3. Prime","om":"2026-03-31","mob":"M0","r":0.0,"tl":14071},{"vg":"3. Prime","om":"2026-03-31","mob":"M1","r":0.0,"tl":14071},{"vg":"3. Prime","om":"2026-04-30","mob":"M0","r":0.0,"tl":11954},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M0","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M1","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M2","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M3","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M4","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M5","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-09-30","mob":"M6","r":0.0,"tl":5},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M0","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M1","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M2","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M3","r":0.0,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M4","r":0.008403361344537815,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M5","r":0.008403361344537815,"tl":119},{"vg":"4. Super Prime","om":"2025-10-31","mob":"M6","r":0.008403361344537815,"tl":119},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M0","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M1","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M2","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M3","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M4","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2025-11-30","mob":"M5","r":0.0,"tl":10},{"vg":"4. Super Prime","om":"2026-02-28","mob":"M0","r":0.0,"tl":437},{"vg":"4. Super Prime","om":"2026-02-28","mob":"M1","r":0.0,"tl":437},{"vg":"4. Super Prime","om":"2026-03-31","mob":"M0","r":0.0,"tl":3888},{"vg":"4. Super Prime","om":"2026-03-31","mob":"M1","r":0.0,"tl":3888},{"vg":"4. Super Prime","om":"2026-04-30","mob":"M0","r":0.0,"tl":3492}];
 var SLIDE12_MOB_CAP = 5;
-renderSlide12(SLIDE12_DATA, SLIDE12_MOB_CAP);
-})();})();
-(function(){(function(){
+window.__deferredSlideInit = window.__deferredSlideInit || {};
+window.__deferredSlideInit['slide12'] = function(){ renderSlide12(SLIDE12_DATA, SLIDE12_MOB_CAP); };
+})();
+/* template-slide13.html */
+(function(){
 const PALETTE = ['#1D4E89','#19A0AA','#E07B39','#C44536','#F0C929','#7C3AED','#475569','#0E7490','#B45309'];
 const MO = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',7:'Jul',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'};
 const TERM_LABEL = {'3':'3-Month Term','6':'6-Month Term','9':'9-Month Term','12':'12-Month Term'};
@@ -1243,7 +1292,8 @@ function renderSlide13(DPD_DATA, COHORT, MOB_CAP, TERMS){
   void row.offsetHeight;
   plotJobs.forEach(function(job){
     var chartDiv = document.getElementById('c13_'+job.term);
-    var plotW = Math.max(260, chartDiv.getBoundingClientRect().width);
+    var measuredW = chartDiv.getBoundingClientRect().width;
+    var plotW = measuredW > 10 ? measuredW : 560;
     Plotly.newPlot('c13_'+job.term, job.traces, {
       width: plotW,
       xaxis:{
@@ -1263,17 +1313,87 @@ function renderSlide13(DPD_DATA, COHORT, MOB_CAP, TERMS){
       height:300,
       paper_bgcolor:'transparent',plot_bgcolor:'transparent',
       font:{family:'Inter'}
-    },{responsive:false,displayModeBar:false});
+    },{responsive:true,displayModeBar:false});
   });
 }
 
 /* ── DATA (agent replaces at build time) ── */
-var SLIDE13_DPD = [{"t": "3", "om": "2025-09-30", "mob": "M0", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M1", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M2", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M3", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M4", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-09-30", "mob": "M5", "tl": 18, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M0", "tl": 367, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M1", "tl": 367, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M2", "tl": 367, "r": 0.0}, {"t": "3", "om": "2025-10-31", "mob": "M3", "tl": 367, "r": 0.02452316076294278}, {"t": "3", "om": "2025-10-31", "mob": "M4", "tl": 367, "r": 0.027247956403269755}, {"t": "3", "om": "2025-10-31", "mob": "M5", "tl": 367, "r": 0.0326975476839237}, {"t": "3", "om": "2025-11-30", "mob": "M0", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M1", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M2", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M3", "tl": 60, "r": 0.016666666666666666}, {"t": "3", "om": "2025-11-30", "mob": "M4", "tl": 60, "r": 0.0}, {"t": "3", "om": "2025-11-30", "mob": "M5", "tl": 60, "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M0", "tl": 1, "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M1", "tl": 1, "r": 0.0}, {"t": "3", "om": "2026-01-31", "mob": "M2", "tl": 1, "r": 0.0}, {"t": "3", "om": "2026-02-28", "mob": "M0", "tl": 1282, "r": 0.0}, {"t": "3", "om": "2026-02-28", "mob": "M1", "tl": 1282, "r": 0.0}, {"t": "3", "om": "2026-03-31", "mob": "M0", "tl": 10936, "r": 0.0}, {"t": "3", "om": "2026-03-31", "mob": "M1", "tl": 10936, "r": 0.0}, {"t": "3", "om": "2026-04-30", "mob": "M0", "tl": 3724, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M0", "tl": 44, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M1", "tl": 44, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M2", "tl": 44, "r": 0.0}, {"t": "6", "om": "2025-09-30", "mob": "M3", "tl": 44, "r": 0.045454545454545456}, {"t": "6", "om": "2025-09-30", "mob": "M4", "tl": 44, "r": 0.045454545454545456}, {"t": "6", "om": "2025-09-30", "mob": "M5", "tl": 44, "r": 0.06818181818181818}, {"t": "6", "om": "2025-10-31", "mob": "M0", "tl": 1246, "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M1", "tl": 1246, "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M2", "tl": 1246, "r": 0.0}, {"t": "6", "om": "2025-10-31", "mob": "M3", "tl": 1246, "r": 0.024077046548956663}, {"t": "6", "om": "2025-10-31", "mob": "M4", "tl": 1246, "r": 0.03290529695024077}, {"t": "6", "om": "2025-10-31", "mob": "M5", "tl": 1246, "r": 0.03691813804173355}, {"t": "6", "om": "2025-11-30", "mob": "M0", "tl": 205, "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M1", "tl": 205, "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M2", "tl": 205, "r": 0.0}, {"t": "6", "om": "2025-11-30", "mob": "M3", "tl": 205, "r": 0.03414634146341464}, {"t": "6", "om": "2025-11-30", "mob": "M4", "tl": 205, "r": 0.04878048780487805}, {"t": "6", "om": "2025-11-30", "mob": "M5", "tl": 205, "r": 0.07804878048780488}, {"t": "6", "om": "2026-01-31", "mob": "M0", "tl": 8, "r": 0.0}, {"t": "6", "om": "2026-01-31", "mob": "M1", "tl": 8, "r": 0.0}, {"t": "6", "om": "2026-01-31", "mob": "M2", "tl": 8, "r": 0.0}, {"t": "6", "om": "2026-02-28", "mob": "M0", "tl": 3607, "r": 0.0}, {"t": "6", "om": "2026-02-28", "mob": "M1", "tl": 3607, "r": 0.0}, {"t": "6", "om": "2026-03-31", "mob": "M0", "tl": 5146, "r": 0.0}, {"t": "6", "om": "2026-03-31", "mob": "M1", "tl": 5146, "r": 0.0}, {"t": "6", "om": "2026-04-30", "mob": "M0", "tl": 1488, "r": 0.0}];
-var SLIDE13_COHORT = [{"t": "3", "om": "2025-09-30", "n": 18, "v": 694, "mi": 102}, {"t": "3", "om": "2025-10-31", "n": 367, "v": 692, "mi": 93}, {"t": "3", "om": "2025-11-30", "n": 60, "v": 686, "mi": 75}, {"t": "3", "om": "2026-02-28", "n": 1282, "v": 701, "mi": 69}, {"t": "3", "om": "2026-03-31", "n": 10936, "v": 725, "mi": 84}, {"t": "3", "om": "2026-04-30", "n": 3724, "v": 725, "mi": 89}, {"t": "6", "om": "2025-09-30", "n": 44, "v": 685, "mi": 86}, {"t": "6", "om": "2025-10-31", "n": 1246, "v": 674, "mi": 98}, {"t": "6", "om": "2025-11-30", "n": 205, "v": 669, "mi": 80}, {"t": "6", "om": "2026-02-28", "n": 3607, "v": 683, "mi": 73}, {"t": "6", "om": "2026-03-31", "n": 5146, "v": 698, "mi": 75}, {"t": "6", "om": "2026-04-30", "n": 1488, "v": 695, "mi": 79}];
+var SLIDE13_DPD = [{"t":"3","om":"2025-09-30","mob":"M0","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M1","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M2","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M3","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M4","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M5","r":0.0,"tl":18},{"t":"3","om":"2025-09-30","mob":"M6","r":0.0,"tl":18},{"t":"3","om":"2025-10-31","mob":"M0","r":0.0,"tl":367},{"t":"3","om":"2025-10-31","mob":"M1","r":0.0,"tl":367},{"t":"3","om":"2025-10-31","mob":"M2","r":0.0,"tl":367},{"t":"3","om":"2025-10-31","mob":"M3","r":0.02452316076294278,"tl":367},{"t":"3","om":"2025-10-31","mob":"M4","r":0.027247956403269755,"tl":367},{"t":"3","om":"2025-10-31","mob":"M5","r":0.0326975476839237,"tl":367},{"t":"3","om":"2025-10-31","mob":"M6","r":0.013623978201634877,"tl":367},{"t":"3","om":"2025-11-30","mob":"M0","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M1","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M2","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M3","r":0.016666666666666666,"tl":60},{"t":"3","om":"2025-11-30","mob":"M4","r":0.0,"tl":60},{"t":"3","om":"2025-11-30","mob":"M5","r":0.0,"tl":60},{"t":"3","om":"2026-01-31","mob":"M0","r":0.0,"tl":1},{"t":"3","om":"2026-01-31","mob":"M1","r":0.0,"tl":1},{"t":"3","om":"2026-01-31","mob":"M2","r":0.0,"tl":1},{"t":"3","om":"2026-02-28","mob":"M0","r":0.0,"tl":1282},{"t":"3","om":"2026-02-28","mob":"M1","r":0.0,"tl":1282},{"t":"3","om":"2026-03-31","mob":"M0","r":0.0,"tl":10936},{"t":"3","om":"2026-03-31","mob":"M1","r":0.0,"tl":10936},{"t":"3","om":"2026-04-30","mob":"M0","r":0.0,"tl":10060},{"t":"6","om":"2025-09-30","mob":"M0","r":0.0,"tl":44},{"t":"6","om":"2025-09-30","mob":"M1","r":0.0,"tl":44},{"t":"6","om":"2025-09-30","mob":"M2","r":0.0,"tl":44},{"t":"6","om":"2025-09-30","mob":"M3","r":0.045454545454545456,"tl":44},{"t":"6","om":"2025-09-30","mob":"M4","r":0.045454545454545456,"tl":44},{"t":"6","om":"2025-09-30","mob":"M5","r":0.06818181818181818,"tl":44},{"t":"6","om":"2025-09-30","mob":"M6","r":0.06818181818181818,"tl":44},{"t":"6","om":"2025-10-31","mob":"M0","r":0.0,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M1","r":0.0,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M2","r":0.0,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M3","r":0.024077046548956663,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M4","r":0.03290529695024077,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M5","r":0.03691813804173355,"tl":1246},{"t":"6","om":"2025-10-31","mob":"M6","r":0.016853932584269662,"tl":1246},{"t":"6","om":"2025-11-30","mob":"M0","r":0.0,"tl":205},{"t":"6","om":"2025-11-30","mob":"M1","r":0.0,"tl":205},{"t":"6","om":"2025-11-30","mob":"M2","r":0.0,"tl":205},{"t":"6","om":"2025-11-30","mob":"M3","r":0.03414634146341464,"tl":205},{"t":"6","om":"2025-11-30","mob":"M4","r":0.04878048780487805,"tl":205},{"t":"6","om":"2025-11-30","mob":"M5","r":0.07804878048780488,"tl":205},{"t":"6","om":"2026-01-31","mob":"M0","r":0.0,"tl":8},{"t":"6","om":"2026-01-31","mob":"M1","r":0.0,"tl":8},{"t":"6","om":"2026-01-31","mob":"M2","r":0.0,"tl":8},{"t":"6","om":"2026-02-28","mob":"M0","r":0.0,"tl":3607},{"t":"6","om":"2026-02-28","mob":"M1","r":0.0,"tl":3607},{"t":"6","om":"2026-03-31","mob":"M0","r":0.0,"tl":5146},{"t":"6","om":"2026-03-31","mob":"M1","r":0.0,"tl":5146},{"t":"6","om":"2026-04-30","mob":"M0","r":0.0,"tl":3914}];
+var SLIDE13_COHORT = [{"t":"3","om":"2025-09-30","n":18,"v":694,"mi":102},{"t":"3","om":"2025-10-31","n":367,"v":692,"mi":93},{"t":"3","om":"2025-11-30","n":60,"v":686,"mi":75},{"t":"3","om":"2026-01-31","n":1,"v":577,"mi":3},{"t":"3","om":"2026-02-28","n":1282,"v":701,"mi":69},{"t":"3","om":"2026-03-31","n":10936,"v":725,"mi":84},{"t":"3","om":"2026-04-30","n":10060,"v":726,"mi":88},{"t":"6","om":"2025-09-30","n":44,"v":685,"mi":86},{"t":"6","om":"2025-10-31","n":1246,"v":674,"mi":98},{"t":"6","om":"2025-11-30","n":205,"v":669,"mi":80},{"t":"6","om":"2026-01-31","n":8,"v":651,"mi":53},{"t":"6","om":"2026-02-28","n":3607,"v":683,"mi":73},{"t":"6","om":"2026-03-31","n":5146,"v":698,"mi":75},{"t":"6","om":"2026-04-30","n":3914,"v":697,"mi":79}];
 var SLIDE13_MOB_CAP = 5;
-var SLIDE13_TERMS = ["3", "6"];
-renderSlide13(SLIDE13_DPD, SLIDE13_COHORT, SLIDE13_MOB_CAP, SLIDE13_TERMS);
-})();})();
-</script>
+var SLIDE13_TERMS = ["3","6"];
+window.__deferredSlideInit = window.__deferredSlideInit || {};
+window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, SLIDE13_COHORT, SLIDE13_MOB_CAP, SLIDE13_TERMS); };
+})();
+/* presenter */
+(function(){
+  var slides = document.querySelectorAll('.slide-track > .slide, .slide-track > .slide-fixed');
+  var dots = document.querySelectorAll('.dot');
+  var counter = document.querySelector('.slide-counter');
+  var prevBtn = document.querySelector('.nav-btn.prev');
+  var nextBtn = document.querySelector('.nav-btn.next');
+  var cur = 0;
+  var N = slides.length;
+
+  var inited = {};
+
+  function initSlide(el) {
+    var id = el.id;
+    if (!id || inited[id]) return;
+    var dsi = window.__deferredSlideInit;
+    if (dsi && typeof dsi[id] === 'function') {
+      dsi[id]();
+      inited[id] = true;
+    }
+  }
+
+  function go(idx) {
+    if (idx < 0 || idx >= N) return;
+    var prev = cur;
+    slides[prev].classList.remove('active');
+    if (idx > prev) slides[prev].classList.add('exit-left');
+    setTimeout(function(){ slides[prev] && slides[prev].classList.remove('exit-left'); }, 400);
+    cur = idx;
+    slides[cur].classList.remove('exit-left');
+    slides[cur].classList.add('active');
+    dots.forEach(function(d,i){ d.classList.toggle('active', i===cur); });
+    counter.textContent = (cur+1) + ' / ' + N;
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === N-1;
+    setTimeout(function(){
+      initSlide(slides[cur]);
+      window.dispatchEvent(new Event('resize'));
+      if (typeof Plotly !== 'undefined') {
+        var plots = slides[cur].querySelectorAll('.js-plotly-plot');
+        plots.forEach(function(p){ Plotly.Plots.resize(p); });
+      }
+    }, 60);
+  }
+
+  slides[0].classList.add('active');
+  dots[0] && dots[0].classList.add('active');
+  counter.textContent = '1 / ' + N;
+  prevBtn.disabled = true;
+  nextBtn.disabled = N <= 1;
+
+  prevBtn.onclick = function(){ go(cur-1); };
+  nextBtn.onclick = function(){ go(cur+1); };
+  dots.forEach(function(d,i){ d.onclick = function(){ go(i); }; });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(cur+1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur-1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(N-1); }
+  });
+
+  var tx = 0;
+  document.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+  });
+})();
+  </script>
 </body>
 </html>

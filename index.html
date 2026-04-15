@@ -79,11 +79,12 @@ a:hover{text-decoration:underline}
 .next-step{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #eff6ff;font-size:13px;line-height:1.6;color:#1e3a5f}
 .next-step:last-child{border-bottom:none}
 .step-num{background:#3b82f6;color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
-.heatmap{width:100%;border-collapse:separate;border-spacing:3px}
-.heatmap th{background:transparent;border:none;font-size:11px;font-weight:600;color:#475569;padding:6px 8px;text-align:center}
-.heatmap td{border-radius:6px;text-align:center;padding:10px 6px;font-size:12px;font-weight:600;border:none;min-width:70px;position:relative}
-.heatmap .bin-label{text-align:left;font-weight:700;background:transparent;color:#334155;font-size:13px}
-.heatmap .arm-label{text-align:left;font-weight:500;background:transparent;color:#64748b;font-size:12px;padding-left:16px}
+.heatmap{width:100%;border-collapse:separate;border-spacing:2px;table-layout:fixed}
+.heatmap th{background:transparent;border:none;font-size:10px;font-weight:600;color:#475569;padding:5px 3px;text-align:center;overflow:hidden;text-overflow:ellipsis}
+.heatmap td{border-radius:5px;text-align:center;padding:7px 3px;font-size:11px;font-weight:600;border:none;position:relative}
+.heatmap .bin-label{text-align:left;font-weight:700;background:transparent;color:#334155;font-size:12px;width:55px}
+.heatmap .arm-label{text-align:left;font-weight:500;background:transparent;color:#64748b;font-size:11px;padding-left:8px;width:40px}
+.heatmap .lift-row td{font-size:10px;padding:4px 3px;font-weight:700}
 .action-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
 .action-table th{text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;border-bottom:2px solid #e2e8f0;background:transparent}
 .action-table td{padding:8px 10px;border-bottom:1px solid #f1f5f9}
@@ -96,6 +97,7 @@ a:hover{text-decoration:underline}
 <div class="header">
   <h1>FNPL Product Funnel Dashboard</h1>
   <p>Data from 2025-09-18 onwards &middot; Grain: unique users (authId) &middot; Lending backend + Clickstream &middot; Generated 2026-03-23</p>
+  <p style="margin-top:8px"><a href="mbr/index.html" style="color:#19A0AA;font-weight:600;text-decoration:none;font-size:14px">📊 Monthly Business Review Archive →</a></p>
 </div>
 
 <div class="legend-bar">
@@ -293,11 +295,9 @@ a:hover{text-decoration:underline}
     <div id="rxeSubTable"></div>
   </div>
 
-  <div class="card">
-    <h3>Performance Heatmap</h3>
-    <p style="font-size:12px;color:#64748b;margin-bottom:12px">Cells show rate (% of contingent). Color intensity = conversion rate.</p>
-    <div id="rxeHeatmap"></div>
-  </div>
+  <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;font-weight:700;margin:24px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px">Performance Heatmap by Risk Segment</p>
+  <p style="font-size:12px;color:#64748b;margin-bottom:16px">Each card shows cumulative conversion (% of contingent) for all stages. <strong style="color:#3b82f6">Blue</strong> = Treatment B, <strong style="color:#64748b">Gray</strong> = Control, <strong style="color:#16a34a">Δ green</strong> = B ahead, <span style="color:#dc2626">Δ red</span> = B behind.</p>
+  <div id="rxeHeatmap"></div>
 
   <div class="card">
     <h3 class="collapsible" onclick="toggleCollapse(this)">Raw Data</h3>
@@ -812,31 +812,76 @@ function buildRxeTab(){
     }
   });
 
-  // Heatmap — all stages
+  // Heatmap — one card per risk bin
   const hmStages = [
     {l:'Options',i:1},{l:'Term Click',i:2},{l:'Add Bank',i:3},{l:'Bank Done',i:4},
     {l:'Final Appr',i:5},{l:'Offer Sel',i:6},{l:'Pmt Sched',i:7},
     {l:'Loan Acc',i:8},{l:'Acc+Efile',i:9},{l:'Funded',i:10}
   ];
-  let hhtml = '<table class="heatmap"><tr><th></th><th></th>';
-  hmStages.forEach(s=>hhtml+=`<th>${s.l}</th>`);
-  hhtml += '<th>N</th></tr>';
+  let hhtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">';
   RXE_BINS.forEach(b=>{
-    [{arm:'B',d:RXE_B,c:'#3b82f6'},{arm:'Ctrl',d:RXE_C,c:'#64748b'}].forEach((a,ai)=>{
-      hhtml += `<tr>${ai===0?`<td class="bin-label" rowspan="2">${b}</td>`:''}`;
-      hhtml += `<td class="arm-label" style="color:${a.c};font-weight:600">${a.arm}</td>`;
-      hmStages.forEach(s=>{
-        const rate = a.d[b][s.i]/a.d[b][0]*100;
-        const intensity = Math.min(rate/100, 1);
-        const bg = a.arm==='B'
-          ? `rgba(59,130,246,${0.08+intensity*0.35})`
-          : `rgba(100,116,139,${0.08+intensity*0.30})`;
-        hhtml += `<td style="background:${bg};color:${intensity>0.5?'#1e293b':'#475569'}">${rate.toFixed(1)}%</td>`;
-      });
-      hhtml += `<td style="background:transparent;color:#94a3b8;font-size:11px;text-align:center">${fmt(a.d[b][0])}</td></tr>`;
+    const bRates = hmStages.map(s=>RXE_B[b][s.i]/RXE_B[b][0]*100);
+    const cRates = hmStages.map(s=>RXE_C[b][s.i]/RXE_C[b][0]*100);
+    const fundedLift = bRates[9]>0&&cRates[9]>0 ? (bRates[9]/cRates[9]).toFixed(1)+'x' : 'N/A';
+    const fundedDelta = bRates[9] - cRates[9];
+    const verdict = fundedDelta > 5 ? 'go' : fundedDelta > -2 ? 'watch' : 'hold';
+    const verdictLabel = fundedDelta > 5 ? 'GO' : fundedDelta > -2 ? 'WATCH' : 'HOLD';
+
+    hhtml += `<div class="card" style="margin-bottom:0;padding:16px">`;
+    hhtml += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">`;
+    hhtml += `<h3 style="margin:0;font-size:15px">${b}</h3>`;
+    hhtml += `<div style="display:flex;gap:8px;align-items:center">`;
+    hhtml += `<span style="font-size:11px;color:#64748b">B: <strong>${fmt(RXE_B[b][0])}</strong> · Ctrl: <strong>${fmt(RXE_C[b][0])}</strong></span>`;
+    hhtml += `<span class="verdict verdict-${verdict}" style="font-size:10px;padding:2px 8px">${verdictLabel}</span>`;
+    hhtml += `<span style="font-size:11px;font-weight:700;color:${fundedDelta>0?'#16a34a':'#dc2626'}">Lift ${fundedLift}</span>`;
+    hhtml += `</div></div>`;
+
+    hhtml += `<table class="heatmap" style="table-layout:fixed"><tr><th style="width:40px"></th>`;
+    hmStages.forEach(s=>hhtml+=`<th>${s.l}</th>`);
+    hhtml += '</tr>';
+
+    // B row
+    hhtml += `<tr><td class="arm-label" style="color:#3b82f6;font-weight:700;padding-left:0">B</td>`;
+    bRates.forEach(rate=>{
+      const intensity = Math.min(rate/100, 1);
+      hhtml += `<td style="background:rgba(59,130,246,${(0.08+intensity*0.4).toFixed(2)});color:${intensity>0.4?'#1e293b':'#475569'}">${rate.toFixed(1)}%</td>`;
     });
+    hhtml += '</tr>';
+
+    // Ctrl row
+    hhtml += `<tr><td class="arm-label" style="color:#64748b;font-weight:600;padding-left:0">Ctrl</td>`;
+    cRates.forEach(rate=>{
+      const intensity = Math.min(rate/100, 1);
+      hhtml += `<td style="background:rgba(100,116,139,${(0.08+intensity*0.35).toFixed(2)});color:${intensity>0.4?'#1e293b':'#475569'}">${rate.toFixed(1)}%</td>`;
+    });
+    hhtml += '</tr>';
+
+    // Delta row
+    hhtml += `<tr class="lift-row"><td class="arm-label" style="color:#6b7280;font-size:10px;font-style:italic;padding-left:0">Δ</td>`;
+    bRates.forEach((bR,idx)=>{
+      const delta = bR - cRates[idx];
+      const color = delta > 2 ? '#16a34a' : delta < -2 ? '#dc2626' : '#6b7280';
+      const bg = delta > 2 ? 'rgba(22,163,74,0.10)' : delta < -2 ? 'rgba(220,38,38,0.10)' : 'rgba(0,0,0,0.02)';
+      const sign = delta > 0 ? '+' : '';
+      hhtml += `<td style="background:${bg};color:${color}">${sign}${delta.toFixed(1)}</td>`;
+    });
+    hhtml += '</tr></table>';
+
+    // Biggest gap callout
+    let maxDelta = 0, maxStage = '';
+    bRates.forEach((bR,idx)=>{ const d=bR-cRates[idx]; if(d>maxDelta){maxDelta=d;maxStage=hmStages[idx].l} });
+    if(maxDelta > 2){
+      hhtml += `<p style="font-size:11px;color:#475569;margin-top:8px;padding:6px 8px;background:#f0fdf4;border-radius:4px;border-left:3px solid #16a34a"><strong>Biggest B advantage:</strong> ${maxStage} (+${maxDelta.toFixed(1)}pp)</p>`;
+    }
+    let minDelta = 0, minStage = '';
+    bRates.forEach((bR,idx)=>{ const d=bR-cRates[idx]; if(d<minDelta){minDelta=d;minStage=hmStages[idx].l} });
+    if(minDelta < -2){
+      hhtml += `<p style="font-size:11px;color:#475569;margin-top:4px;padding:6px 8px;background:#fef2f2;border-radius:4px;border-left:3px solid #dc2626"><strong>Control ahead:</strong> ${minStage} (${minDelta.toFixed(1)}pp)</p>`;
+    }
+
+    hhtml += '</div>';
   });
-  hhtml += '</table>';
+  hhtml += '</div>';
   document.getElementById('rxeHeatmap').innerHTML = hhtml;
 
   // ── Offer→Funded sub-funnel ──
