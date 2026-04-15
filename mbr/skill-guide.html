@@ -316,8 +316,113 @@
     display: inline-block;
   }
 
+  /* flow diagram */
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  .flow-row { width: 100%; max-width: 620px; }
+  .flow-arrow {
+    font-size: 18px; color: #D1D5DB; text-align: center;
+    line-height: 1; padding: 6px 0;
+  }
+  .flow-node {
+    border-radius: 10px; border: 1px solid #E5E7EB;
+    overflow: hidden;
+  }
+  .flow-node-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; font-size: 11px; font-weight: 700;
+  }
+  .plan-head { background: #FFFBEB; }
+  .agent-head { background: #EEF4FF; }
+  .flow-badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px;
+  }
+  .plan-badge { background: #FEF3C7; color: #92400E; }
+  .agent-badge { background: #DBEAFE; color: #1E40AF; }
+  .flow-step { font-size: 11px; font-weight: 700; color: #9CA3AF; letter-spacing: 0.3px; }
+  .flow-node-title {
+    font-size: 15px; font-weight: 700; color: #1A1A2E;
+    padding: 12px 16px 4px;
+  }
+  .flow-node-desc {
+    font-size: 13px; color: #6B7280; line-height: 1.6;
+    padding: 0 16px 8px;
+  }
+  .flow-node-note {
+    font-size: 11px; color: #9CA3AF; font-style: italic;
+    padding: 6px 16px 12px;
+  }
+  .flow-sub-steps { padding: 4px 16px 8px; display: flex; flex-direction: column; gap: 6px; }
+  .flow-sub {
+    font-size: 12px; color: #374151; line-height: 1.5;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .flow-sub-num {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+    background: #F3F4F6; color: #6B7280;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 16px 12px; }
+  .flow-tag {
+    font-size: 11px; font-weight: 500; padding: 4px 10px;
+    border-radius: 6px; background: #F3F4F6; color: #374151;
+  }
+  .flow-tag.dim { background: #FAFBFC; color: #9CA3AF; border: 1px dashed #E5E7EB; }
+
+  .decision-node {
+    border: none; display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .flow-diamond {
+    width: 110px; height: 110px;
+    background: #FFF7ED; border: 2px solid #FDBA74;
+    transform: rotate(45deg); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .flow-diamond span {
+    transform: rotate(-45deg);
+    font-size: 13px; font-weight: 700; color: #9A3412;
+    text-align: center; line-height: 1.3;
+  }
+  .flow-branch-wrap {
+    display: flex; gap: 16px; width: 100%;
+  }
+  .flow-branch {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .flow-branch-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .yes-label { color: #DC2626; }
+  .no-label { color: #059669; }
+  .flow-branch-box {
+    border: 1px solid #E5E7EB; border-radius: 8px;
+    padding: 12px 14px; font-size: 12px; color: #6B7280;
+    line-height: 1.6; text-align: center; width: 100%;
+  }
+  .plan-branch { background: #FFFBEB; border-color: #FDE68A; }
+
+  .flow-parallel-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    padding: 8px 16px 14px;
+  }
+  .flow-parallel-item {
+    background: #FAFBFC; border: 1px solid #F0F0F0; border-radius: 8px;
+    padding: 10px 12px; font-size: 11px; color: #6B7280; line-height: 1.5; text-align: center;
+  }
+  .flow-parallel-item strong { color: #1A1A2E; }
+
+  .flow-done {
+    text-align: center; padding: 16px; background: #ECFDF5;
+    border: 1px solid #A7F3D0; border-radius: 10px;
+    font-size: 14px; font-weight: 600; color: #059669;
+  }
+  .flow-done code { font-size: 12px; color: #047857; }
+
   @media (max-width: 900px) {
     .header, .hero, .content, .footer { padding-left: 20px; padding-right: 20px; }
+    .flow-parallel-grid { grid-template-columns: repeat(2, 1fr); }
     .hero h1 { font-size: 26px; }
     .pipeline { padding: 20px; }
     .card-body, .limits-list, .import-steps { padding: 20px; }
@@ -408,7 +513,193 @@
     </div>
   </div>
 
-  <!-- Section 2b: Key Interactive Features -->
+  <!-- Section 2b: Execution Flow Diagram -->
+  <div class="section">
+    <div class="section-label">Execution Flow</div>
+    <div class="card">
+      <div class="card-body" style="padding:32px;">
+        <p style="margin-bottom:24px;font-size:13px;color:#6B7280;">The skill orchestrates a multi-step pipeline with automatic Plan/Agent mode switching. It pauses for user input only at designated checkpoints (marked below), and runs everything else in parallel.</p>
+        <div class="flow">
+
+          <!-- Step 0 -->
+          <div class="flow-row">
+            <div class="flow-node plan-node">
+              <div class="flow-node-head plan-head">
+                <span class="flow-badge plan-badge">Plan Mode</span>
+                <span class="flow-step">Step 0</span>
+              </div>
+              <div class="flow-node-title">Pre-Run Configuration</div>
+              <div class="flow-node-desc">
+                Agent switches to <strong>Plan mode</strong> and asks setup questions via structured <code>AskQuestion</code> prompts:
+              </div>
+              <div class="flow-sub-steps">
+                <div class="flow-sub"><span class="flow-sub-num">Q1</span> MBR month label &mdash; <em>e.g. Apr 2026</em></div>
+                <div class="flow-sub"><span class="flow-sub-num">Q2</span> Data cutoff date &mdash; <em>3 options computed from Q1</em></div>
+                <div class="flow-sub"><span class="flow-sub-num">Q3</span> Agenda product order &mdash; <em>FNPL, PCA, RAD, TTFA</em></div>
+                <div class="flow-sub"><span class="flow-sub-num">Q4</span> Base table &mdash; <em>ga1 / ga2 / custom</em></div>
+              </div>
+              <div class="flow-node-note">Waits for user answers, then auto-switches to Agent mode.</div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 1 -->
+          <div class="flow-row">
+            <div class="flow-node agent-node">
+              <div class="flow-node-head agent-head">
+                <span class="flow-badge agent-badge">Agent Mode</span>
+                <span class="flow-step">Step 1</span>
+              </div>
+              <div class="flow-node-title">Massive Parallel Query Batch</div>
+              <div class="flow-node-desc">
+                Fires <strong>all</strong> SQL queries in a single parallel batch &mdash; one Databricks round-trip:
+              </div>
+              <div class="flow-tags">
+                <span class="flow-tag">Slide 9 Queries</span>
+                <span class="flow-tag">Slide 10 ROLLUP</span>
+                <span class="flow-tag">Slide 11 ROLLUP</span>
+                <span class="flow-tag">Slide 12 DPD30+</span>
+                <span class="flow-tag">Slide 13 DPD + Cohort</span>
+                <span class="flow-tag dim">DESCRIBE table (if custom)</span>
+                <span class="flow-tag dim">AIG cross-ref validation</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Decision: missing columns -->
+          <div class="flow-row">
+            <div class="flow-node decision-node">
+              <div class="flow-diamond">
+                <span>Missing<br>columns?</span>
+              </div>
+              <div class="flow-branch-wrap">
+                <div class="flow-branch yes-branch">
+                  <div class="flow-branch-label yes-label">Yes</div>
+                  <div class="flow-branch-box plan-branch">
+                    <span class="flow-badge plan-badge" style="font-size:9px;">Plan Mode</span>
+                    <div>Switches to Plan mode, tells the user which column is missing and which metric it affects. User picks: <strong>skip</strong>, <strong>substitute</strong>, or <strong>provide name</strong>. Then resumes Agent mode.</div>
+                  </div>
+                </div>
+                <div class="flow-branch no-branch">
+                  <div class="flow-branch-label no-label">No</div>
+                  <div class="flow-branch-box"><div>Continue &darr;</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 2C -->
+          <div class="flow-row">
+            <div class="flow-node agent-node">
+              <div class="flow-node-head agent-head">
+                <span class="flow-badge agent-badge">Agent Mode</span>
+                <span class="flow-step">Step 2C</span>
+              </div>
+              <div class="flow-node-title">Validation Verdict</div>
+              <div class="flow-node-desc">
+                In-memory comparison of query results vs AIG reference tables. No additional queries. Presents a verdict:
+              </div>
+              <div class="flow-tags">
+                <span class="flow-tag" style="background:#ECFDF5;color:#059669;">GO &mdash; data matches</span>
+                <span class="flow-tag" style="background:#FFFBEB;color:#D97706;">YELLOW &mdash; minor gaps</span>
+                <span class="flow-tag" style="background:#FEF2F2;color:#DC2626;">RED &mdash; data mismatch</span>
+              </div>
+              <div class="flow-node-note">User acknowledges verdict, then execution continues.</div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 3 -->
+          <div class="flow-row">
+            <div class="flow-node agent-node wide-node">
+              <div class="flow-node-head agent-head">
+                <span class="flow-badge agent-badge">Agent Mode</span>
+                <span class="flow-step">Step 3</span>
+              </div>
+              <div class="flow-node-title">Build All Slides (Parallel)</div>
+              <div class="flow-node-desc">
+                All slide HTML builds run in parallel:
+              </div>
+              <div class="flow-parallel-grid">
+                <div class="flow-parallel-item">
+                  <strong>Static</strong><br>Cover, Agenda (timeline), GA 2.0
+                </div>
+                <div class="flow-parallel-item">
+                  <strong>Slide 9</strong><br>Application Profile
+                </div>
+                <div class="flow-parallel-item">
+                  <strong>Slide 10</strong><br>Funded Loans
+                </div>
+                <div class="flow-parallel-item">
+                  <strong>Slide 11</strong><br>Monthly Performance
+                </div>
+                <div class="flow-parallel-item">
+                  <strong>Slide 12</strong><br>DPD30+ Vantage
+                </div>
+                <div class="flow-parallel-item">
+                  <strong>Slide 13</strong><br>DPD30+ Term
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 3C -->
+          <div class="flow-row">
+            <div class="flow-node plan-node">
+              <div class="flow-node-head plan-head">
+                <span class="flow-badge plan-badge">Plan Mode</span>
+                <span class="flow-step">Step 3C</span>
+              </div>
+              <div class="flow-node-title">Preview, Commentary &amp; Exec Summary Input</div>
+              <div class="flow-node-desc">
+                Agent takes a preview screenshot, then switches to <strong>Plan mode</strong> and collects:
+              </div>
+              <div class="flow-sub-steps">
+                <div class="flow-sub"><span class="flow-sub-num">A</span> Exec Summary text per product (FNPL, PCA, RAD, TTFA)</div>
+                <div class="flow-sub"><span class="flow-sub-num">B</span> Optional commentary callouts for data slides</div>
+                <div class="flow-sub"><span class="flow-sub-num">C</span> Slide 3 card content from team input / Slack</div>
+              </div>
+              <div class="flow-node-note">Waits for user confirmation, then auto-switches back to Agent mode.</div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 4 + 5 -->
+          <div class="flow-row">
+            <div class="flow-node agent-node">
+              <div class="flow-node-head agent-head">
+                <span class="flow-badge agent-badge">Agent Mode</span>
+                <span class="flow-step">Steps 4 &amp; 5</span>
+              </div>
+              <div class="flow-node-title">Save &amp; Archive (Parallel)</div>
+              <div class="flow-node-desc">
+                Two final tasks run simultaneously:
+              </div>
+              <div class="flow-tags">
+                <span class="flow-tag">Assemble combined HTML presenter</span>
+                <span class="flow-tag">Push to GitHub Pages + enterprise repo</span>
+                <span class="flow-tag">Update run-history.json</span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Done -->
+          <div class="flow-row">
+            <div class="flow-done">
+              <span>&#10003;</span> Deck ready at <code>~/Downloads/FNPL_MBR_&lt;MonYY&gt;.html</code>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2c: Key Interactive Features -->
   <div class="section">
     <div class="section-label">Key Interactive Features</div>
     <div class="card">
