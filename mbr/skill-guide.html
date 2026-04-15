@@ -419,6 +419,11 @@
     font-size: 14px; font-weight: 600; color: #059669;
   }
   .flow-done code { font-size: 12px; color: #047857; }
+  .flow-overwrite-note {
+    margin: 8px 16px 14px; padding: 10px 14px;
+    background: #FFF7ED; border: 1px solid #FDBA74; border-radius: 6px;
+    font-size: 12px; color: #9A3412; line-height: 1.6;
+  }
 
   @media (max-width: 900px) {
     .header, .hero, .content, .footer { padding-left: 20px; padding-right: 20px; }
@@ -667,21 +672,61 @@
           </div>
           <div class="flow-arrow">&darr;</div>
 
-          <!-- Step 4 + 5 -->
+          <!-- Step 4 + 5a -->
           <div class="flow-row">
             <div class="flow-node agent-node">
               <div class="flow-node-head agent-head">
                 <span class="flow-badge agent-badge">Agent Mode</span>
-                <span class="flow-step">Steps 4 &amp; 5</span>
+                <span class="flow-step">Step 5a</span>
               </div>
-              <div class="flow-node-title">Save &amp; Archive (Parallel)</div>
+              <div class="flow-node-title">Assemble &amp; Save HTML Deck</div>
               <div class="flow-node-desc">
-                Two final tasks run simultaneously:
+                Combines all slides into a single self-contained HTML file with the full-screen presenter:
               </div>
               <div class="flow-tags">
-                <span class="flow-tag">Assemble combined HTML presenter</span>
-                <span class="flow-tag">Push to GitHub Pages + enterprise repo</span>
-                <span class="flow-tag">Update run-history.json</span>
+                <span class="flow-tag">Static slides + data slides merged</span>
+                <span class="flow-tag">Presenter JS &amp; CSS injected</span>
+                <span class="flow-tag">Edit/Add/Delete mode wired in</span>
+              </div>
+              <div class="flow-node-note">Saved to <code>~/Downloads/FNPL_MBR_&lt;MonYY&gt;.html</code></div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 5b — Dashboard Update -->
+          <div class="flow-row">
+            <div class="flow-node agent-node" style="border-color:#A7F3D0;">
+              <div class="flow-node-head" style="background:#ECFDF5;">
+                <span class="flow-badge" style="background:#D1FAE5;color:#065F46;">Auto-Deploy</span>
+                <span class="flow-step">Step 5b</span>
+              </div>
+              <div class="flow-node-title">Update Dashboard &amp; Git Archive</div>
+              <div class="flow-node-desc">
+                Copies the deck into the GitHub Pages repo and updates the MBR archive dashboard:
+              </div>
+              <div class="flow-sub-steps">
+                <div class="flow-sub"><span class="flow-sub-num">1</span> Copy deck to <code>mbr/FNPL_MBR_&lt;MonYY&gt;.html</code> in <strong>fnpl-funnel-dashboard</strong> repo</div>
+                <div class="flow-sub"><span class="flow-sub-num">2</span> Update <code>mbr/index.html</code> &mdash; add row for this month (or update existing row on re-run)</div>
+                <div class="flow-sub"><span class="flow-sub-num">3</span> Commit &amp; push to <code>main</code> &rarr; GitHub Pages auto-deploys</div>
+                <div class="flow-sub"><span class="flow-sub-num">4</span> Push to enterprise repo <code>cg-credit-risk/exports/fnpl-mbr/</code></div>
+              </div>
+              <div class="flow-overwrite-note">
+                <strong>Re-run rule:</strong> If the same month&rsquo;s deck already exists, it is <strong>overwritten</strong> &mdash; only the latest run of each month is kept. Prior months are never touched.
+              </div>
+            </div>
+          </div>
+          <div class="flow-arrow">&darr;</div>
+
+          <!-- Step 5c — Run History -->
+          <div class="flow-row">
+            <div class="flow-node agent-node">
+              <div class="flow-node-head agent-head">
+                <span class="flow-badge agent-badge">Agent Mode</span>
+                <span class="flow-step">Step 5c</span>
+              </div>
+              <div class="flow-node-title">Update Run History</div>
+              <div class="flow-node-desc">
+                Appends this run&rsquo;s metadata (month, cutoff, base table, timestamp) to <code>run-history.json</code> so the next run can offer prior settings as defaults.
               </div>
             </div>
           </div>
@@ -690,7 +735,9 @@
           <!-- Done -->
           <div class="flow-row">
             <div class="flow-done">
-              <span>&#10003;</span> Deck ready at <code>~/Downloads/FNPL_MBR_&lt;MonYY&gt;.html</code>
+              <span>&#10003;</span> Deck ready &amp; dashboard updated<br>
+              <code style="display:block;margin-top:6px;">~/Downloads/FNPL_MBR_&lt;MonYY&gt;.html</code>
+              <span style="font-size:12px;font-weight:400;color:#6B7280;display:block;margin-top:4px;">Live at namrataverma-rgb.github.io/fnpl-funnel-dashboard/mbr/</span>
             </div>
           </div>
 
