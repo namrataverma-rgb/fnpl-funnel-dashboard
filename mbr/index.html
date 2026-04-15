@@ -75,7 +75,12 @@
     background: #fff;
     border-bottom: 1px solid #E5E7EB;
     padding: 36px 48px 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
   }
+  .page-header-left { flex: 1; }
   .page-header h1 {
     font-size: 26px;
     font-weight: 700;
@@ -88,6 +93,33 @@
     color: #6B7280;
     line-height: 1.6;
     max-width: 680px;
+  }
+  .page-header-stats {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+  .ph-stat { text-align: center; }
+  .ph-stat .ph-val {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A1A2E;
+    line-height: 1;
+  }
+  .ph-stat .ph-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+  .ph-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: #E5E7EB;
   }
 
   .summary-strip {
@@ -286,23 +318,25 @@
   <img src="intuit-ecosystem-white.svg" alt="Intuit">
   <div class="header-divider"></div>
   <span class="header-title">Consumer Risk</span>
-  <div class="header-stats">
-    <div class="header-stat">
-      <span class="hs-val">1</span>
-      <span class="hs-label">Decks Archived</span>
-    </div>
-    <div class="header-stat-divider"></div>
-    <div class="header-stat">
-      <span class="hs-val">Apr 2026</span>
-      <span class="hs-label">Latest Report</span>
-    </div>
-  </div>
 </div>
 <div class="accent-bar"></div>
 
 <div class="page-header">
-  <h1>Monthly Business Review</h1>
-  <p>Archived FNPL slide decks generated from Databricks. Each deck includes Application Profile, Funded Loans Profile, Monthly Performance, and DPD30+ vintage analysis.</p>
+  <div class="page-header-left">
+    <h1>Monthly Business Review</h1>
+    <p>Archived FNPL slide decks generated from Databricks. Each deck includes Application Profile, Funded Loans Profile, Monthly Performance, and DPD30+ vintage analysis.</p>
+  </div>
+  <div class="page-header-stats">
+    <div class="ph-stat">
+      <div class="ph-val">1</div>
+      <div class="ph-label">Decks Archived</div>
+    </div>
+    <div class="ph-stat-divider"></div>
+    <div class="ph-stat">
+      <div class="ph-val">Apr 2026</div>
+      <div class="ph-label">Latest Report</div>
+    </div>
+  </div>
 </div>
 
 
