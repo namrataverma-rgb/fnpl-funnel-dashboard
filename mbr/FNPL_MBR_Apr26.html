@@ -73,6 +73,54 @@ body {
     transform-origin: center center;
   }
 }
+
+.edit-banner {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: #FEF3C7; border-bottom: 2px solid #F59E0B;
+  padding: 8px 24px; align-items: center; gap: 16px;
+  font-family: 'Inter', sans-serif; font-size: 13px; color: #92400E;
+}
+body.edit-mode .edit-banner { display: flex; }
+body.edit-mode { padding-top: 44px; }
+body.edit-mode .presenter { height: calc(100vh - 44px); }
+.edit-banner .edit-label { font-weight: 700; }
+.edit-banner .edit-hint { flex: 1; }
+.edit-banner .edit-btn {
+  padding: 6px 18px; border-radius: 6px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.edit-banner .edit-btn:hover { opacity: 0.85; }
+.edit-btn-save { background: #059669; color: #fff; }
+.edit-btn-exit { background: #E5E7EB; color: #374151; }
+body.edit-mode [data-editable] {
+  outline: 2px dashed rgba(35,108,255,0.4);
+  outline-offset: 4px;
+  border-radius: 4px;
+  cursor: text;
+  transition: outline-color 0.2s;
+}
+body.edit-mode [data-editable]:hover {
+  outline-color: rgba(35,108,255,0.7);
+}
+body.edit-mode [data-editable]:focus {
+  outline: 2px solid #236CFF;
+  outline-offset: 4px;
+  background: rgba(35,108,255,0.03);
+}
+body.edit-mode .slide, body.edit-mode .slide-fixed {
+  user-select: text;
+}
+.edit-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #0F172A; color: #fff; padding: 10px 24px; border-radius: 8px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  z-index: 1001; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.edit-toast.show { opacity: 1; }
+
 /* --- template.html --- */
 /* === ALL CSS SCOPED UNDER #slide9 — DO NOT REMOVE ID PREFIX === */
   #slide9 {
@@ -543,6 +591,13 @@ body {
   </style>
 </head>
 <body>
+  <div class="edit-banner">
+    <span class="edit-label">📝 Live editing on.</span>
+    <span class="edit-hint">Click any highlighted area to edit. Changes are saved for everyone.</span>
+    <button class="edit-btn edit-btn-save">💾 Save for Everyone</button>
+    <button class="edit-btn edit-btn-exit">Exit Edit Mode</button>
+  </div>
+  <div class="edit-toast"></div>
   <div class="presenter">
     <button type="button" class="nav-btn prev" aria-label="Previous slide">‹</button>
     <div class="slide-track">
@@ -604,19 +659,19 @@ body {
   <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 48px 12px;">
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">FNPL</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
+      <div data-editable="fnpl-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
     </div>
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">PCA</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Gurmeet Arora</div>
+      <div data-editable="pca-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Gurmeet Arora</div>
     </div>
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">RAD</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Shan Cong</div>
+      <div data-editable="rad-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Shan Cong</div>
     </div>
     <div style="border:1px solid #E2E8F0;border-radius:10px;display:flex;flex-direction:column;overflow:hidden;">
       <div style="background:#0F172A;color:#F1F5F9;padding:10px 16px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;">TTFA</div>
-      <div style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
+      <div data-editable="ttfa-summary" style="padding:14px 16px;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;line-height:1.5;flex:1;font-style:italic;">Pending input from Sindhu Bhat</div>
     </div>
   </div>
   <div style="text-align:right;font-family:'Inter',sans-serif;font-size:12px;color:#94A3B8;padding:0 48px 16px;">Consumer Risk Team | Apr 2026</div>
@@ -668,7 +723,7 @@ body {
   <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:28px 48px 18px;">
     <div style="width:100%;height:4px;background:#0F172A;border-radius:2px;margin-bottom:16px;"></div>
     <h1 style="font-family:'Poppins',sans-serif;font-size:26px;font-weight:700;color:#0F172A;margin:0 0 12px;">Executive Summary of GA 2.0</h1>
-    <p style="font-family:'Inter',sans-serif;font-size:12.5px;color:#475569;line-height:1.6;margin:0;">
+    <p data-editable="ga20-summary" style="font-family:'Inter',sans-serif;font-size:12.5px;color:#475569;line-height:1.6;margin:0;">
       Observed strong applicant quality from GA, however there is opportunity to gather more insights to optimize policy going into FY'27.
       Through Pricing test we are offering as low as 10% for lowest risk segment (500bps lower) and 300 bps across all other risk segments to evaluate price sensitivity.
       Decline swap-in test is another opportunity for us to test credit expansion opportunities, and assess riskier segments where alternate data will help.
@@ -1423,6 +1478,135 @@ window.__deferredSlideInit['slide13'] = function(){ renderSlide13(SLIDE13_DPD, S
     var dx = e.changedTouches[0].clientX - tx;
     if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
   });
+})();
+/* edit mode */
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('mode') !== 'edit') return;
+
+  document.body.classList.add('edit-mode');
+
+  var editables = document.querySelectorAll('[data-editable]');
+  editables.forEach(function(el) {
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('spellcheck', 'false');
+  });
+
+  /* prevent arrow keys from changing slides when editing */
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement && document.activeElement.hasAttribute('data-editable')) {
+      e.stopPropagation();
+    }
+  }, true);
+
+  /* toast helper */
+  var toast = document.querySelector('.edit-toast');
+  function showToast(msg, ms) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, ms || 3000);
+  }
+
+  /* GitHub API config */
+  var REPO_OWNER = 'namrataverma-rgb';
+  var REPO_NAME = 'fnpl-funnel-dashboard';
+  var FILE_PATH = 'mbr/FNPL_MBR_Apr26.html';
+  var API_BASE = 'https://api.github.com';
+
+  function getCredentials() {
+    var creds = localStorage.getItem('mbr_github_creds');
+    if (creds) return JSON.parse(creds);
+    var token = prompt(
+      'Enter your GitHub Personal Access Token (PAT) to save.\n\n' +
+      'Generate one at: github.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic)\n' +
+      'Scope needed: repo'
+    );
+    if (!token) return null;
+    var obj = { token: token.trim() };
+    localStorage.setItem('mbr_github_creds', JSON.stringify(obj));
+    return obj;
+  }
+
+  /* Save: collect current DOM, push to GitHub */
+  async function saveToGitHub() {
+    var creds = getCredentials();
+    if (!creds) { showToast('Save cancelled — no token provided.'); return; }
+
+    showToast('Saving...', 60000);
+    var saveBtn = document.querySelector('.edit-btn-save');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    try {
+      /* remove edit artifacts before serializing */
+      editables.forEach(function(el) {
+        el.removeAttribute('contenteditable');
+        el.removeAttribute('spellcheck');
+      });
+
+      var htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+      /* restore editability */
+      editables.forEach(function(el) {
+        el.setAttribute('contenteditable', 'true');
+        el.setAttribute('spellcheck', 'false');
+      });
+
+      /* get current file SHA */
+      var getResp = await fetch(API_BASE + '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH, {
+        headers: { 'Authorization': 'token ' + creds.token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+
+      if (getResp.status === 401) {
+        localStorage.removeItem('mbr_github_creds');
+        showToast('Invalid token — cleared. Try again.');
+        saveBtn.disabled = false;
+        saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
+        return;
+      }
+
+      var fileData = await getResp.json();
+      var sha = fileData.sha;
+
+      /* base64 encode content */
+      var encoded = btoa(unescape(encodeURIComponent(htmlContent)));
+
+      /* PUT to update file */
+      var putResp = await fetch(API_BASE + '/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'token ' + creds.token,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'Update MBR deck (live edit)',
+          content: encoded,
+          sha: sha
+        })
+      });
+
+      if (putResp.ok) {
+        showToast('\u2705 Saved! Changes are live on the dashboard.', 4000);
+      } else {
+        var err = await putResp.json();
+        showToast('\u274C Save failed: ' + (err.message || putResp.status), 5000);
+      }
+    } catch (e) {
+      showToast('\u274C Error: ' + e.message, 5000);
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = '\uD83D\uDCBE Save for Everyone';
+  }
+
+  /* wire up buttons */
+  document.querySelector('.edit-btn-save').onclick = saveToGitHub;
+  document.querySelector('.edit-btn-exit').onclick = function() {
+    var url = new URL(window.location);
+    url.searchParams.delete('mode');
+    window.location = url.toString();
+  };
 })();
   </script>
 </body>
