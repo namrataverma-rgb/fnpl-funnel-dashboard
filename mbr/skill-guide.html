@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNPL MBR Skill — Reference Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F5F6F8;
+    color: #1A1A2E;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: #1A1A2E;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    gap: 20px;
+  }
+  .header img { height: 20px; opacity: 0.9; }
+  .header-divider {
+    width: 1px; height: 24px;
+    background: rgba(255,255,255,0.15);
+  }
+  .header-title {
+    font-size: 14px; font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: -0.1px;
+  }
+  .header-nav {
+    margin-left: auto;
+    display: flex; gap: 8px;
+  }
+  .header-nav a {
+    font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .header-nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+  .accent-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #236CFF 0%, #19A0AA 35%, #2CA01C 65%, #F0C929 100%);
+  }
+
+  .hero {
+    background: #fff;
+    border-bottom: 1px solid #E5E7EB;
+    padding: 48px 48px 44px;
+  }
+  .hero-inner {
+    max-width: 760px;
+  }
+  .hero-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #236CFF;
+    background: #EEF4FF;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: 32px; font-weight: 800;
+    color: #1A1A2E;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    font-size: 15px;
+    color: #6B7280;
+    line-height: 1.7;
+  }
+
+  .content { padding: 36px 48px 56px; }
+
+  .section {
+    margin-bottom: 36px;
+  }
+  .section-label {
+    font-size: 10px; font-weight: 700;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 14px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .card-body { padding: 28px 32px; }
+  .card-body p {
+    font-size: 14px; color: #374151;
+    line-height: 1.75;
+  }
+  .card-body p + p { margin-top: 12px; }
+
+  .output-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 16px;
+  }
+  .output-tag {
+    font-size: 11px; font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: #F3F4F6;
+    color: #374151;
+  }
+  .output-tag.primary {
+    background: #EEF4FF;
+    color: #236CFF;
+  }
+
+  /* pipeline */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 28px 32px;
+  }
+  @media (max-width: 960px) {
+    .pipeline { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .pipeline { grid-template-columns: 1fr; }
+  }
+  .step {
+    background: #FAFBFC;
+    border: 1px solid #F0F0F0;
+    border-radius: 10px;
+    padding: 22px 20px;
+    position: relative;
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #1A1A2E;
+    color: #fff;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .step-num.blue { background: #236CFF; }
+  .step-num.teal { background: #19A0AA; }
+  .step-num.green { background: #2CA01C; }
+  .step h3 {
+    font-size: 14px; font-weight: 700;
+    color: #1A1A2E;
+    margin-bottom: 6px;
+  }
+  .step p {
+    font-size: 12px; color: #6B7280;
+    line-height: 1.6;
+  }
+
+  /* benefits */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+  }
+  @media (max-width: 900px) {
+    .benefits-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .benefit {
+    padding: 24px 20px;
+    border-right: 1px solid #F0F0F0;
+    text-align: center;
+  }
+  .benefit:last-child { border-right: none; }
+  .benefit-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .benefit-val {
+    font-size: 22px; font-weight: 800;
+    color: #1A1A2E;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .benefit-label {
+    font-size: 11px; font-weight: 600;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+  }
+  .benefit-desc {
+    font-size: 12px;
+    color: #6B7280;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* limitations */
+  .limits-list {
+    padding: 28px 32px;
+    list-style: none;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .limits-list li {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .limit-dot {
+    flex-shrink: 0;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #D1D5DB;
+    margin-top: 8px;
+  }
+
+  /* import steps */
+  .import-steps {
+    padding: 28px 32px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .import-step {
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .import-step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #EEF4FF;
+    color: #236CFF;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .import-step-content h4 {
+    font-size: 14px; font-weight: 700;
+    color: #1A1A2E;
+    margin-bottom: 4px;
+  }
+  .import-step-content p {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.6;
+  }
+  .code-block {
+    margin-top: 8px;
+    background: #1A1A2E;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 12px;
+    color: #E2E8F0;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .code-block .comment { color: #64748B; }
+  .code-block .path { color: #67E8F9; }
+  .code-block .cmd { color: #A5F3FC; }
+
+  .file-tree {
+    margin-top: 10px;
+    background: #FAFBFC;
+    border: 1px solid #F0F0F0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.8;
+  }
+  .file-tree .dir { color: #236CFF; font-weight: 600; }
+  .file-tree .desc { color: #9CA3AF; font-style: italic; }
+
+  .footer {
+    padding: 24px 48px;
+    text-align: center;
+    font-size: 12px;
+    color: #9CA3AF;
+    border-top: 1px solid #E5E7EB;
+    background: #fff;
+  }
+  .footer a {
+    color: #6B7280;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .footer a:hover { color: #236CFF; }
+  .footer .brand-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+  .footer .brand-dots span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  @media (max-width: 900px) {
+    .header, .hero, .content, .footer { padding-left: 20px; padding-right: 20px; }
+    .hero h1 { font-size: 26px; }
+    .pipeline { padding: 20px; }
+    .card-body, .limits-list, .import-steps { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="intuit-ecosystem-white.svg" alt="Intuit">
+  <div class="header-divider"></div>
+  <span class="header-title">Consumer Risk</span>
+  <div class="header-nav">
+    <a href="index.html">MBR Archive</a>
+  </div>
+</div>
+<div class="accent-bar"></div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Cursor Agent Skill</div>
+    <h1>FNPL Monthly Business Review Skill</h1>
+    <p>An AI agent skill for Cursor that auto-generates a complete FNPL Monthly Business Review slide deck from Databricks data &mdash; including interactive charts, data tables, and a full-screen HTML presenter &mdash; in minutes instead of hours.</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Section 1: What Does the Skill Do? -->
+  <div class="section">
+    <div class="section-label">What Does the Skill Do?</div>
+    <div class="card">
+      <div class="card-body">
+        <p>The MBR skill is a <strong>Cursor AI agent skill</strong> that connects to Databricks, executes read-only SQL queries against the FNPL base table, and produces a self-contained HTML slide deck with <strong>13 presentation-ready slides</strong>. The agent handles everything end-to-end: data extraction, validation, chart rendering (Plotly.js), table formatting, and final assembly into a single-file slide presenter.</p>
+        <p>Just say <strong>&ldquo;run mbr&rdquo;</strong> and the skill takes care of the rest.</p>
+        <div class="output-tags">
+          <span class="output-tag primary">Cover</span>
+          <span class="output-tag primary">Agenda (Timeline)</span>
+          <span class="output-tag primary">Executive Summary</span>
+          <span class="output-tag">GA 2.0 Strategy</span>
+          <span class="output-tag">Application Profile</span>
+          <span class="output-tag">Funded Loans Profile</span>
+          <span class="output-tag">Monthly Performance</span>
+          <span class="output-tag">DPD30+ by Vantage</span>
+          <span class="output-tag">DPD30+ by Term</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: How Does the Skill Work? -->
+  <div class="section">
+    <div class="section-label">How Does the Skill Work?</div>
+    <div class="card">
+      <div class="pipeline">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Data Extraction</h3>
+          <p>Connects to Databricks via MCP, runs read-only SQL queries against the FNPL base table. All queries are parallelized for speed.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Validation</h3>
+          <p>Cross-checks row counts, date ranges, and metric values against prior months to catch data anomalies before building slides.</p>
+        </div>
+        <div class="step">
+          <div class="step-num blue">3</div>
+          <h3>Template-Driven Build</h3>
+          <p>Reads 5 self-contained HTML templates (slides 9&ndash;13) and replaces <code>{{PLACEHOLDER}}</code> tokens with computed data. CSS is ID-scoped per slide.</p>
+        </div>
+        <div class="step">
+          <div class="step-num blue">4</div>
+          <h3>Static Slide Assembly</h3>
+          <p>Builds Cover, Agenda (timeline layout), Executive Summary, and GA 2.0 slides from reference HTML in the skill definition.</p>
+        </div>
+        <div class="step">
+          <div class="step-num teal">5</div>
+          <h3>Combined HTML Output</h3>
+          <p>Assembles a full-screen slide presenter (1280&times;720) with keyboard, touch, and swipe navigation. Single HTML file, no server needed.</p>
+        </div>
+        <div class="step">
+          <div class="step-num green">6</div>
+          <h3>Auto-Archive</h3>
+          <p>Pushes the deck to GitHub Pages dashboard and the Intuit enterprise git repo. Each month&rsquo;s deck is preserved and never overwritten.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2b: Key Interactive Features -->
+  <div class="section">
+    <div class="section-label">Key Interactive Features</div>
+    <div class="card">
+      <div class="pipeline">
+        <div class="step">
+          <div class="step-num blue">&#9998;</div>
+          <h3>Edit / Present Mode</h3>
+          <p>Toggle between presentation and live-editing mode in-place. No page reload &mdash; all DOM changes persist across mode switches.</p>
+        </div>
+        <div class="step">
+          <div class="step-num teal">+</div>
+          <h3>Add Slide</h3>
+          <p>Insert new slides from 4 MBR-styled templates (Title, Key Takeaway, Section Header, Blank). New slides match the exact design of data slides.</p>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:#DC2626;">&#128465;</div>
+          <h3>Delete Slide</h3>
+          <p>Remove any slide with a confirmation dialog. The presenter auto-updates dot indicators, counter, and navigation.</p>
+        </div>
+        <div class="step">
+          <div class="step-num green">&#128190;</div>
+          <h3>Save for Everyone</h3>
+          <p>Commits the current deck to GitHub via API. Uses <code>serializeCleanHTML()</code> to strip edit-mode artifacts before saving.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">&#9654;</div>
+          <h3>Full-Screen Presenter</h3>
+          <p>Arrow keys, swipe, dot navigation. Responsive scaling on smaller screens. Dark navy background with smooth slide transitions.</p>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:#F59E0B;">&#128221;</div>
+          <h3>Inline Editing</h3>
+          <p>Elements marked <code>data-editable</code> become contenteditable in Edit Mode. Team members can update text directly in the browser.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Benefits -->
+  <div class="section">
+    <div class="section-label">Benefits</div>
+    <div class="card">
+      <div class="benefits-grid">
+        <div class="benefit">
+          <div class="benefit-icon">&#9201;</div>
+          <div class="benefit-val">~4 hrs</div>
+          <div class="benefit-label">Saved per Month</div>
+          <div class="benefit-desc">Replaces manual slide creation from raw data exports</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">&#10003;</div>
+          <div class="benefit-val">Zero</div>
+          <div class="benefit-label">Copy-Paste Errors</div>
+          <div class="benefit-desc">Data flows directly from SQL queries to charts and tables</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">&#128194;</div>
+          <div class="benefit-val">Git</div>
+          <div class="benefit-label">Version Controlled</div>
+          <div class="benefit-desc">Every monthly deck is archived, diffable, and reproducible</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">&#9998;</div>
+          <div class="benefit-val">Live</div>
+          <div class="benefit-label">Editing</div>
+          <div class="benefit-desc">Teammates can edit text, add slides, and save from the browser</div>
+        </div>
+        <div class="benefit">
+          <div class="benefit-icon">&#128196;</div>
+          <div class="benefit-val">1 File</div>
+          <div class="benefit-label">Self-Contained</div>
+          <div class="benefit-desc">Single HTML file works offline, no server or dependencies needed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Limitations -->
+  <div class="section">
+    <div class="section-label">Limitations</div>
+    <div class="card">
+      <ul class="limits-list">
+        <li><span class="limit-dot"></span><span>Requires <strong>Databricks access</strong> and authentication via the Databricks MCP server configured in Cursor.</span></li>
+        <li><span class="limit-dot"></span><span>Currently generates <strong>FNPL product slides only</strong>. PCA, RAD, and TTFA require separate skills or manual additions.</span></li>
+        <li><span class="limit-dot"></span><span>Charts use the <strong>Plotly.js CDN</strong> &mdash; an internet connection is needed on first load (cached thereafter).</span></li>
+        <li><span class="limit-dot"></span><span><strong>Save for Everyone</strong> requires a GitHub Personal Access Token (PAT) with repo write permissions.</span></li>
+        <li><span class="limit-dot"></span><span>Executive Summary card text is <strong>manually sourced</strong> from Slack or team input &mdash; it is not auto-generated from data.</span></li>
+        <li><span class="limit-dot"></span><span>Template changes require updating <strong>both</strong> the build script (<code>fnpl_mbr_apr26_build.py</code>) and <code>SKILL.md</code> to stay in sync.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 5: How to Import This Skill -->
+  <div class="section">
+    <div class="section-label">How to Import This Skill</div>
+    <div class="card">
+      <div class="import-steps">
+
+        <div class="import-step">
+          <div class="import-step-num">1</div>
+          <div class="import-step-content">
+            <h4>Copy the skill folder</h4>
+            <p>Clone or copy the skill directory into your Cursor skills folder:</p>
+            <div class="code-block"><span class="comment"># From the shared repo</span>
+<span class="cmd">cp -r</span> <span class="path">skills/fnpl-mbr-slide9/</span> <span class="path">~/.cursor/skills/fnpl-mbr-slide9/</span></div>
+          </div>
+        </div>
+
+        <div class="import-step">
+          <div class="import-step-num">2</div>
+          <div class="import-step-content">
+            <h4>Verify folder contents</h4>
+            <p>The skill folder must contain all of these files:</p>
+            <div class="file-tree"><span class="dir">~/.cursor/skills/fnpl-mbr-slide9/</span>
+  SKILL.md                    <span class="desc">&larr; skill definition (agent reads this)</span>
+  template.html               <span class="desc">&larr; Slide 9 (Application Profile)</span>
+  template-slide10.html       <span class="desc">&larr; Slide 10 (Funded Loans)</span>
+  template-slide11.html       <span class="desc">&larr; Slide 11 (Monthly Performance)</span>
+  template-slide12.html       <span class="desc">&larr; Slide 12 (DPD30+ by Vantage)</span>
+  template-slide13.html       <span class="desc">&larr; Slide 13 (DPD30+ by Term)</span>
+  queries.md                  <span class="desc">&larr; Slide 9 SQL queries</span>
+  queries-slide10.md          <span class="desc">&larr; Slide 10 SQL queries</span>
+  queries-slide11.md          <span class="desc">&larr; Slide 11 SQL queries</span>
+  queries-slide12.md          <span class="desc">&larr; Slide 12 SQL queries</span>
+  queries-slide13.md          <span class="desc">&larr; Slide 13 SQL queries</span>
+  slide11-table-spec.md       <span class="desc">&larr; table layout specification</span>
+  slide13-chart-spec.md       <span class="desc">&larr; chart layout specification</span>
+  schema-reference.md         <span class="desc">&larr; column mappings &amp; table quirks</span>
+  intuit-ecosystem-white.svg  <span class="desc">&larr; Intuit logo for cover slide</span>
+  verify_fnpl_mbr_html.py     <span class="desc">&larr; post-build HTML verifier</span></div>
+          </div>
+        </div>
+
+        <div class="import-step">
+          <div class="import-step-num">3</div>
+          <div class="import-step-content">
+            <h4>Configure Databricks MCP</h4>
+            <p>Ensure the <strong>Databricks MCP server</strong> is enabled in your Cursor settings. The skill uses the <code>execute_sql</code> tool for all data queries and <code>authenticate</code> for initial connection.</p>
+          </div>
+        </div>
+
+        <div class="import-step">
+          <div class="import-step-num">4</div>
+          <div class="import-step-content">
+            <h4>Run the skill</h4>
+            <p>Open Cursor&rsquo;s agent chat and type:</p>
+            <div class="code-block"><span class="cmd">run mbr</span></div>
+            <p style="margin-top: 10px;">The agent will ask a few setup questions (MBR month, cutoff date, product order), then execute the full pipeline automatically. Output lands in <code>~/Downloads/FNPL_MBR_&lt;MonYY&gt;.html</code>.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="brand-dots">
+    <span style="background:#236CFF;"></span>
+    <span style="background:#19A0AA;"></span>
+    <span style="background:#2CA01C;"></span>
+    <span style="background:#F0C929;"></span>
+  </div>
+  Consumer Risk Team &middot; <a href="index.html">MBR Archive</a>
+</div>
+
+</body>
+</html>
