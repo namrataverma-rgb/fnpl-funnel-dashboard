@@ -1433,6 +1433,7 @@ function renderSlide13(DPD_DATA, COHORT, MOB_CAP, TERMS){
   }).join('');
 
   var row = document.getElementById('chartRow13');
+  row.innerHTML = '';
 
   /** Plot after every chart-box exists so flex gives each panel ~half width; plotting the first panel
    *  while only one child exists measured ~full row width and clipped M3+ under overflow:hidden. */
