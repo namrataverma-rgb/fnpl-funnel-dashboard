@@ -36,19 +36,35 @@
     color: rgba(255,255,255,0.9);
     letter-spacing: -0.1px;
   }
-  .header-nav {
+  .header-stats {
     margin-left: auto;
     display: flex;
-    gap: 24px;
+    align-items: center;
+    gap: 28px;
   }
-  .header-nav a {
-    font-size: 13px;
-    color: rgba(255,255,255,0.55);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
+  .header-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
   }
-  .header-nav a:hover { color: #fff; }
+  .header-stat .hs-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+  .header-stat .hs-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .header-stat-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+  }
 
   .accent-bar {
     height: 3px;
@@ -270,7 +286,17 @@
   <img src="intuit-ecosystem-white.svg" alt="Intuit">
   <div class="header-divider"></div>
   <span class="header-title">Consumer Risk</span>
-  <nav class="header-nav"></nav>
+  <div class="header-stats">
+    <div class="header-stat">
+      <span class="hs-val">1</span>
+      <span class="hs-label">Decks Archived</span>
+    </div>
+    <div class="header-stat-divider"></div>
+    <div class="header-stat">
+      <span class="hs-val">Apr 2026</span>
+      <span class="hs-label">Latest Report</span>
+    </div>
+  </div>
 </div>
 <div class="accent-bar"></div>
 
@@ -279,16 +305,6 @@
   <p>Archived FNPL slide decks generated from Databricks. Each deck includes Application Profile, Funded Loans Profile, Monthly Performance, and DPD30+ vintage analysis.</p>
 </div>
 
-<div class="summary-strip">
-  <div class="summary-item">
-    <div class="val">1</div>
-    <div class="label">Decks Archived</div>
-  </div>
-  <div class="summary-item">
-    <div class="val">Apr 2026</div>
-    <div class="label">Latest Report</div>
-  </div>
-</div>
 
 <div class="content">
   <div class="section-title">Archived Reports</div>
