@@ -4,96 +4,274 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FNPL Monthly Business Review — Archive</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    background: #0F172A; color: #E2E8F0;
-    min-height: 100vh; display: flex; flex-direction: column;
+    background: #0B1120;
+    color: #E2E8F0;
+    min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
+
+  .top-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 56px;
+    background: rgba(15,23,42,0.6);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .top-bar img { height: 22px; opacity: 0.85; }
+  .top-bar .sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); }
+  .top-bar .nav-label {
+    font-size: 12px; font-weight: 600; color: #64748B;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .top-bar a {
+    font-size: 12px; color: #94A3B8; text-decoration: none;
+    margin-left: auto; transition: color 0.2s;
+  }
+  .top-bar a:hover { color: #19A0AA; }
+
   .hero {
-    padding: 48px 56px 36px;
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 64px 56px 48px;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(29,78,137,0.15) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 30%, rgba(25,160,170,0.10) 0%, transparent 70%),
+      linear-gradient(180deg, #0F172A 0%, #0B1120 100%);
+    position: relative; overflow: hidden;
   }
-  .hero-top { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-  .hero-icon {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: linear-gradient(135deg, #1D4E89, #19A0AA);
+  .hero::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929, #E07B39, #C44536);
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; color: #19A0AA;
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;
+  }
+  .hero-eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #19A0AA;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+  .hero h1 {
+    font-family: 'Poppins', sans-serif; font-size: 42px; font-weight: 800;
+    color: #F8FAFC; line-height: 1.15; margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 span { color: #19A0AA; }
+  .hero p {
+    font-size: 15px; color: #94A3B8; line-height: 1.7; max-width: 640px;
+  }
+
+  .stats-bar {
+    display: flex; gap: 32px; padding: 0 56px;
+    margin-top: -24px; position: relative; z-index: 2; margin-bottom: 24px;
+  }
+  .stat-pill {
+    background: rgba(30,41,59,0.8); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 12px;
+    padding: 16px 24px; display: flex; align-items: center; gap: 14px;
+    min-width: 200px;
+  }
+  .stat-icon {
+    width: 40px; height: 40px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px; flex-shrink: 0;
+    font-size: 18px; flex-shrink: 0;
   }
-  .hero h1 { font-family: 'Poppins', sans-serif; font-size: 32px; font-weight: 700; color: #F1F5F9; }
-  .hero p { font-size: 14px; color: #94A3B8; line-height: 1.6; max-width: 700px; }
+  .stat-icon.navy { background: rgba(29,78,137,0.2); }
+  .stat-icon.teal { background: rgba(25,160,170,0.2); }
+  .stat-icon.gold { background: rgba(240,201,41,0.15); }
+  .stat-val { font-size: 22px; font-weight: 800; color: #F1F5F9; line-height: 1; }
+  .stat-label { font-size: 11px; color: #64748B; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+  .section-label {
+    padding: 12px 56px 0;
+    font-size: 11px; font-weight: 700; color: #475569;
+    text-transform: uppercase; letter-spacing: 2px;
+  }
 
   .grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px; padding: 36px 56px; flex: 1;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px; padding: 16px 56px 48px;
   }
   .card {
-    background: #1E293B; border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 14px; padding: 28px 24px; display: flex; flex-direction: column;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    background: linear-gradient(145deg, #1E293B 0%, #162032 100%);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px; padding: 0; display: flex; flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     text-decoration: none; color: inherit; position: relative; overflow: hidden;
   }
   .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-    border-color: rgba(29,78,137,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(25,160,170,0.2);
   }
-  .card-badge {
-    display: inline-block; font-size: 10px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1.5px; color: #94A3B8;
-    margin-bottom: 12px;
-  }
-  .card h2 { font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; color: #F1F5F9; margin-bottom: 8px; }
-  .card .meta { font-size: 12px; color: #64748B; line-height: 1.6; }
-  .card .arrow {
-    position: absolute; right: 24px; top: 50%; transform: translateY(-50%);
-    font-size: 20px; color: #475569; transition: color 0.2s, transform 0.2s;
-  }
-  .card:hover .arrow { color: #19A0AA; transform: translateY(-50%) translateX(4px); }
 
-  .card.latest { border-color: rgba(25,160,170,0.3); }
-  .card.latest::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  .card-accent {
+    height: 3px;
     background: linear-gradient(90deg, #1D4E89, #19A0AA, #F0C929);
   }
+  .card-body { padding: 24px 28px 20px; flex: 1; }
+
+  .card-tag {
+    display: inline-block; font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 3px 10px; border-radius: 4px; margin-bottom: 14px;
+  }
+  .card-tag.latest { background: rgba(25,160,170,0.15); color: #19A0AA; }
+  .card-tag.archive { background: rgba(100,116,139,0.15); color: #64748B; }
+
+  .card h2 {
+    font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700;
+    color: #F1F5F9; margin-bottom: 12px; display: flex; align-items: baseline; gap: 10px;
+  }
+  .card h2 .year { font-size: 14px; color: #475569; font-weight: 500; }
+
+  .card-meta {
+    display: grid; grid-template-columns: auto 1fr; gap: 4px 12px;
+    font-size: 12px; margin-bottom: 16px;
+  }
+  .card-meta dt { color: #475569; font-weight: 600; }
+  .card-meta dd { color: #94A3B8; }
+
+  .card-slides {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .slide-chip {
+    font-size: 10px; font-weight: 600; padding: 3px 8px;
+    border-radius: 5px; background: rgba(255,255,255,0.04);
+    color: #64748B; border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .card-footer {
+    padding: 14px 28px; border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-footer .view-label {
+    font-size: 12px; font-weight: 700; color: #475569;
+    text-transform: uppercase; letter-spacing: 1px;
+    transition: color 0.2s;
+  }
+  .card:hover .card-footer .view-label { color: #19A0AA; }
+  .card-footer .arrow {
+    font-size: 18px; color: #334155;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .card:hover .card-footer .arrow { color: #19A0AA; transform: translateX(4px); }
 
   .footer {
-    padding: 24px 56px; text-align: center;
-    font-size: 11px; color: #475569; border-top: 1px solid rgba(255,255,255,0.04);
+    padding: 32px 56px; text-align: center;
+    font-size: 11px; color: #334155;
+    border-top: 1px solid rgba(255,255,255,0.03);
   }
-  .footer a { color: #64748B; text-decoration: none; }
-  .footer a:hover { color: #94A3B8; }
+  .footer a { color: #475569; text-decoration: none; transition: color 0.2s; }
+  .footer a:hover { color: #19A0AA; }
+  .footer .brand {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .footer .brand-dot {
+    width: 4px; height: 4px; border-radius: 50%;
+  }
+
+  @media (max-width: 900px) {
+    .hero { padding: 40px 24px 32px; }
+    .hero h1 { font-size: 28px; }
+    .stats-bar { flex-direction: column; gap: 12px; padding: 0 24px; margin-top: -16px; }
+    .grid { grid-template-columns: 1fr; padding: 16px 24px 32px; }
+    .top-bar, .section-label, .footer { padding-left: 24px; padding-right: 24px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <div class="hero-top">
-    <div class="hero-icon">📊</div>
-    <h1>FNPL Monthly Business Review</h1>
-  </div>
-  <p>Interactive slide decks generated from Databricks data. Each month's deck includes Application Profile, Funded Loans Profile, Monthly Performance, DPD30+ by Vantage Group, and DPD30+ by Term.</p>
+<div class="top-bar">
+  <img src="intuit-ecosystem-white.svg" alt="Intuit">
+  <div class="sep"></div>
+  <span class="nav-label">Consumer Risk</span>
+  <a href="../index.html">Funnel Dashboard &rarr;</a>
 </div>
 
-<div class="grid" id="deck-grid">
-  <a class="card latest" href="FNPL_MBR_Apr26.html">
-    <span class="card-badge">Latest</span>
-    <h2>Apr 2026</h2>
-    <div class="meta">
-      Data cutoff: Apr 15, 2026<br>
-      Base table: fnpl_base_alpha_ga2<br>
-      10 slides &middot; Cover + Agenda + Exec Summary + GA 2.0 + Slides 9&ndash;13
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    Monthly Business Review
+  </div>
+  <h1>FNPL <span>Performance</span> Archive</h1>
+  <p>Interactive slide decks auto-generated from Databricks. Each month includes Application Profile, Funded Loans, Monthly Performance, and DPD30+ vintage analysis.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-pill">
+    <div class="stat-icon navy">📋</div>
+    <div>
+      <div class="stat-val">1</div>
+      <div class="stat-label">Monthly Decks</div>
     </div>
-    <span class="arrow">→</span>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-icon teal">📊</div>
+    <div>
+      <div class="stat-val">10</div>
+      <div class="stat-label">Slides per Deck</div>
+    </div>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-icon gold">⚡</div>
+    <div>
+      <div class="stat-val">5</div>
+      <div class="stat-label">Data-Driven Slides</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">Archived Decks</div>
+
+<div class="grid" id="deck-grid">
+  <a class="card" href="FNPL_MBR_Apr26.html">
+    <div class="card-accent"></div>
+    <div class="card-body">
+      <span class="card-tag latest">Latest</span>
+      <h2>April <span class="year">2026</span></h2>
+      <dl class="card-meta">
+        <dt>Cutoff</dt><dd>Apr 15, 2026</dd>
+        <dt>Table</dt><dd>fnpl_base_alpha_ga2</dd>
+        <dt>Policy</dt><dd>Alpha/Beta, Beta2.0, GA1.0–2.0</dd>
+      </dl>
+      <div class="card-slides">
+        <span class="slide-chip">Cover</span>
+        <span class="slide-chip">Agenda</span>
+        <span class="slide-chip">Exec Summary</span>
+        <span class="slide-chip">GA 2.0</span>
+        <span class="slide-chip">App Profile</span>
+        <span class="slide-chip">Funded Loans</span>
+        <span class="slide-chip">Performance</span>
+        <span class="slide-chip">DPD30+ Vantage</span>
+        <span class="slide-chip">DPD30+ Term</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="view-label">Open Deck</span>
+      <span class="arrow">→</span>
+    </div>
   </a>
 </div>
 
 <div class="footer">
+  <div class="brand">
+    <span style="color:#1D4E89;">&#9679;</span>
+    <span style="color:#19A0AA;">&#9679;</span>
+    <span style="color:#F0C929;">&#9679;</span>
+    <span style="color:#E07B39;">&#9679;</span>
+    <span style="color:#C44536;">&#9679;</span>
+  </div>
   Consumer Risk Team &middot; <a href="../index.html">FNPL Funnel Dashboard</a> &middot; Auto-generated by MBR Skill
 </div>
 
